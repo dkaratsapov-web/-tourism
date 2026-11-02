@@ -1,0 +1,16 @@
+# Client source materials (interviews, transcripts) — never commit, repo is public
+materials/
+*.zip
+
+# Node / Next.js
+node_modules/
+.next/
+out/
+dist/
+.env*
+!.env.example
+
+# Claude local settings
+.claude/settings.local.json
+
+.DS_Store

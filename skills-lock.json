@@ -1,0 +1,125 @@
+{
+  "version": 1,
+  "skills": {
+    "after-effects": {
+      "source": "iart-ai/motion-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/after-effects/SKILL.md",
+      "computedHash": "9db077d9664f5c45157c53b754d3c72bb346999a260c63d3d4892745a3eefd02"
+    },
+    "animate": {
+      "source": "delphi-ai/animate-skill",
+      "sourceType": "github",
+      "skillPath": "SKILL.md",
+      "computedHash": "ffe5d0020ae97e7af2eeab79a3cdb2d13da004cc998dff6817b071308923b71f"
+    },
+    "animation-principles": {
+      "source": "iart-ai/motion-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/animation-principles/SKILL.md",
+      "computedHash": "140b00a44e08aa7649fb1cce1c48670ff2e76f3889fbac0b5311cc5bb818d7b7"
+    },
+    "beat-sync": {
+      "source": "akais-alt/ai-motion-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/beat-sync/SKILL.md",
+      "computedHash": "65d380a165e0f38c7e20c6828fbe04789876105ee5d70c3b2f1b10e5d289518b"
+    },
+    "beat-sync-editing": {
+      "source": "iart-ai/motion-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/beat-sync-editing/SKILL.md",
+      "computedHash": "4089a0b65782c529ebd4fe9a576588fb51cf716573b4d683b0494e6554e61e03"
+    },
+    "cg-web-animate": {
+      "source": "CGWebDev2003/cg-web-skills",
+      "sourceType": "github",
+      "skillPath": "skills/cg-web-animate/SKILL.md",
+      "computedHash": "e84fd87d24af1f9fc6f3d7b883adf84bf3555c697940ff624fcdbdb89bce9b0c"
+    },
+    "cinematic-video": {
+      "source": "akais-alt/ai-motion-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/cinematic-video/SKILL.md",
+      "computedHash": "0f2740a875e3bcd9a0077932b799a31ffeecc0eaeb827ad9aa1f2c4bb1c8f261"
+    },
+    "claude-web-skills": {
+      "source": "emanuelcira/claude-web-skills",
+      "sourceType": "github",
+      "skillPath": "SKILL.md",
+      "computedHash": "3c95eceac0213b803265f501d4c8e0ced5dba168c1cfa8e9cf252cd3a86a253a"
+    },
+    "color-motion": {
+      "source": "iart-ai/motion-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/color-motion/SKILL.md",
+      "computedHash": "7c05f7d35427d5fbe2fd1b5b6c0622252314a049797085fce085085cbf4c3e6e"
+    },
+    "creative-direction": {
+      "source": "akais-alt/ai-motion-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/creative-direction/SKILL.md",
+      "computedHash": "bf123157206384982a674dfc6ab4ea35d725e63d22636ed9d54c75fb3507f89e"
+    },
+    "kinetic-typography": {
+      "source": "akais-alt/ai-motion-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/kinetic-typography/SKILL.md",
+      "computedHash": "bbb31b44ba337495a770f677acc55e7c5c8460f3e35878b0ae4a92594e7fea6a"
+    },
+    "logo-animation": {
+      "source": "akais-alt/ai-motion-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/logo-animation/SKILL.md",
+      "computedHash": "b9d215bc208f8eb75b73aacd581eb12e5d0a3de2c5677c7156660478e0492892"
+    },
+    "motion-art-direction": {
+      "source": "iart-ai/motion-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/motion-art-direction/SKILL.md",
+      "computedHash": "bcba09b729fd3d99b3b1a388c3aaac655a3771b26dc3e8d077a110dfdd9e1631"
+    },
+    "motion-background": {
+      "source": "iart-ai/motion-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/motion-background/SKILL.md",
+      "computedHash": "99a576ac6549791b410abbc48a18074fed9e7925cf3ee5392108c59ad9e25fa4"
+    },
+    "motion-design": {
+      "source": "akais-alt/ai-motion-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/motion-design/SKILL.md",
+      "computedHash": "0d17d5e116c79143f7663ce0e609564849e751ec0db82b4e7d32d8902b84b0ab"
+    },
+    "remotion-motion": {
+      "source": "akais-alt/ai-motion-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/remotion-motion/SKILL.md",
+      "computedHash": "85455b4cf4e3a7d11b49a66f8e5ea5add8615a31ac824fe9063c0bd030b69e06"
+    },
+    "remotion-video": {
+      "source": "iart-ai/motion-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/remotion-video/SKILL.md",
+      "computedHash": "940885087443f4aa5d3baf6edb4ed25edafea2435b52922e120200b4c1af99ba"
+    },
+    "shot-composition": {
+      "source": "iart-ai/motion-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/shot-composition/SKILL.md",
+      "computedHash": "9ff4551d175f951fb443a0680020871eb93c5ae07a0f36a2008ca98e5d0fa324"
+    },
+    "social-video": {
+      "source": "akais-alt/ai-motion-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/social-video/SKILL.md",
+      "computedHash": "508a676ad562c6279933a22216a01c1f6c2e259c5f92e424f31d2eef1384fe59"
+    },
+    "transitions": {
+      "source": "akais-alt/ai-motion-design-skills",
+      "sourceType": "github",
+      "skillPath": "skills/transitions/SKILL.md",
+      "computedHash": "40561f788cf2344f475487b6375bd6ca112d8b1f297322970dc5f2b480df8ef8"
+    }
+  }
+}
