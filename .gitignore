@@ -17,3 +17,8 @@ dist/
 
 # Результаты аудитов и скриншоты
 .out/
+
+# Исходники Higgsfield (тяжёлые PNG/MP4) и журнал генерации — в git только оптимизированные webp/mp4
+site/public/media/*.png
+site/public/media/_higgsfield.log
+site/public/media/_manifest.tsv
