@@ -110,20 +110,20 @@ gen story-window soul_location \
   "window frame, cabin interior, airline livery, registration numbers, winglet logo, lens flare streaks, storm clouds" \
   --aspect_ratio 16:9
 
-gen story-window-m soul_location \
+gen story-window-m gpt_image_2_6 \
   "Vertical view from a passenger aircraft window seat at cruising altitude in early morning, the window frame itself out of shot, tall soft sky gradient from pale sky blue at the top to milky white at the horizon, a calm sunlit cloud deck in the lower part, the tip of a plain white unmarked wing entering from the left edge in the lower quarter, low sun from the right, open clean sky in the upper third" \
   "window frame, cabin interior, airline livery, registration numbers, lens flare streaks" \
-  --aspect_ratio 9:16
+  --aspect_ratio 9:16 --resolution 2k
 
 gen_raw tex-cloud-atlas gpt_image_2_6 \
   "Texture atlas for a real-time engine: four separate soft cumulus cloud puffs arranged in a 2 by 2 grid, each cloud centered in its own quadrant with wide empty margins and no overlap, white and pale grey volumetric clouds lit from the upper right with soft shading, on a pure flat black background, no text, no logos" \
   "horizon, sky gradient, ground, stars, overlap between quadrants, text, logos" \
   --aspect_ratio 1:1 --resolution 2k --output_format png
 
-gen story-coast soul_location \
+gen story-coast gpt_image_2_6 \
   "Aerial view at a 60-degree angle over the Aegean coast of Turkey in late morning, clear turquoise and deep teal water over pale limestone rocks and a small pebble cove, the coastline running diagonally from the upper left to the lower right, a few pine trees on the cliffs, open sea filling the right two thirds, calm and uninhabited" \
   "boats, yachts, buildings, people, umbrellas, drone shadow" \
-  --aspect_ratio 16:9
+  --aspect_ratio 16:9 --resolution 2k
 
 gen story-coast-m soul_location \
   "Vertical aerial view at a 60-degree angle over the Aegean coast of Turkey in late morning, clear turquoise and deep teal water over pale limestone rocks, the coastline running diagonally from the top left to the bottom right, a few pine trees on the cliffs, calm open water in the upper third, uninhabited" \
@@ -135,16 +135,16 @@ gen story-terrace soul_location \
   "people, pool, umbrellas with logos, cocktail props, hotel signage, tilted horizon" \
   --aspect_ratio 16:9
 
-gen story-terrace-m soul_location \
+gen story-terrace-m gpt_image_2_6 \
   "Vertical view from a hotel terrace above the Aegean Sea at golden hour, eye level, a low whitewashed stone parapet and the end of one linen-covered sun lounger in the lower third, calm sea to a clean straight horizon, tall soft pale sky above as open space for a large headline, warm low sunlight from the left, uninhabited" \
   "people, pool, umbrellas with logos, hotel signage, tilted horizon" \
-  --aspect_ratio 9:16
+  --aspect_ratio 9:16 --resolution 2k
 
 
-gen format-coast text2image_soul_v2 \
+gen format-coast gpt_image_2_6 \
   "Bodrum peninsula on the Aegean coast, a woman in a loose milk-white linen dress with a navy silk scarf seen from behind with her back to the camera, face not visible, standing at a whitewashed terrace wall small in the left third of the frame, looking over a calm turquoise bay with white cubic houses and pink bougainvillea on the hillside, late afternoon sun" \
   "face, profile, children, yachts, gulets, crowds, swimwear, shop signs" \
-  --aspect_ratio 4:3 --quality 2k
+  --aspect_ratio 4:3 --resolution 2k
 
 gen format-cappadocia soul_location \
   "Cappadocia at sunrise seen from a cave hotel terrace, carved tuff stone arches and a low wall with a woven kilim and a brass lantern in the foreground at the lower left, beyond them fairy chimneys and soft tuff valleys, a dozen plain hot air balloons in muted cream, sky blue and brick tones floating in pale morning sky in the upper two thirds, uninhabited" \
