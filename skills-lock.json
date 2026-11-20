@@ -1,125 +1,213 @@
 {
-  "version": 1,
+  "version": 2,
   "skills": {
     "after-effects": {
       "source": "iart-ai/motion-design-skills",
       "sourceType": "github",
       "skillPath": "skills/after-effects/SKILL.md",
-      "computedHash": "9db077d9664f5c45157c53b754d3c72bb346999a260c63d3d4892745a3eefd02"
+      "computedHash": ""
     },
     "animate": {
       "source": "delphi-ai/animate-skill",
       "sourceType": "github",
       "skillPath": "SKILL.md",
-      "computedHash": "ffe5d0020ae97e7af2eeab79a3cdb2d13da004cc998dff6817b071308923b71f"
+      "computedHash": ""
     },
     "animation-principles": {
       "source": "iart-ai/motion-design-skills",
       "sourceType": "github",
       "skillPath": "skills/animation-principles/SKILL.md",
-      "computedHash": "140b00a44e08aa7649fb1cce1c48670ff2e76f3889fbac0b5311cc5bb818d7b7"
+      "computedHash": ""
     },
     "beat-sync": {
       "source": "akais-alt/ai-motion-design-skills",
       "sourceType": "github",
       "skillPath": "skills/beat-sync/SKILL.md",
-      "computedHash": "65d380a165e0f38c7e20c6828fbe04789876105ee5d70c3b2f1b10e5d289518b"
+      "computedHash": ""
     },
     "beat-sync-editing": {
       "source": "iart-ai/motion-design-skills",
       "sourceType": "github",
       "skillPath": "skills/beat-sync-editing/SKILL.md",
-      "computedHash": "4089a0b65782c529ebd4fe9a576588fb51cf716573b4d683b0494e6554e61e03"
+      "computedHash": ""
     },
     "cg-web-animate": {
       "source": "CGWebDev2003/cg-web-skills",
       "sourceType": "github",
       "skillPath": "skills/cg-web-animate/SKILL.md",
-      "computedHash": "e84fd87d24af1f9fc6f3d7b883adf84bf3555c697940ff624fcdbdb89bce9b0c"
+      "computedHash": ""
     },
     "cinematic-video": {
       "source": "akais-alt/ai-motion-design-skills",
       "sourceType": "github",
       "skillPath": "skills/cinematic-video/SKILL.md",
-      "computedHash": "0f2740a875e3bcd9a0077932b799a31ffeecc0eaeb827ad9aa1f2c4bb1c8f261"
+      "computedHash": ""
     },
     "claude-web-skills": {
       "source": "emanuelcira/claude-web-skills",
       "sourceType": "github",
       "skillPath": "SKILL.md",
-      "computedHash": "3c95eceac0213b803265f501d4c8e0ced5dba168c1cfa8e9cf252cd3a86a253a"
+      "computedHash": ""
     },
     "color-motion": {
       "source": "iart-ai/motion-design-skills",
       "sourceType": "github",
       "skillPath": "skills/color-motion/SKILL.md",
-      "computedHash": "7c05f7d35427d5fbe2fd1b5b6c0622252314a049797085fce085085cbf4c3e6e"
+      "computedHash": ""
     },
     "creative-direction": {
       "source": "akais-alt/ai-motion-design-skills",
       "sourceType": "github",
       "skillPath": "skills/creative-direction/SKILL.md",
-      "computedHash": "bf123157206384982a674dfc6ab4ea35d725e63d22636ed9d54c75fb3507f89e"
+      "computedHash": ""
+    },
+    "design-taste-frontend": {
+      "source": "Leonxlnx/taste-skill",
+      "commit": "f6b76575f949707b4e3c37cd86cb44b0b98643e8",
+      "sourceType": "github",
+      "skillPath": "skills/taste-skill/SKILL.md",
+      "computedHash": "b10eab0a9684cd09cf34c31ef04a3bf530a5f4404422f9c520d42372d670c7fc",
+      "installMode": "copy"
+    },
+    "higgsfield-brandkit": {
+      "source": "higgsfield-ai/skills",
+      "commit": "27000402070db19d958789d05b3b52b6f4718d7c",
+      "sourceType": "github",
+      "skillPath": "higgsfield-brandkit/SKILL.md",
+      "computedHash": "e7647cd6f6e20426eeafc11b737c0ff4bbcc33776efc29131b2e728500845c33",
+      "installMode": "copy"
+    },
+    "higgsfield-faceless-video": {
+      "source": "higgsfield-ai/skills",
+      "commit": "27000402070db19d958789d05b3b52b6f4718d7c",
+      "sourceType": "github",
+      "skillPath": "higgsfield-faceless-video/SKILL.md",
+      "computedHash": "95c4288e64c35e561f8bf6afea57ff52289b8da4c71a519144d9de8a4e2fa125",
+      "installMode": "copy"
+    },
+    "higgsfield-generate": {
+      "source": "higgsfield-ai/skills",
+      "commit": "27000402070db19d958789d05b3b52b6f4718d7c",
+      "sourceType": "github",
+      "skillPath": "higgsfield-generate/SKILL.md",
+      "computedHash": "20fb9cdafbea6900609e4a7f5e0091ed439ba65131dd59b915ff8202a008ca57",
+      "installMode": "copy"
+    },
+    "higgsfield-marketplace-cards": {
+      "source": "higgsfield-ai/skills",
+      "commit": "27000402070db19d958789d05b3b52b6f4718d7c",
+      "sourceType": "github",
+      "skillPath": "higgsfield-marketplace-cards/SKILL.md",
+      "computedHash": "dc920d81d0842e0f5dfb0c22ab3b96b16fb75ae62d33b1b8a3a9529d48d2af6f",
+      "installMode": "copy"
+    },
+    "higgsfield-product-photoshoot": {
+      "source": "higgsfield-ai/skills",
+      "commit": "27000402070db19d958789d05b3b52b6f4718d7c",
+      "sourceType": "github",
+      "skillPath": "higgsfield-product-photoshoot/SKILL.md",
+      "computedHash": "cd9bf8f795be535a96852b6d5c5207ddf7238fe4ada06bb226086cac721f741a",
+      "installMode": "copy"
+    },
+    "higgsfield-soul-id": {
+      "source": "higgsfield-ai/skills",
+      "commit": "27000402070db19d958789d05b3b52b6f4718d7c",
+      "sourceType": "github",
+      "skillPath": "higgsfield-soul-id/SKILL.md",
+      "computedHash": "be1abb8875552d0e8a2aa2fb4ac9fd6a3edf55aab55ab4ceb65b611ef037ddf4",
+      "installMode": "copy"
+    },
+    "higgsfield-video-explainer": {
+      "source": "higgsfield-ai/skills",
+      "commit": "27000402070db19d958789d05b3b52b6f4718d7c",
+      "sourceType": "github",
+      "skillPath": "higgsfield-video-explainer/SKILL.md",
+      "computedHash": "22e3132222b7120768530d385d1513bf678be59677f9363a5177adbbe323a518",
+      "installMode": "copy"
+    },
+    "higgsfield-websites": {
+      "source": "higgsfield-ai/skills",
+      "commit": "27000402070db19d958789d05b3b52b6f4718d7c",
+      "sourceType": "github",
+      "skillPath": "higgsfield-websites/SKILL.md",
+      "computedHash": "03f247a262133675f6a573fb6c66f1be8950f4addde18c5fa3499c39dd32ea64",
+      "installMode": "copy"
+    },
+    "higgsfield-youtube-thumbnail": {
+      "source": "higgsfield-ai/skills",
+      "commit": "27000402070db19d958789d05b3b52b6f4718d7c",
+      "sourceType": "github",
+      "skillPath": "higgsfield-youtube-thumbnail/SKILL.md",
+      "computedHash": "e95fdabc5eb58b61ef75cc844ccde91e0162082a907d5164d260ba201cab2b71",
+      "installMode": "copy"
+    },
+    "high-end-visual-design": {
+      "source": "Leonxlnx/taste-skill-classics",
+      "commit": "5e08c9383dc4ad7fc0df70e1ac8cfa09ec356305",
+      "sourceType": "github",
+      "skillPath": "skills/soft-skill/SKILL.md",
+      "computedHash": "35d686a6100bce47b3391e57ff69b3c5f77635728fafbd664109fbb6923f41f1",
+      "installMode": "copy"
     },
     "kinetic-typography": {
       "source": "akais-alt/ai-motion-design-skills",
       "sourceType": "github",
       "skillPath": "skills/kinetic-typography/SKILL.md",
-      "computedHash": "bbb31b44ba337495a770f677acc55e7c5c8460f3e35878b0ae4a92594e7fea6a"
+      "computedHash": ""
     },
     "logo-animation": {
       "source": "akais-alt/ai-motion-design-skills",
       "sourceType": "github",
       "skillPath": "skills/logo-animation/SKILL.md",
-      "computedHash": "b9d215bc208f8eb75b73aacd581eb12e5d0a3de2c5677c7156660478e0492892"
+      "computedHash": ""
     },
     "motion-art-direction": {
       "source": "iart-ai/motion-design-skills",
       "sourceType": "github",
       "skillPath": "skills/motion-art-direction/SKILL.md",
-      "computedHash": "bcba09b729fd3d99b3b1a388c3aaac655a3771b26dc3e8d077a110dfdd9e1631"
+      "computedHash": ""
     },
     "motion-background": {
       "source": "iart-ai/motion-design-skills",
       "sourceType": "github",
       "skillPath": "skills/motion-background/SKILL.md",
-      "computedHash": "99a576ac6549791b410abbc48a18074fed9e7925cf3ee5392108c59ad9e25fa4"
+      "computedHash": ""
     },
     "motion-design": {
       "source": "akais-alt/ai-motion-design-skills",
       "sourceType": "github",
       "skillPath": "skills/motion-design/SKILL.md",
-      "computedHash": "0d17d5e116c79143f7663ce0e609564849e751ec0db82b4e7d32d8902b84b0ab"
+      "computedHash": ""
     },
     "remotion-motion": {
       "source": "akais-alt/ai-motion-design-skills",
       "sourceType": "github",
       "skillPath": "skills/remotion-motion/SKILL.md",
-      "computedHash": "85455b4cf4e3a7d11b49a66f8e5ea5add8615a31ac824fe9063c0bd030b69e06"
+      "computedHash": ""
     },
     "remotion-video": {
       "source": "iart-ai/motion-design-skills",
       "sourceType": "github",
       "skillPath": "skills/remotion-video/SKILL.md",
-      "computedHash": "940885087443f4aa5d3baf6edb4ed25edafea2435b52922e120200b4c1af99ba"
+      "computedHash": ""
     },
     "shot-composition": {
       "source": "iart-ai/motion-design-skills",
       "sourceType": "github",
       "skillPath": "skills/shot-composition/SKILL.md",
-      "computedHash": "9ff4551d175f951fb443a0680020871eb93c5ae07a0f36a2008ca98e5d0fa324"
+      "computedHash": ""
     },
     "social-video": {
       "source": "akais-alt/ai-motion-design-skills",
       "sourceType": "github",
       "skillPath": "skills/social-video/SKILL.md",
-      "computedHash": "508a676ad562c6279933a22216a01c1f6c2e259c5f92e424f31d2eef1384fe59"
+      "computedHash": ""
     },
     "transitions": {
       "source": "akais-alt/ai-motion-design-skills",
       "sourceType": "github",
       "skillPath": "skills/transitions/SKILL.md",
-      "computedHash": "40561f788cf2344f475487b6375bd6ca112d8b1f297322970dc5f2b480df8ef8"
+      "computedHash": ""
     }
   }
 }
