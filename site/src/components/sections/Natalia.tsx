@@ -39,7 +39,7 @@ export function Natalia() {
             <blockquote className="display text-[clamp(1.9rem,3vw,2.8rem)] italic leading-[1.1] [--wght:420]">
               «Цитата Натальи — записать с её слов»
             </blockquote>
-            <figcaption className="label mt-4 text-[var(--ink-soft)]">Плейсхолдер цитаты</figcaption>
+            <figcaption className="label mt-4 text-[var(--ink)]">Плейсхолдер цитаты</figcaption>
           </figure>
         </div>
       </div>

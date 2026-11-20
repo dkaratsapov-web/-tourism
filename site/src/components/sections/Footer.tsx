@@ -4,7 +4,7 @@ import { TELEGRAM_URL } from "@/lib/site";
 export function Footer() {
   return (
     <footer className="bg-[var(--ink)] px-[var(--gutter)] pb-[calc(96px+env(safe-area-inset-bottom))] pt-16 text-[var(--paper)] md:pb-10 md:pt-24">
-      <p aria-hidden className="display overflow-hidden whitespace-nowrap text-[23vw] leading-[0.8] [--wdth:62.5] [--wght:600] md:text-[17.4vw]">
+      <p aria-hidden className="display overflow-hidden whitespace-nowrap text-[16vw] leading-[0.8] [--wdth:62.5] [--wght:600] md:text-[17.4vw]">
         Fashion Tours
       </p>
       <div className="mt-12 grid gap-8 border-t border-[var(--paper)]/15 pt-8 text-[15px] md:grid-cols-3">

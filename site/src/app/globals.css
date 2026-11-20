@@ -80,6 +80,13 @@ html.lenis body {
   outline-offset: 3px;
 }
 
+/* На тёмном фоне эгейская рамка почти не видна (2,6:1) — берём небесную (> 7:1). */
+footer :focus-visible,
+#formaty :focus-visible,
+.bg-\[var\(--ink\)\] :focus-visible {
+  outline-color: var(--sky);
+}
+
 button,
 a,
 [role="button"] {

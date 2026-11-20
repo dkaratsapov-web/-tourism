@@ -12,6 +12,15 @@ const CHIPS = [...DESTINATIONS.map((d) => d.chip), "Маршрут по стра
 
 type Errors = Partial<Record<"name" | "contact" | "consent", string>>;
 
+/** Контакт засчитываем, если это телефон (от 10 цифр), ник или ссылка Telegram, или почта. */
+function isContact(raw: string) {
+  const v = raw.trim();
+  const phone = /^[+\d\s()-]+$/.test(v) && v.replace(/\D/g, "").length >= 10;
+  const telegram = /^@[a-zA-Z][a-zA-Z0-9_]{4,31}$/.test(v) || /(^|\/\/)t\.me\/[a-zA-Z0-9_]{5,}/.test(v);
+  const email = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
+  return phone || telegram || email;
+}
+
 const field =
   "mt-2 block w-full rounded-[10px] border border-[var(--ink)]/25 bg-[var(--white)] px-4 py-3.5 text-[16px] text-[var(--ink)] outline-none transition-[border-color,box-shadow] duration-200 placeholder:text-[var(--ink-soft)] focus:border-[var(--aegean)] focus:shadow-[0_0_0_3px_rgb(169_205_235/0.7)] aria-[invalid=true]:border-[var(--brick)]";
 
@@ -65,7 +74,7 @@ export function Lead() {
     e.preventDefault();
     const next: Errors = {};
     if (!name.trim()) next.name = "Напишите, как к вам обращаться.";
-    if (contact.trim().length < 4) next.contact = "Оставьте телефон или ник в Telegram, чтобы Наталья могла ответить.";
+    if (!isContact(contact)) next.contact = "Оставьте телефон, ник в Telegram (например, @natalia) или почту, чтобы Наталья могла ответить.";
     if (!consent) next.consent = "Без согласия на обработку данных мы не можем принять заявку.";
     setErrors(next);
     if (Object.keys(next).length) {
@@ -118,9 +127,7 @@ export function Lead() {
             <form
               noValidate
               onSubmit={submit}
-              action={TELEGRAM_URL}
-              method="get"
-              target="_blank"
+              method="dialog"
               aria-label="Заявка на подбор поездки"
               className="min-w-0"
             >
@@ -285,7 +292,7 @@ export function Lead() {
                         {copied ? "Скопировано" : "Скопировать текст"}
                       </button>
                     </div>
-                    <button type="button" onClick={() => setSent(null)} className="mt-4 h-11 w-fit text-[14px] text-[var(--ink-soft)] underline underline-offset-4">
+                    <button type="button" onClick={() => { setSent(null); requestAnimationFrame(() => document.getElementById(`${uid}-name`)?.focus()); }} className="mt-4 h-11 w-fit text-[14px] text-[var(--ink-soft)] underline underline-offset-4">
                       Изменить заявку
                     </button>
                   </motion.div>

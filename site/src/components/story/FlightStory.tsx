@@ -75,7 +75,7 @@ function BoardingPass({ withStamp = true }: { withStamp?: boolean }) {
         ))}
       </dl>
       {withStamp ? (
-        <div data-pass-stamp className="absolute -right-5 -top-8 w-28 md:-right-10 md:w-36">
+        <div data-pass-stamp className="absolute -right-3 -top-[5.5rem] w-24 md:-right-10 md:-top-24 md:w-32">
           <Stamp kind="ayt" reveal="none" rotate={-12} />
         </div>
       ) : null}
@@ -330,7 +330,7 @@ export function FlightStory() {
         </div>
         <div className="absolute left-[var(--gutter)] top-[calc(var(--header-h)+18px)] z-20 flex items-center gap-3 text-[15px] md:text-[17px]" aria-hidden>
           <SplitFlap text={`0${scene + 1}`} length={2} trigger="value" />
-          <span className="label text-[var(--ink-soft)]">/ 04</span>
+          <span className="label text-[var(--ink)]">/ 04</span>
           <SplitFlap text={SCENES[scene].label} length={7} trigger="value" light />
         </div>
         <a
