@@ -6,6 +6,7 @@ import { useReducedMotion } from "@/lib/useReducedMotion";
 import { DESTINATIONS, LEAD_ID, TELEGRAM_URL, telegramLink } from "@/lib/site";
 import { Chars } from "@/components/ui/Type";
 import { Stamp } from "@/components/ui/Stamp";
+import { Picture, Texture } from "@/components/ui/Media";
 import { DEST_EVENT } from "./Formats";
 
 const CHIPS = [...DESTINATIONS.map((d) => d.chip), "Маршрут по стране", "Пока не знаю"];
@@ -104,14 +105,16 @@ export function Lead() {
     ) : null;
 
   return (
-    <section id={LEAD_ID} aria-labelledby="lead-title" className="relative bg-[var(--tuff)] px-[var(--gutter)] py-20 md:py-28">
+    <section id={LEAD_ID} aria-labelledby="lead-title" className="relative isolate overflow-hidden bg-[var(--tuff)] px-[var(--gutter)] py-20 md:py-28">
+      {/* Фон — туф Каппадокии. */}
+      <Texture id="tex-tuff" className="opacity-45 mix-blend-multiply" />
       <div className="mx-auto max-w-[1240px]">
         <div className="flex flex-wrap items-end justify-between gap-6">
           <div>
             <p className="label text-[var(--ink)]">Рубрика · Заявка</p>
             <Chars id="lead-title" text="Обсудим вашу поездку?" italicFrom={1} className="display mt-4 text-[clamp(2.8rem,7vw,7.4rem)]" />
           </div>
-          <p className="max-w-[26rem] text-[16px] leading-[1.55] text-[var(--ink)]/85">
+          <p className="max-w-[26rem] text-[16px] leading-[1.55] text-[var(--ink)]">
             Заполните талон — откроется Telegram с готовым текстом заявки. Наталья ответит там же. Можно сразу{" "}
             <a href={TELEGRAM_URL} target="_blank" rel="noopener" className="font-medium underline decoration-1 underline-offset-4">
               написать в Telegram
@@ -122,7 +125,9 @@ export function Lead() {
 
         <div data-reveal="fade" className="relative mt-10 md:mt-14">
           <Stamp kind="tag" rotate={12} className="absolute -right-5 top-[30%] z-10 hidden w-20 lg:block" id="st-lead-tag" />
-          <div className="relative grid overflow-visible rounded-[18px] bg-[var(--white)] shadow-[0_40px_70px_-40px_rgb(19_41_75/0.55)] md:grid-cols-[1fr_auto_300px]">
+          <div className="relative isolate grid overflow-visible rounded-[18px] bg-[var(--white)] shadow-[0_40px_70px_-40px_rgb(19_41_75/0.55)] md:grid-cols-[1fr_auto_300px]">
+            {/* Талон на льне: фактура только в полях талона, поля ввода остаются белыми. */}
+            <Picture id="tex-linen" alt="" decorative sizes="(min-width: 768px) 1240px, 100vw" className="pointer-events-none absolute inset-0 -z-10 overflow-hidden rounded-[18px] opacity-80 mix-blend-multiply" />
             {/* Основная часть талона — поля формы. */}
             <form
               noValidate

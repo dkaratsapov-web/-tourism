@@ -1,13 +1,16 @@
 import { Placeholder, type Tone } from "@/components/ui/Placeholder";
 import { Stamp } from "@/components/ui/Stamp";
 import { Lines } from "@/components/ui/Type";
+import { Texture } from "@/components/ui/Media";
 
 const POSTERS: Tone[] = ["hotel-1", "hotel-2", "hotel-3", "hotel-4"];
 
 /** Видеообзоры отелей — только те, где Наталья реально снимала. Пока подписанные места под постеры. */
 export function HotelReviews() {
   return (
-    <section id="obzory" aria-labelledby="obzory-title" className="bg-[var(--white)] px-[var(--gutter)] py-20 md:py-32">
+    <section id="obzory" aria-labelledby="obzory-title" className="relative isolate overflow-hidden bg-[var(--white)] px-[var(--gutter)] py-20 md:py-32">
+      {/* Белый разворот на льне: фактура едва заметна, контраст текста не меняется. */}
+      <Texture id="tex-linen" className="opacity-70 mix-blend-multiply" />
       <div className="mx-auto max-w-[1320px]">
         <div className="flex flex-wrap items-end justify-between gap-6">
           <div>
@@ -31,7 +34,6 @@ export function HotelReviews() {
           {POSTERS.map((t, i) => (
             <li key={t} className={i % 2 ? "md:translate-y-14" : ""}>
               <Placeholder
-                kind="need"
                 tone={t}
                 reveal={i % 2 ? "photo-center" : "photo"}
                 label={`Видеообзор Натальи ${i + 1}: отель и место — уточнить`}

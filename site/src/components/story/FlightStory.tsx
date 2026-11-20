@@ -5,7 +5,8 @@ import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useReducedMotion } from "@/lib/useReducedMotion";
-import { Placeholder, type Tone } from "@/components/ui/Placeholder";
+import { Cutout, Photo } from "@/components/ui/Media";
+import type { MediaName } from "@/lib/media-manifest";
 import { Stamp } from "@/components/ui/Stamp";
 import { SplitFlap } from "@/components/ui/SplitFlap";
 import { CtaButton } from "@/components/ui/CtaButton";
@@ -28,15 +29,38 @@ const SCENES = [
 const BOUNDS = [0.22, 0.52, 0.72];
 const sceneAt = (p: number) => BOUNDS.filter((b) => p >= b).length;
 
-type Item = { tone: Tone; label: string; pos: string; depth: number; rot: number; size: string; mobile: boolean };
+type Item = { name: MediaName; alt: string; pos: string; depth: number; rot: number; size: string; decorative?: boolean; tag?: boolean };
 
-/** Раскладка сверху (flat lay): предметы на трёх уровнях глубины. На телефоне — три предмета вместо четырёх. */
+/**
+ * Раскладка сверху (flat lay): вырезанные предметы Higgsfield на трёх уровнях глубины (×0,3 / ×0,6 / ×1,1).
+ * Телефон — отдельная постановка: паспорт, панама и бирка (плюс талон), очки, платок и марка только на ПК.
+ */
 const ITEMS: Item[] = [
-  { tone: "passport", label: "паспорт в обложке, вид сверху", pos: "left-[3%] top-[40%] md:left-[47%] md:top-[14%]", depth: 0.3, rot: -9, size: "w-[28vw] md:w-[11vw] aspect-[3/4]", mobile: true },
-  { tone: "glasses", label: "солнцезащитные очки", pos: "right-[3%] top-[41%] md:right-[5%] md:top-[12%]", depth: 0.6, rot: 7, size: "w-[34vw] md:w-[13vw] aspect-[4/3]", mobile: true },
-  { tone: "scarf", label: "шёлковый платок", pos: "left-[56%] bottom-[2%] md:left-[44%] md:bottom-[9%]", depth: 1.1, rot: 4, size: "w-[30vw] md:w-[12vw] aspect-square", mobile: true },
-  { tone: "hat", label: "детская панама", pos: "hidden md:block md:right-[7%] md:bottom-[7%]", depth: 0.6, rot: -6, size: "md:w-[11vw] aspect-square", mobile: false },
+  { name: "pack-passport-560", alt: "Атмосферный кадр: паспорт в синей обложке", pos: "left-[5%] top-[45%] md:left-[47%] md:top-[13%]", depth: 0.3, rot: -9, size: "w-[22vw] md:w-[8.4vw]" },
+  { name: "pack-sunglasses-560", alt: "Атмосферный кадр: солнцезащитные очки", pos: "hidden md:block md:right-[4%] md:top-[14%]", depth: 0.6, rot: 7, size: "md:w-[14vw]" },
+  { name: "sticker-postage-stamp-420", alt: "", pos: "hidden md:block md:left-[33%] md:top-[24%]", depth: 0.3, rot: 8, size: "md:w-[6.4vw]", decorative: true },
+  { name: "pack-scarf-560", alt: "Атмосферный кадр: шёлковый платок", pos: "hidden md:block md:left-[42%] md:bottom-[7%]", depth: 1.1, rot: 4, size: "md:w-[14vw]" },
+  { name: "sticker-luggage-tag-420", alt: "", pos: "left-[5%] bottom-[3%] md:left-[63%] md:bottom-[5%]", depth: 1.1, rot: -10, size: "w-[22vw] md:w-[7.2vw]", decorative: true, tag: true },
+  { name: "pack-panama-560", alt: "Атмосферный кадр: детская соломенная панама", pos: "left-[31%] top-[42%] md:left-auto md:right-[6%] md:bottom-[6%] md:top-auto", depth: 0.6, rot: -6, size: "w-[34vw] md:w-[12vw]" },
 ];
+
+/** Надпись на пустой бирке — SVG поверх кадра: так текст точный и не «нарисован» генерацией. */
+function TagLabel() {
+  return (
+    <svg aria-hidden viewBox="0 0 100 110" className="absolute left-[45%] top-[38%] w-[50%]">
+      <rect x="6" y="8" width="88" height="30" fill="#a3433b" />
+      <text x="50" y="30" textAnchor="middle" fill="#f6f3ec" style={{ fontFamily: "var(--font-text), sans-serif" }} fontWeight="700" fontSize="19" letterSpacing="3">
+        AYT
+      </text>
+      <text x="50" y="66" textAnchor="middle" fill="#13294b" style={{ fontFamily: "var(--font-display-face), serif" }} fontStyle="italic" fontSize="17">
+        Fashion
+      </text>
+      <text x="50" y="86" textAnchor="middle" fill="#13294b" style={{ fontFamily: "var(--font-display-face), serif" }} fontStyle="italic" fontSize="17">
+        Tours
+      </text>
+    </svg>
+  );
+}
 
 /** Посадочный талон — главный предмет «Сборов»; он же становится иллюминатором. */
 function BoardingPass({ withStamp = true }: { withStamp?: boolean }) {
@@ -101,13 +125,25 @@ function StaticStory() {
               Сначала — <em>разговор</em>
             </h2>
             <p className="mt-4 max-w-md text-[17px] text-[var(--ink-soft)]">{TEXT.sbory.p}</p>
+            <div className="mt-8">
+              <BoardingPass withStamp={false} />
+            </div>
           </div>
-          <BoardingPass />
+          <Photo
+            id="story-flatlay"
+            mobileId="story-flatlay-m"
+            alt="Атмосферный кадр: вещи к поездке — паспорт, талон, очки, платок, детская панама"
+            sizes="(min-width: 768px) 50vw, 100vw"
+            pos="88% 50%"
+            posMobile="50% 75%"
+            reveal="none"
+            className="aspect-[4/5] md:aspect-[4/3]"
+          />
         </div>
         {[
-          { n: "02 / 04 · Полёт", h: TEXT.polet.h, p: TEXT.polet.p, tone: "route" as Tone, label: "вид из иллюминатора: облака и край крыла" },
-          { n: "03 / 04 · Прилёт", h: TEXT.prilet.h, p: TEXT.prilet.p, tone: "sea" as Tone, label: "Эгейское побережье сверху, бирюзовая вода" },
-          { n: "04 / 04 · Терраса", h: "Здесь начинается отпуск", p: "", tone: "terrace" as Tone, label: "терраса отеля, море до горизонта, вечерний свет" },
+          { n: "02 / 04 · Полёт", h: TEXT.polet.h, p: TEXT.polet.p, id: "story-window", alt: "Атмосферный кадр: крыло самолёта над облаками утром", pos: "40% 55%", posM: "50% 70%" },
+          { n: "03 / 04 · Прилёт", h: TEXT.prilet.h, p: TEXT.prilet.p, id: "story-coast", alt: "Атмосферный кадр: Эгейское побережье сверху", pos: "45% 50%", posM: "50% 40%" },
+          { n: "04 / 04 · Терраса", h: "Здесь начинается отпуск", p: "", id: "story-terrace", alt: "Атмосферный кадр: терраса с видом на море вечером", pos: "60% 60%", posM: "60% 55%" },
         ].map((s) => (
           <div key={s.n} className="grid items-center gap-8 md:grid-cols-2">
             <div>
@@ -115,7 +151,7 @@ function StaticStory() {
               <h2 className="display mt-3 text-[clamp(2.4rem,5vw,4.6rem)]">{s.h}</h2>
               {s.p ? <p className="mt-4 max-w-md text-[17px] text-[var(--ink-soft)]">{s.p}</p> : <CtaButton className="mt-8" />}
             </div>
-            <Placeholder tone={s.tone} label={s.label} reveal="none" className="aspect-[4/3]" />
+            <Photo id={s.id} mobileId={`${s.id}-m`} alt={s.alt} sizes="(min-width: 768px) 50vw, 100vw" pos={s.pos} posMobile={s.posM} reveal="none" className="aspect-[4/5] md:aspect-[4/3]" />
           </div>
         ))}
       </div>
@@ -207,7 +243,10 @@ export function FlightStory() {
         .to(pass, { opacity: 0, scale: 0.8, duration: 0.3 }, 1.95)
         .fromTo(q("[data-bezel]"), { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.3, ease: "expo.out" }, 1.95)
         .to(win, { clipPath: () => clip(stage.clientWidth, stage.clientHeight, 0), duration: 0.9, ease: "power4.inOut" }, 2.3)
-        .to(q("[data-bezel]"), { scale: 4.5, opacity: 0, duration: 0.9, ease: "power4.inOut" }, 2.3);
+        .to(q("[data-bezel]"), { scale: 4.5, opacity: 0, duration: 0.9, ease: "power4.inOut" }, 2.3)
+        // Постер иллюминатора чуть приближается вместе с окном и растворяется в небе: дальше летим сквозь 3D-облака.
+        .fromTo(q("[data-window-poster] [data-photo-in]"), { scale: 1.12 }, { scale: 1, duration: 0.9, ease: "power4.inOut" }, 2.3)
+        .to(q("[data-window-poster]"), { opacity: 0, duration: 0.6 }, 2.9);
 
       // 2.9–5 · Полёт: облака (WebGL читает storyProgress), подпись.
       tl.fromTo(q("[data-cap='polet']"), { autoAlpha: 0, y: 40 }, { autoAlpha: 1, y: 0, duration: 0.4, ease: "expo.out" }, 3.0)
@@ -258,8 +297,9 @@ export function FlightStory() {
           сборы
         </p>
         {ITEMS.map((it) => (
-          <div key={it.tone} data-item data-depth={it.depth} className={`absolute ${it.pos} ${it.size}`} style={{ rotate: `${it.rot}deg` }}>
-            <Placeholder tone={it.tone} label={it.label} reveal="none" compact labelClassName="max-md:hidden" className="h-full w-full rounded-[6px] border-[6px] border-[var(--white)] shadow-[0_18px_30px_-18px_rgb(19_41_75/0.5)]" />
+          <div key={it.name} data-item data-depth={it.depth} className={`absolute ${it.pos} ${it.size}`} style={{ rotate: `${it.rot}deg` }}>
+            <Cutout name={it.name} alt={it.alt} decorative={it.decorative} />
+            {it.tag ? <TagLabel /> : null}
           </div>
         ))}
         <div data-sbory className="absolute inset-x-[var(--gutter)] top-[calc(var(--header-h)+70px)] max-w-[30rem] md:top-auto md:bottom-[16%]">
@@ -268,10 +308,6 @@ export function FlightStory() {
             Сначала — <em className="marker">разговор</em>
           </h2>
           <p className="mt-4 max-w-[26rem] text-[16px] leading-[1.5] text-[var(--ink-soft)] md:text-[18px]">{TEXT.sbory.p}</p>
-          {/* На телефоне предметы мелкие — одна общая подпись вместо подписи на каждом. */}
-          <p className="mt-3 w-fit rounded-[3px] bg-[var(--white)] px-2.5 py-1.5 text-[11.5px] leading-[1.35] md:hidden">
-            <b className="font-semibold">Атмосферные кадры</b> — генерация Higgsfield: паспорт, очки, платок
-          </p>
         </div>
         <div data-pass className="absolute bottom-[19%] left-[calc(50%-min(44vw,250px))] md:bottom-auto md:left-auto md:right-[9vw] md:top-[38%]">
           <BoardingPass />
@@ -279,21 +315,52 @@ export function FlightStory() {
 
         {/* Иллюминатор → небо и облака → побережье → терраса */}
         <div data-window className="absolute inset-0 bg-gradient-to-b from-[#86b9e2] via-[var(--sky)] to-[#eef5fb]" style={{ clipPath: "inset(50% 50% 50% 50% round 150px)" }}>
-          {near ? <CloudFlight active={inView && scene <= 1} /> : null}
-          <Placeholder
-            tone="sea"
+          {/* Постер «вид из иллюминатора»: виден в окне, пока растёт маска; когда окно раскрыто
+              на весь экран, растворяется и дальше летим сквозь 3D-облака (CloudFlight). */}
+          <Photo
+            id="story-window"
+            mobileId="story-window-m"
+            alt="Атмосферный кадр: крыло самолёта над облаками утром"
+            sizes="100vw"
+            pos="38% 60%"
+            posMobile="40% 72%"
             reveal="none"
-            label="Эгейское побережье сверху: бирюзовая вода, светлые камни, линия берега"
+            className="absolute inset-0"
+            data={{ "data-window-poster": "" }}
+          />
+          {near ? <CloudFlight active={inView && scene <= 1} /> : null}
+          {/* Видео позже: петля story-coast-loop.mp4 (только ПК) — <video muted playsInline loop preload="none">
+              внутри [data-photo-in] этого кадра, постер — этот же кадр; играть, только пока сцена на экране. */}
+          <Photo
+            id="story-coast"
+            mobileId="story-coast-m"
+            alt="Атмосферный кадр: Эгейское побережье сверху"
+            sizes="100vw"
+            pos="50% 50%"
+            posMobile="55% 60%"
+            reveal="none"
             className="invisible absolute inset-0"
             data={{ "data-sea": "" }}
           />
-          <Placeholder
-            tone="terrace"
+          {/* Видео позже: петля story-terrace-loop.mp4 (только ПК) — так же внутри [data-photo-in], постер — этот кадр. */}
+          <Photo
+            id="story-terrace"
+            mobileId="story-terrace-m"
+            alt="Атмосферный кадр: терраса с видом на море вечером"
+            sizes="100vw"
+            pos="50% 70%"
+            posMobile="62% 50%"
             reveal="none"
-            label="терраса отеля: каменный парапет, море до горизонта, тёплый вечерний свет"
             className="absolute inset-0 [clip-path:inset(100%_0_0_0)]"
             data={{ "data-terrace": "" }}
-          />
+          >
+            {/* Светлая дымка только за заголовком и кнопкой (слева, по высоте текста): на ПК линия горизонта
+                проходит на уровне строк, и тёмное море иначе съедает контраст. Остальной кадр не тронут. */}
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,transparent_12%,rgb(246_243_236/0.62)_38%,rgb(246_243_236/0.5)_62%,transparent_80%)] [mask-image:linear-gradient(90deg,#000_35%,transparent_80%)] max-md:bg-[linear-gradient(180deg,transparent_15%,rgb(246_243_236/0.55)_32%,rgb(246_243_236/0.4)_48%,transparent_62%)] max-md:[mask-image:none]"
+            />
+          </Photo>
         </div>
         <div aria-hidden data-bezel className="pointer-events-none absolute left-1/2 top-1/2 h-[66svh] w-[86vw] -translate-x-1/2 -translate-y-1/2 rounded-[170px] border-[14px] border-[var(--white)] opacity-0 shadow-[0_0_0_1px_rgb(19_41_75/0.12)] md:h-[400px] md:w-[300px] md:rounded-[150px]" />
         <div aria-hidden data-whiteout className="pointer-events-none absolute inset-0 bg-[var(--white)] opacity-0" />

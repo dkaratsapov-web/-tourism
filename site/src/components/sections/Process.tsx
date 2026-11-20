@@ -6,14 +6,16 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useReducedMotion } from "@/lib/useReducedMotion";
 import { Lines } from "@/components/ui/Type";
 import { Stamp } from "@/components/ui/Stamp";
+import { Photo, Texture } from "@/components/ui/Media";
 
 gsap.registerPlugin(ScrollTrigger);
 
+/** У каждого шага — небольшой атмосферный натюрморт Higgsfield (без сроков, экранов и обещаний). */
 const STEPS = [
-  { n: "01", title: "Разговор и пожелания", text: "Даты, кто едет, что важно в отдыхе. Начинаем с вопросов, а не с каталога." },
-  { n: "02", title: "Подбор вариантов", text: "Предлагаем несколько вариантов и объясняем, чем они отличаются." },
-  { n: "03", title: "Бронирование и документы", text: "Согласовываем выбранный вариант и оформляем поездку." },
-  { n: "04", title: "Связь во время поездки", text: "Остаёмся на связи до возвращения домой. Формат связи — уточнить." },
+  { n: "01", title: "Разговор и пожелания", text: "Даты, кто едет, что важно в отдыхе. Начинаем с вопросов, а не с каталога.", img: "step-talk", alt: "Атмосферный кадр: две чашки кофе на столе" },
+  { n: "02", title: "Подбор вариантов", text: "Предлагаем несколько вариантов и объясняем, чем они отличаются.", img: "step-options", alt: "Атмосферный кадр: ключ, полотенце и ветка оливы" },
+  { n: "03", title: "Бронирование и документы", text: "Согласовываем выбранный вариант и оформляем поездку.", img: "step-documents", alt: "Атмосферный кадр: папка для документов в поездку" },
+  { n: "04", title: "Связь во время поездки", text: "Остаёмся на связи до возвращения домой. Формат связи — уточнить.", img: "step-onway", alt: "Атмосферный кадр: телефон и стакан чая на террасе" },
 ];
 
 /**
@@ -42,7 +44,9 @@ export function Process() {
   }, [reduced]);
 
   return (
-    <section id="kak-rabotaem" ref={root} aria-labelledby="process-title" className="relative bg-[var(--sky)] px-[var(--gutter)] py-20 md:py-32">
+    <section id="kak-rabotaem" ref={root} aria-labelledby="process-title" className="relative isolate overflow-hidden bg-[var(--sky)] px-[var(--gutter)] py-20 md:py-32">
+      {/* Фон — штукатурка с тенью листьев; multiply оставляет на небесно-голубом только тени. */}
+      <Texture id="tex-plaster-shadow" mobileId="tex-plaster-shadow-m" className="opacity-30 mix-blend-multiply" pos="100% 0%" posMobile="50% 0%" />
       <div className="mx-auto grid max-w-[1320px] gap-10 md:grid-cols-12 md:gap-8">
         <div className="md:col-span-4">
           <div className="md:sticky md:top-[calc(var(--header-h)+40px)]">
@@ -57,7 +61,7 @@ export function Process() {
                 "поездку",
               ]}
             />
-            <p className="mt-5 max-w-[22rem] text-[16px] leading-[1.55] text-[var(--ink)]/80">Четыре шага — четыре талона. Шаги черновые, сверить с реальным процессом.</p>
+            <p className="mt-5 max-w-[22rem] text-[16px] leading-[1.55] text-[var(--ink)]">Четыре шага — четыре талона. Шаги черновые, сверить с реальным процессом.</p>
             <Stamp kind="bjv" tone="ink" rotate={-7} className="mt-8 hidden w-40 md:block" />
           </div>
         </div>
@@ -71,13 +75,20 @@ export function Process() {
               style={{ top: `calc(var(--header-h) + 20px + ${i * 14}px)` }}
             >
               <article data-card className="relative grid origin-top overflow-hidden rounded-[18px] bg-[var(--white)] shadow-[0_24px_50px_-30px_rgb(19_41_75/0.5)] md:grid-cols-[1fr_auto_200px]">
-                <div className="p-6 md:p-9">
-                  <div className="flex items-center justify-between">
+                <div className="flex gap-5 p-6 md:gap-8 md:p-9">
+                  <div className="min-w-0 flex-1">
                     <span className="label text-[var(--aegean)]">Посадочный талон · шаг {s.n} из 04</span>
-                    <span className="label hidden text-[var(--ink-soft)] md:inline">Fashion Tours</span>
+                    <h3 className="display mt-6 text-[clamp(2rem,3.6vw,3.4rem)]">{s.title}</h3>
+                    <p className="mt-3 max-w-[30rem] text-[16px] leading-[1.55] text-[var(--ink-soft)] md:text-[17px]">{s.text}</p>
                   </div>
-                  <h3 className="display mt-6 text-[clamp(2rem,3.6vw,3.4rem)]">{s.title}</h3>
-                  <p className="mt-3 max-w-[30rem] text-[16px] leading-[1.55] text-[var(--ink-soft)] md:text-[17px]">{s.text}</p>
+                  {/* Снимок, приколотый к талону. */}
+                  <Photo
+                    id={s.img}
+                    alt={s.alt}
+                    sizes="(min-width: 768px) 132px, 76px"
+                    reveal="photo-center"
+                    className="mt-1 aspect-square w-[76px] shrink-0 rotate-[3deg] self-start border-[4px] border-[var(--white)] shadow-[0_12px_22px_-12px_rgb(19_41_75/0.55)] md:w-[132px] md:border-[5px]"
+                  />
                 </div>
                 <div className="perf-h mx-0 [--notch:var(--sky)] md:hidden" />
                 <div className="perf-v hidden [--notch:var(--sky)] md:block" />

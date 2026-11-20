@@ -461,51 +461,14 @@ select {
   }
 }
 
-/* ---------- Атмосферные плейсхолдеры: оформленные градиенты палитры ---------- */
+/* ---------- Вырезанные предметы Higgsfield: одна общая тень, свет слева сверху ---------- */
 
-.tone-sea {
-  background:
-    radial-gradient(60% 45% at 78% 18%, rgb(255 255 255 / 0.35), transparent 70%),
-    linear-gradient(118deg, transparent 58%, #cfc2ae 58.4%, #e9e1d3 66%, var(--paper) 100%),
-    linear-gradient(160deg, #1f5675 0%, var(--aegean) 30%, #4f97b5 55%, var(--sky) 100%);
+.cutout {
+  filter: drop-shadow(10px 16px 14px rgb(19 41 75 / 0.26));
 }
-.tone-terrace {
-  background:
-    radial-gradient(circle at 74% 44%, #fff7ea 0 3.2%, rgb(255 247 234 / 0.5) 3.6%, transparent 9%),
-    linear-gradient(180deg, var(--sky) 0%, #d8e3ea 26%, #efdccb 44%, #f3d6bf 49.6%, #3c7c9a 50%, var(--aegean) 62%, #245a76 74%, var(--tuff) 74.3%, #bfb099 100%);
-}
-.tone-cappadocia {
-  background:
-    radial-gradient(circle at 28% 26%, var(--brick) 0 3.4%, transparent 3.8%),
-    radial-gradient(circle at 64% 16%, var(--paper) 0 2.3%, transparent 2.7%),
-    radial-gradient(circle at 80% 34%, #c98a63 0 1.8%, transparent 2.2%),
-    radial-gradient(40% 30% at 22% 86%, #b6a387 98%, transparent 100%),
-    radial-gradient(34% 36% at 70% 92%, #c4b39a 98%, transparent 100%),
-    linear-gradient(180deg, var(--sky) 0%, #e9e3d8 52%, var(--tuff) 52.3%, #bcab91 100%);
-}
-.tone-istanbul {
-  background:
-    radial-gradient(14% 10% at 38% 70%, var(--ink) 97%, transparent 100%),
-    radial-gradient(9% 7% at 52% 72%, var(--ink) 97%, transparent 100%),
-    linear-gradient(90deg, transparent 31.4%, var(--ink) 31.4% 32.2%, transparent 32.2% 60%, var(--ink) 60% 60.7%, transparent 60.7%),
-    linear-gradient(180deg, #e8b9a0 0%, #c9b8c4 30%, var(--sky) 58%, var(--ink) 74%, var(--ink) 100%);
-}
-.tone-kids {
-  background:
-    radial-gradient(circle at 70% 30%, #fff7ea 0 7%, transparent 7.5%),
-    radial-gradient(70% 40% at 50% 100%, #efe4d1 98%, transparent 100%),
-    linear-gradient(180deg, var(--sky) 0%, #d3e6f3 50%, #6aa6c2 50.3%, var(--aegean) 100%);
-}
-.tone-couple {
-  background:
-    radial-gradient(circle at 50% 58%, #fbe6cf 0 6%, transparent 6.5%),
-    linear-gradient(180deg, #2a3f63 0%, #6d6f8b 34%, #d9a58b 56%, #3e7896 56.3%, var(--ink) 100%);
-}
-.tone-route {
-  background:
-    radial-gradient(40% 30% at 20% 30%, rgb(255 255 255 / 0.5), transparent 70%),
-    linear-gradient(135deg, var(--tuff) 0%, #e8dfcf 40%, var(--sky) 70%, var(--aegean) 100%);
-}
+
+/* ---------- Плейсхолдеры реальных материалов Натальи (портрет, видеообзоры) ---------- */
+
 .tone-portrait {
   background:
     radial-gradient(15% 11.5% at 50% 34%, #d9cfbf 97%, transparent 100%),
@@ -523,22 +486,6 @@ select {
 }
 .tone-hotel-4 {
   background: linear-gradient(180deg, var(--paper) 0 30%, var(--sky) 30% 62%, #4f97b5 62% 100%);
-}
-.tone-passport {
-  background: radial-gradient(circle at 50% 42%, transparent 0 15%, rgb(207 194 174 / 0.7) 15.5% 17%, transparent 17.5%), linear-gradient(160deg, #1c3863, var(--ink));
-}
-.tone-glasses {
-  background:
-    radial-gradient(circle at 32% 50%, var(--ink) 0 14%, transparent 14.6%),
-    radial-gradient(circle at 68% 50%, var(--ink) 0 14%, transparent 14.6%),
-    linear-gradient(180deg, transparent 47%, var(--ink) 47% 51%, transparent 51%),
-    var(--white);
-}
-.tone-scarf {
-  background: repeating-linear-gradient(135deg, var(--aegean) 0 14px, var(--paper) 14px 22px, var(--brick) 22px 28px, var(--paper) 28px 36px);
-}
-.tone-hat {
-  background: radial-gradient(circle at 50% 50%, #e7dccb 0 26%, var(--ink) 26.5% 30%, #d8cab3 30.5% 46%, transparent 46.5%), var(--white);
 }
 
 }

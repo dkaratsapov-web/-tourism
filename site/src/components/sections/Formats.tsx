@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useReducedMotion } from "@/lib/useReducedMotion";
-import { Placeholder, type Tone } from "@/components/ui/Placeholder";
+import { Cutout, Photo, Picture, Texture } from "@/components/ui/Media";
 import { SplitFlap } from "@/components/ui/SplitFlap";
 import { Stamp } from "@/components/ui/Stamp";
 import { Lines } from "@/components/ui/Type";
@@ -21,7 +21,9 @@ export const DEST_EVENT = "ft:destination";
  */
 export function DepartureBoard() {
   return (
-    <section id="formaty" aria-labelledby="board-title" className="relative bg-[var(--ink)] px-[var(--gutter)] py-20 text-[var(--paper)] md:py-28">
+    <section id="formaty" aria-labelledby="board-title" className="relative isolate overflow-hidden bg-[var(--ink)] px-[var(--gutter)] py-20 text-[var(--paper)] md:py-28">
+      {/* Фон табло — вода сверху, приглушённая до тона чернил и уходящая вниз, чтобы не спорить со строками. */}
+      <Texture id="tex-water" mobileId="tex-water-m" className="opacity-[0.22] mix-blend-luminosity [mask-image:linear-gradient(180deg,#000_0%,rgb(0_0_0/0.55)_45%,transparent_100%)]" />
       <div className="mx-auto max-w-[1320px]">
         <div className="flex flex-wrap items-end justify-between gap-6">
           <div>
@@ -83,12 +85,22 @@ export function DepartureBoard() {
   );
 }
 
-const FORMATS: { n: string; title: string; text: string; tone: Tone; label: string }[] = [
-  { n: "01", title: "Отель у моря", text: "Сравниваем отели по сервису, питанию, пляжу и атмосфере, а не только по звёздам.", tone: "sea", label: "отель на Эгейском побережье, утро" },
-  { n: "02", title: "Отдых с детьми", text: "Подбираем отель под возраст ребёнка: питание, пляж, анимация, дорога.", tone: "kids", label: "пологий пляж и детская панама на шезлонге" },
-  { n: "03", title: "Поездка вдвоём", text: "Атмосфера, локация и формат проживания под настроение пары.", tone: "couple", label: "вечерняя терраса на двоих, Бодрум" },
-  { n: "04", title: "Маршрут по стране", text: "Каппадокия, Стамбул и море — отели, перелёты и переезды в одной поездке.", tone: "cappadocia", label: "Каппадокия на рассвете, воздушные шары" },
+type Format = { n: string; title: string; text: string; id?: string; alt: string; pos?: string };
+
+/**
+ * Кадры форматов — атмосфера Higgsfield, не отели из подборки и не наши поездки.
+ * «Отдых с детьми» — натюрморт: детская панама на льне (о семье говорит вещь, а не ребёнок).
+ */
+const FORMATS: Format[] = [
+  // Видео позже: петля format-coast-loop.mp4 (ПК, при наведении или фокусе) — <video> внутри [data-photo-in], постер — этот кадр.
+  { n: "01", title: "Отель у моря", text: "Сравниваем отели по сервису, питанию, пляжу и атмосфере, а не только по звёздам.", id: "format-coast", alt: "Атмосферный кадр: побережье Бодрума", pos: "30% 50%" },
+  { n: "02", title: "Отдых с детьми", text: "Подбираем отель под возраст ребёнка: питание, пляж, анимация, дорога.", alt: "Атмосферный кадр: детская соломенная панама на льняной ткани" },
+  { n: "03", title: "Поездка вдвоём", text: "Атмосфера, локация и формат проживания под настроение пары.", id: "format-istanbul", alt: "Атмосферный кадр: Босфор утром", pos: "70% 50%" },
+  // Видео позже: format-cappadocia.mp4 (ПК, один раз при входе карточки в кадр, остаётся на последнем кадре) — так же, постер — этот кадр.
+  { n: "04", title: "Маршрут по стране", text: "Каппадокия, Стамбул и море — отели, перелёты и переезды в одной поездке.", id: "format-cappadocia", alt: "Атмосферный кадр: воздушные шары над Каппадокией", pos: "50% 40%" },
 ];
+
+const CARD_SIZES = "(min-width: 900px) min(36vw, 560px), calc(100vw - 2 * var(--gutter))";
 
 /**
  * Форматы «под кого собираем». На ПК — горизонтальная лента, которая едет при вертикальном скролле.
@@ -148,7 +160,33 @@ export function Formats() {
         <div ref={track} className="formats-track mt-10 flex flex-col gap-10 px-[var(--gutter)] min-[900px]:mt-12 min-[900px]:w-max min-[900px]:flex-row min-[900px]:gap-8">
           {FORMATS.map((f, i) => (
             <article key={f.n} className={`group flex flex-col min-[900px]:w-[min(36vw,560px)] ${i % 2 ? "min-[900px]:pt-16" : ""}`}>
-              <Placeholder tone={f.tone} label={f.label} reveal={i % 2 ? "photo-center" : "photo"} className="aspect-[4/3] w-full min-[900px]:aspect-[5/4] min-[900px]:max-h-[44svh]" />
+              <div className="relative">
+                {f.id ? (
+                  <Photo id={f.id} alt={f.alt} sizes={CARD_SIZES} pos={f.pos} reveal={i % 2 ? "photo-center" : "photo"} className="aspect-[4/3] w-full min-[900px]:aspect-[5/4] min-[900px]:max-h-[44svh]" />
+                ) : (
+                  <div data-reveal={i % 2 ? "photo-center" : "photo"} className="photo aspect-[4/3] w-full bg-[var(--paper)] min-[900px]:aspect-[5/4] min-[900px]:max-h-[44svh]">
+                    <div className="photo-mask">
+                      <div className="photo-in" data-photo-in="">
+                        <Picture id="tex-linen" alt="" decorative sizes={CARD_SIZES} className="absolute inset-0" />
+                        <div className="absolute left-1/2 top-1/2 w-[48%] -translate-x-1/2 -translate-y-1/2 rotate-[-8deg]">
+                          <Cutout name="pack-panama-560" alt={f.alt} />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                {f.n === "04" ? (
+                  // Врезка «дорога»: маршрут — это ещё и переезды между местами.
+                  <Photo
+                    id="format-route"
+                    alt="Атмосферный кадр: дорога через оливковые рощи у моря"
+                    sizes="(min-width: 900px) 15vw, 40vw"
+                    pos="70% 60%"
+                    reveal="photo-center"
+                    className="absolute! -bottom-5 -right-2 aspect-square w-[38%] border-[5px] border-[var(--white)] shadow-[0_18px_30px_-18px_rgb(19_41_75/0.55)] md:border-[6px]"
+                  />
+                ) : null}
+              </div>
               <div className="mt-5 flex items-baseline gap-4">
                 <span className="display text-[44px] italic text-[var(--brick)] md:text-[56px]">{f.n}</span>
                 <h3 className="display text-[34px] md:text-[42px]">{f.title}</h3>

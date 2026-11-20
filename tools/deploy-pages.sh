@@ -13,6 +13,8 @@ SRC_SHA="$(git -C "$ROOT" rev-parse --short HEAD)"
 cd "$ROOT/site"
 rm -rf out
 npm run build:pages
+# Тяжёлые исходники Higgsfield (PNG ~5 МБ) и служебные файлы на хостинг не нужны — сайт берёт webp.
+find out/media -maxdepth 1 \( -name '*.png' -o -name '_*' \) -delete 2>/dev/null || true
 
 TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT

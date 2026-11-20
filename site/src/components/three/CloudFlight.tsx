@@ -1,9 +1,10 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Suspense, useMemo, useRef, useState } from "react";
+import { Canvas, useFrame, useLoader } from "@react-three/fiber";
 import * as THREE from "three";
 import { storyProgress } from "@/components/story/progress";
+import { asset } from "@/lib/site";
 
 /** Часть истории, на которую приходится полёт (доли общего прогресса 0…1). */
 const FLIGHT_FROM = 0.18;
@@ -28,7 +29,27 @@ function usePuffTexture(soft: boolean) {
   }, [soft]);
 }
 
-type Puff = { x: number; y: number; z: number; s: number; o: number; c: THREE.Color };
+/**
+ * Атлас Higgsfield: 4 облака в сетке 2×2. Чёрный фон заранее переведён в альфу
+ * (tools/web/media_variants.py), поэтому работает обычное смешивание и туман, без кастомного шейдера.
+ * Один файл 1024², четыре текстуры-клона делят одну загрузку на GPU (общий Source), меняется только смещение UV.
+ */
+const ATLAS = "/media/w/tex-cloud-atlas-rgba-1024.webp";
+
+function useAtlasQuads() {
+  const atlas = useLoader(THREE.TextureLoader, asset(ATLAS));
+  return useMemo(() => {
+    return [0, 1, 2, 3].map((i) => {
+      const t = atlas.clone();
+      t.colorSpace = THREE.SRGBColorSpace;
+      t.repeat.set(0.5, 0.5);
+      t.offset.set((i % 2) * 0.5, i < 2 ? 0.5 : 0);
+      return t;
+    });
+  }, [atlas]);
+}
+
+type Puff = { x: number; y: number; z: number; s: number; o: number; c: THREE.Color; q: number };
 
 /** Детерминированный генератор, чтобы облака не «прыгали» между рендерами. */
 function seeded(seed: number) {
@@ -44,7 +65,7 @@ const LIGHT = new THREE.Color("#ffffff");
 const SHADE = new THREE.Color("#a9cdeb").lerp(new THREE.Color("#13294b"), 0.12);
 
 function Clouds({ count }: { count: number }) {
-  const tex = usePuffTexture(false);
+  const quads = useAtlasQuads();
   const soft = usePuffTexture(true);
   const group = useRef<THREE.Group>(null);
 
@@ -62,6 +83,8 @@ function Clouds({ count }: { count: number }) {
         s: wall ? 9 + rnd() * 8 : 4 + rnd() * 10,
         o: wall ? 0.75 : 0.3 + rnd() * 0.55,
         c: SHADE.clone().lerp(LIGHT, 0.45 + shade * 0.55),
+        // Каждое четвёртое облако — мягкая дымка (процедурная), остальные — облака из атласа.
+        q: i % 4 === 3 ? -1 : Math.floor(rnd() * 4),
       };
     });
   }, [count]);
@@ -82,8 +105,8 @@ function Clouds({ count }: { count: number }) {
   return (
     <group ref={group}>
       {puffs.map((p, i) => (
-        <sprite key={i} position={[p.x, p.y, p.z]} scale={[p.s, p.s * 0.6, 1]}>
-          <spriteMaterial map={i % 3 ? tex : soft} color={p.c} transparent opacity={p.o} depthWrite={false} />
+        <sprite key={i} position={[p.x, p.y, p.z]} scale={p.q < 0 ? [p.s, p.s * 0.6, 1] : [p.s, p.s * 0.72, 1]}>
+          <spriteMaterial map={p.q < 0 ? soft : quads[p.q]} color={p.c} transparent opacity={p.q < 0 ? p.o : Math.min(1, p.o + 0.2)} depthWrite={false} />
         </sprite>
       ))}
     </group>
@@ -120,7 +143,10 @@ export default function CloudFlight({ active }: { active: boolean }) {
     >
       <fog attach="fog" args={["#d9e8f5", 18, 90]} />
       <Sun />
-      <Clouds count={mobile ? 60 : 140} />
+      {/* Пока атлас грузится, облаков нет: под канвасом виден градиент неба. */}
+      <Suspense fallback={null}>
+        <Clouds count={mobile ? 60 : 140} />
+      </Suspense>
     </Canvas>
   );
 }
