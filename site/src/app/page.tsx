@@ -1,21 +1,41 @@
 import { SmoothScroll } from "@/components/motion/SmoothScroll";
+import { RevealObserver } from "@/components/motion/RevealObserver";
+import { Header } from "@/components/ui/Header";
 import { Hero } from "@/components/sections/Hero";
 import { FlightStory } from "@/components/story/FlightStory";
-import { Formats } from "@/components/sections/Formats";
-import { Natalia, Process, Reviews, Lead, Footer } from "@/components/sections/Content";
+import { Marquee } from "@/components/ui/Marquee";
+import { DepartureBoard, Formats } from "@/components/sections/Formats";
+import { Natalia } from "@/components/sections/Natalia";
+import { HotelReviews, Letters } from "@/components/sections/Reviews";
+import { Process } from "@/components/sections/Process";
+import { Lead } from "@/components/sections/Lead";
+import { Footer } from "@/components/sections/Footer";
 import { StickyCta } from "@/components/ui/StickyCta";
+
+const PLACES = ["Анталия", "Каппадокия", "Бодрум", "Стамбул", "Эгейское побережье"];
 
 export default function Home() {
   return (
     <>
       <SmoothScroll />
-      <main>
+      <RevealObserver />
+      <Header />
+      <main id="main">
         <Hero />
         <FlightStory />
+        <Marquee items={PLACES} className="display border-y border-[var(--ink)]/12 bg-[var(--paper)] py-5 text-[clamp(3.6rem,10vw,10rem)] leading-[1.05] md:py-8" />
+        <DepartureBoard />
         <Formats />
         <Natalia />
+        <HotelReviews />
         <Process />
-        <Reviews />
+        <Letters />
+        <Marquee
+          items={PLACES}
+          dir={-1}
+          starClass="text-[var(--ink)]"
+          className="display bg-[var(--sky)] py-3 text-[clamp(2.4rem,5vw,4.8rem)] leading-[1.1] md:py-4"
+        />
         <Lead />
       </main>
       <Footer />

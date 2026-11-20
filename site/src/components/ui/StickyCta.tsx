@@ -1,31 +1,42 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { LEAD_ID } from "@/lib/site";
 import { CtaButton } from "./CtaButton";
 
-/** Кнопка заявки, которая появляется после первого экрана и прячется у блока заявки. */
+/**
+ * Нижняя панель на телефоне: одна кнопка во всю ширину.
+ * Появляется, когда кнопка первого экрана ушла вверх, и прячется, когда в кадре форма заявки.
+ * На ПК кнопка всегда есть в шапке, поэтому панель не нужна.
+ */
 export function StickyCta() {
-  const [show, setShow] = useState(false);
+  const [pastHero, setPastHero] = useState(false);
+  const [atLead, setAtLead] = useState(false);
 
   useEffect(() => {
-    const lead = document.getElementById("lead");
-    const onScroll = () => {
-      const pastHero = window.scrollY > window.innerHeight * 0.8;
-      const atLead = lead ? lead.getBoundingClientRect().top < window.innerHeight * 0.6 : false;
-      setShow(pastHero && !atLead);
-    };
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    const heroCta = document.getElementById("hero-cta");
+    const lead = document.getElementById(LEAD_ID);
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        if (e.target === heroCta) setPastHero(!e.isIntersecting && e.boundingClientRect.top < 0);
+        if (e.target === lead) setAtLead(e.isIntersecting);
+      }
+    });
+    if (heroCta) io.observe(heroCta);
+    if (lead) io.observe(lead);
+    return () => io.disconnect();
   }, []);
 
+  const show = pastHero && !atLead;
   return (
     <div
-      className={`fixed bottom-5 right-5 z-50 transition-[opacity,transform] duration-500 ease-[cubic-bezier(.2,.7,.2,1)] md:bottom-8 md:right-8 ${
-        show ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-6 opacity-0"
+      className={`fixed inset-x-0 bottom-0 z-40 border-t border-[var(--ink)]/10 bg-[var(--paper)] px-4 pb-[calc(8px+env(safe-area-inset-bottom))] pt-2 transition-[transform,opacity] duration-300 ease-[var(--ease-expo)] md:hidden ${
+        show ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-full opacity-0"
       }`}
+      aria-hidden={!show}
+      inert={!show}
     >
-      <CtaButton className="shadow-[0_20px_40px_-15px_rgba(10,30,60,.5)]" />
+      <CtaButton className="w-full" magnetic={false} />
     </div>
   );
 }

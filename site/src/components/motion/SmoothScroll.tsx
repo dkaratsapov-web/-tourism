@@ -5,41 +5,44 @@ import Lenis from "lenis";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useReducedMotion } from "@/lib/useReducedMotion";
+import { scroller, scrollToId } from "@/lib/scroll";
 
 gsap.registerPlugin(ScrollTrigger);
 
 /**
  * Плавный скролл Lenis, синхронизированный с GSAP ScrollTrigger.
+ * Колесо не блокируется, snap нет; на телефоне палец двигает страницу нативно (syncTouch выключен).
  * При «уменьшить движение» остаётся обычный системный скролл.
  */
 export function SmoothScroll() {
   const reduced = useReducedMotion();
 
   useEffect(() => {
-    if (reduced) return;
+    // Якорные ссылки (#zayavka и т. п.) — с отступом под фиксированную шапку.
+    const onClick = (e: MouseEvent) => {
+      const a = (e.target as HTMLElement).closest('a[href^="#"]');
+      const id = a?.getAttribute("href")?.slice(1);
+      if (!id || !document.getElementById(id)) return;
+      e.preventDefault();
+      scrollToId(id);
+      history.replaceState(null, "", `#${id}`);
+    };
+    document.addEventListener("click", onClick);
 
-    const lenis = new Lenis({ lerp: 0.09, wheelMultiplier: 1, touchMultiplier: 1.2 });
+    if (reduced) return () => document.removeEventListener("click", onClick);
+
+    const lenis = new Lenis({ lerp: 0.1, smoothWheel: true, syncTouch: false });
+    scroller.lenis = lenis;
     lenis.on("scroll", ScrollTrigger.update);
     const tick = (time: number) => lenis.raf(time * 1000);
     gsap.ticker.add(tick);
     gsap.ticker.lagSmoothing(0);
 
-    // Якорные ссылки (#lead и т. п.) прокручиваем через Lenis, чтобы не было рывка.
-    const onClick = (e: MouseEvent) => {
-      const a = (e.target as HTMLElement).closest('a[href^="#"]');
-      const id = a?.getAttribute("href");
-      if (!id || id === "#") return;
-      const el = document.querySelector(id);
-      if (!el) return;
-      e.preventDefault();
-      lenis.scrollTo(el as HTMLElement, { offset: -16 });
-    };
-    document.addEventListener("click", onClick);
-
     return () => {
       document.removeEventListener("click", onClick);
       gsap.ticker.remove(tick);
       lenis.destroy();
+      scroller.lenis = null;
     };
   }, [reduced]);
 
