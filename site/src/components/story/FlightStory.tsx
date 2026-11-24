@@ -84,8 +84,8 @@ function BoardingPass({ withStamp = true }: { withStamp?: boolean }) {
       <div className="perf-h mx-0 [--notch:var(--paper)]" />
       <dl className="grid grid-cols-3 gap-3 px-5 py-4 md:px-7">
         {[
-          ["Пассажиры", "Вы и ваши"],
-          ["Класс", "Ваш выбор"],
+          ["Пассажиры", "2 взрослых, 1 ребёнок"],
+          ["Класс", "Эконом"],
           ["Место", "У окна"],
         ].map(([k, v]) => (
           <div key={k}>
