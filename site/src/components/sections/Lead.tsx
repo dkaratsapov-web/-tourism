@@ -1,13 +1,12 @@
 "use client";
 
-import { useEffect, useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { useReducedMotion } from "@/lib/useReducedMotion";
-import { DESTINATIONS, LEAD_ID, LEAD_PREFILL_EVENT, TELEGRAM_URL, telegramLink, type LeadPrefill } from "@/lib/site";
+import { DESTINATIONS, LEAD_DIALOG_EVENT, LEAD_DIALOG_ID, LEAD_ID, LEAD_PREFILL_EVENT, TELEGRAM_URL, telegramLink, type LeadPrefill, type TripDestination } from "@/lib/site";
 import { Chars } from "@/components/ui/Type";
 import { Stamp } from "@/components/ui/Stamp";
 import { Picture, Texture } from "@/components/ui/Media";
-import { DEST_EVENT } from "./Formats";
 
 const CHIPS = [...DESTINATIONS.map((d) => d.chip), "Маршрут по стране", "Пока не знаю"];
 
@@ -45,7 +44,7 @@ function buildMessage(v: { name: string; contact: string; when: string; who: str
  * Пока сайт на GitHub Pages (без сервера), отправка собирает текст и открывает Telegram.
  * Сроки ответа не обещаем. Без JavaScript форма уходит обычным GET-переходом на ссылку Telegram.
  */
-export function Lead() {
+export function Lead({ popup }: { popup?: { destination?: TripDestination } }) {
   const reduced = useReducedMotion();
   const uid = useId();
   const [name, setName] = useState("");
@@ -53,18 +52,14 @@ export function Lead() {
   const [when, setWhen] = useState("");
   const [who, setWho] = useState("");
   const [comment, setComment] = useState("");
-  const [dest, setDest] = useState<string[]>([]);
+  const [dest, setDest] = useState<string[]>(() => popup?.destination ? [popup.destination.chip] : []);
   const [consent, setConsent] = useState(false);
   const [errors, setErrors] = useState<Errors>({});
   const [sent, setSent] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
-  // Выбор направления на табло вылетов сразу отмечает чип в форме.
   useEffect(() => {
-    const on = (e: Event) => {
-      const chip = (e as CustomEvent<string>).detail;
-      setDest((d) => (d.includes(chip) ? d : [...d, chip]));
-    };
+    if (popup) return;
     const prefill = (e: Event) => {
       const { name, contact } = (e as CustomEvent<LeadPrefill>).detail;
       setName((value) => name || value);
@@ -73,13 +68,9 @@ export function Lead() {
       setSent(null);
       setCopied(false);
     };
-    window.addEventListener(DEST_EVENT, on);
     window.addEventListener(LEAD_PREFILL_EVENT, prefill);
-    return () => {
-      window.removeEventListener(DEST_EVENT, on);
-      window.removeEventListener(LEAD_PREFILL_EVENT, prefill);
-    };
-  }, []);
+    return () => window.removeEventListener(LEAD_PREFILL_EVENT, prefill);
+  }, [popup]);
 
   const toggle = (c: string) => setDest((d) => (d.includes(c) ? d.filter((x) => x !== c) : [...d, c]));
 
@@ -116,28 +107,34 @@ export function Lead() {
       </p>
     ) : null;
 
+  const headingId = popup ? `${LEAD_DIALOG_ID}-title` : "lead-title";
+
   return (
-    <section id={LEAD_ID} aria-labelledby="lead-title" className="relative isolate overflow-hidden bg-[var(--tuff)] px-[var(--gutter)] py-20 md:py-28">
+    <section id={popup ? undefined : LEAD_ID} aria-labelledby={headingId} className={`relative isolate overflow-hidden ${popup ? "bg-[var(--paper)] p-4 pt-6 sm:p-7" : "bg-[var(--tuff)] px-[var(--gutter)] py-20 md:py-28"}`}>
       {/* Фон — туф Каппадокии. */}
       <Texture id="tex-tuff" className="opacity-45 mix-blend-multiply" />
       <div className="mx-auto max-w-[1240px]">
         <div className="flex flex-wrap items-end justify-between gap-6">
           <div>
-            <p className="label text-[var(--ink)]">Рубрика · Заявка</p>
-            <Chars id="lead-title" text="Обсудим вашу поездку?" italicFrom={1} className="display mt-4 text-[clamp(2.8rem,7vw,7.4rem)]" />
+            <p className="label text-[var(--ink)]">{popup?.destination ? `${popup.destination.code} · ${popup.destination.city}` : "Рубрика · Заявка"}</p>
+            {popup ? (
+              <h2 id={headingId} className="display mt-3 pr-8 text-[clamp(2.15rem,5vw,3.4rem)]">Обсудим <em>поездку?</em></h2>
+            ) : (
+              <Chars id={headingId} text="Обсудим вашу поездку?" italicFrom={1} className="display mt-4 text-[clamp(2.8rem,7vw,7.4rem)]" />
+            )}
           </div>
-          <p className="max-w-[26rem] text-[16px] leading-[1.55] text-[var(--ink)]">
+          {!popup && <p className="max-w-[26rem] text-[16px] leading-[1.55] text-[var(--ink)]">
             Заполните талон — откроется Telegram с готовым текстом заявки. Наталья ответит там же. Можно сразу{" "}
             <a href={TELEGRAM_URL} target="_blank" rel="noopener" className="font-medium underline decoration-1 underline-offset-4">
               написать в Telegram
             </a>
             .
-          </p>
+          </p>}
         </div>
 
-        <div data-reveal="fade" className="relative mt-10 md:mt-14">
-          <Stamp kind="tag" rotate={12} className="absolute -right-5 top-[30%] z-10 hidden w-20 lg:block" id="st-lead-tag" />
-          <div className="relative isolate grid overflow-visible rounded-[18px] bg-[var(--white)] shadow-[0_40px_70px_-40px_rgb(19_41_75/0.55)] md:grid-cols-[1fr_auto_300px]">
+        <div data-reveal={popup ? undefined : "fade"} className={`relative ${popup ? "mt-5" : "mt-10 md:mt-14"}`}>
+          {!popup && <Stamp kind="tag" rotate={12} className="absolute -right-5 top-[30%] z-10 hidden w-20 lg:block" id="st-lead-tag" />}
+          <div className={`relative isolate grid overflow-visible rounded-[18px] bg-[var(--white)] shadow-[0_40px_70px_-40px_rgb(19_41_75/0.55)] ${popup ? "" : "md:grid-cols-[1fr_auto_300px]"}`}>
             {/* Талон на льне: фактура только в полях талона, поля ввода остаются белыми. */}
             <Picture id="tex-linen" alt="" decorative sizes="(min-width: 768px) 1240px, 100vw" className="pointer-events-none absolute inset-0 -z-10 overflow-hidden rounded-[18px] opacity-80 mix-blend-multiply" />
             {/* Основная часть талона — поля формы. */}
@@ -148,11 +145,11 @@ export function Lead() {
               aria-label="Заявка на подбор поездки"
               className="min-w-0"
             >
-              <div className="flex items-center justify-between rounded-t-[18px] bg-[var(--ink)] px-6 py-3.5 text-[var(--paper)] md:rounded-tr-none md:px-9">
+              <div className={`flex items-center justify-between rounded-t-[18px] bg-[var(--ink)] px-5 py-3.5 text-[var(--paper)] ${popup ? "" : "md:rounded-tr-none md:px-9"}`}>
                 <span className="label">Fashion Tours · посадочный талон</span>
                 <span className="label hidden text-[var(--sky)] sm:inline">Рейс: Турция</span>
               </div>
-              <div className="grid gap-5 p-6 md:grid-cols-2 md:gap-6 md:p-9">
+              <div className={`grid gap-5 md:grid-cols-2 ${popup ? "p-4 sm:p-6" : "p-6 md:gap-6 md:p-9"}`}>
                 <div>
                   <label htmlFor={`${uid}-name`} className="label text-[var(--ink-soft)]">
                     Как к вам обращаться *
@@ -251,11 +248,13 @@ export function Lead() {
               </div>
             </form>
 
-            <div className="perf-h [--notch:var(--tuff)] md:hidden" />
-            <div className="perf-v hidden [--notch:var(--tuff)] md:block" />
+            {!popup && <>
+              <div className="perf-h [--notch:var(--tuff)] md:hidden" />
+              <div className="perf-v hidden [--notch:var(--tuff)] md:block" />
+            </>}
 
             {/* Корешок: повторяет введённое; после отправки отрывается по перфорации. */}
-            <div className="relative min-h-[260px]">
+            {(!popup || sent) && <div className="relative min-h-[260px]">
               <AnimatePresence mode="wait" initial={false}>
                 {!sent ? (
                   <motion.div
@@ -315,10 +314,43 @@ export function Lead() {
                   </motion.div>
                 )}
               </AnimatePresence>
-            </div>
+            </div>}
           </div>
         </div>
       </div>
     </section>
+  );
+}
+
+export function LeadDialog() {
+  const dialog = useRef<HTMLDialogElement>(null);
+  const [popup, setPopup] = useState<{ destination?: TripDestination } | null>(null);
+
+  useEffect(() => {
+    const show = (event: Event) => {
+      const destination = (event as CustomEvent<TripDestination | undefined>).detail;
+      setPopup({ destination });
+      const el = dialog.current;
+      if (el && !el.open) el.showModal();
+    };
+    window.addEventListener(LEAD_DIALOG_EVENT, show);
+    return () => window.removeEventListener(LEAD_DIALOG_EVENT, show);
+  }, []);
+
+  return (
+    <dialog
+      ref={dialog}
+      id={LEAD_DIALOG_ID}
+      aria-labelledby={`${LEAD_DIALOG_ID}-title`}
+      data-lenis-prevent
+      onClose={() => setPopup(null)}
+      onClick={(event) => { if (event.target === event.currentTarget) event.currentTarget.close(); }}
+      className="m-auto max-h-[calc(100dvh-2rem)] w-[min(calc(100%-2rem),44rem)] max-w-none overflow-y-auto overscroll-contain rounded-[24px] bg-[var(--paper)] text-[var(--ink)] shadow-[0_22px_90px_rgb(19_41_75/0.38)] backdrop:bg-[var(--ink)]/65 backdrop:backdrop-blur-[4px]"
+    >
+      <div className="pointer-events-none sticky top-0 z-20 -mb-14 flex h-14 justify-end p-2 sm:p-3">
+        <button type="button" aria-label="Закрыть заявку" onClick={() => dialog.current?.close()} className="pointer-events-auto grid size-11 cursor-pointer place-items-center rounded-full border border-[var(--ink)]/15 bg-[var(--paper)] text-[25px] hover:bg-[var(--white)]">×</button>
+      </div>
+      {popup && <Lead popup={popup} />}
+    </dialog>
   );
 }

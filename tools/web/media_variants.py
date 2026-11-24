@@ -26,12 +26,12 @@ MANIFEST = ROOT / "site/src/lib/media-manifest.ts"
 # id → (ширины, качество)
 PLAN = {
     "hero-aegean": ([640, 960, 1536], 78),
-    "story-coast": ([1280, 1600], 62),
+    "story-coast": ([1120, 1672], 87),
     "story-terrace": ([1120, 1672], 88),
     "story-window": ([1280, 1920], 74),
     "story-wing": ([800, 1280, 1672], 88),
     "story-flatlay": ([1280], 76),
-    "story-coast-m": ([720, 1080], 64),
+    "story-coast-m": ([480, 600], 87),
     "story-terrace-m": ([480, 600], 88),
     "story-window-m": ([720, 1080], 74),
     "story-flatlay-m": ([720], 76),

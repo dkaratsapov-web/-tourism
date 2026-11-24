@@ -8,16 +8,13 @@ import { Photo, Texture } from "@/components/ui/Media";
 import { SplitFlap } from "@/components/ui/SplitFlap";
 import { Stamp } from "@/components/ui/Stamp";
 import { Lines } from "@/components/ui/Type";
-import { DESTINATIONS, LEAD_ID } from "@/lib/site";
+import { DESTINATIONS, LEAD_DIALOG_ID, openLeadDialog } from "@/lib/site";
 
 gsap.registerPlugin(ScrollTrigger);
 
-/** Событие для формы: какое направление выбрали на табло. */
-export const DEST_EVENT = "ft:destination";
-
 /**
  * Табло вылетов: направления Турции. Названия перещёлкиваются split-flap один раз при входе.
- * Каждая строка — ссылка к заявке, направление сразу отмечается в форме.
+ * Каждая строка открывает форму с выбранным направлением.
  */
 export function DepartureBoard() {
   return (
@@ -40,7 +37,7 @@ export function DepartureBoard() {
             />
           </div>
           <p className="max-w-[24rem] text-[16px] leading-[1.5] text-[var(--paper)]/75">
-            Отели на побережье и маршруты по стране. Выберите направление — оно сразу отметится в заявке.
+            Отели на побережье и маршруты по стране. Выберите направление, чтобы обсудить поездку.
           </p>
         </div>
 
@@ -54,10 +51,13 @@ export function DepartureBoard() {
           <ul aria-label="Направления">
           {DESTINATIONS.map((d) => (
             <li key={d.code}>
-            <a
-              href={`#${LEAD_ID}`}
-              onClick={() => window.dispatchEvent(new CustomEvent(DEST_EVENT, { detail: d.chip }))}
-              className="group grid grid-cols-[64px_1fr] items-center gap-x-4 gap-y-2 border-b border-[var(--paper)]/20 py-5 transition-colors duration-200 hover:bg-[var(--paper)]/[0.04] md:grid-cols-[110px_1fr_1fr_170px] md:gap-6 md:py-6"
+            <button
+              type="button"
+              aria-haspopup="dialog"
+              aria-controls={LEAD_DIALOG_ID}
+              aria-label={`Обсудить поездку: ${d.city}`}
+              onClick={() => openLeadDialog(d)}
+              className="group grid w-full cursor-pointer grid-cols-[64px_1fr] items-center gap-x-4 gap-y-2 border-b border-[var(--paper)]/20 py-5 text-left transition-colors duration-200 hover:bg-[var(--paper)]/[0.04] md:grid-cols-[110px_1fr_1fr_170px] md:gap-6 md:py-6"
             >
               <span className="label text-[18px] tracking-[0.18em] text-[var(--sky)] md:text-[22px]">
                 {d.code}
@@ -74,7 +74,7 @@ export function DepartureBoard() {
                   <path d="M2 8h11M9 4l4 4-4 4" />
                 </svg>
               </span>
-            </a>
+            </button>
             </li>
           ))}
           </ul>

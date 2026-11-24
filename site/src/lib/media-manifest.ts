@@ -13,13 +13,13 @@ export const MEDIA = {
     1536,
     1024
   ],
-  "story-coast-1280": [
-    1280,
-    724
+  "story-coast-1120": [
+    1120,
+    630
   ],
-  "story-coast-1600": [
-    1600,
-    905
+  "story-coast-1672": [
+    1672,
+    941
   ],
   "story-terrace-1120": [
     1120,
@@ -41,13 +41,13 @@ export const MEDIA = {
     1280,
     724
   ],
-  "story-coast-m-720": [
-    720,
-    1280
+  "story-coast-m-480": [
+    480,
+    753
   ],
-  "story-coast-m-1080": [
-    1080,
-    1920
+  "story-coast-m-600": [
+    600,
+    941
   ],
   "story-terrace-m-480": [
     480,

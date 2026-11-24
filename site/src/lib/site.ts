@@ -19,6 +19,8 @@ export const LEAD_ID = "zayavka";
 /** Перенос полей из короткой формы в основной посадочный талон. */
 export const LEAD_PREFILL_EVENT = "ft:lead-prefill";
 export type LeadPrefill = { name: string; contact: string };
+export const LEAD_DIALOG_ID = "trip-dialog";
+export const LEAD_DIALOG_EVENT = "ft:open-lead-dialog";
 
 /** Пункты основного меню. */
 export const NAV = [
@@ -34,6 +36,12 @@ export const DESTINATIONS = [
   { code: "NAV", city: "КАППАДОКИЯ", chip: "Каппадокия", text: "Маршрут по стране" },
   { code: "IST", city: "СТАМБУЛ", chip: "Стамбул", text: "Город и сочетание с морем" },
 ] as const;
+
+export type TripDestination = (typeof DESTINATIONS)[number];
+
+export function openLeadDialog(destination?: TripDestination) {
+  window.dispatchEvent(new CustomEvent(LEAD_DIALOG_EVENT, { detail: destination }));
+}
 
 /** Путь к файлу из public/ с учётом basePath GitHub Pages. */
 export const asset = (path: string) => `${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}${path}`;

@@ -58,6 +58,10 @@ html {
   scroll-padding-top: var(--header-h);
 }
 
+html:has(#trip-dialog[open]) {
+  overflow-y: hidden;
+}
+
 body {
   background: var(--paper);
   color: var(--ink);

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type MouseEvent } from "react";
-import { NAV, LEAD_ID } from "@/lib/site";
+import { NAV, LEAD_ID, openLeadDialog } from "@/lib/site";
 import { scroller, scrollToId } from "@/lib/scroll";
 import { CtaButton } from "./CtaButton";
 
@@ -101,7 +101,7 @@ export function Header() {
         </nav>
 
         <div className="hidden justify-self-end md:block">
-          <CtaButton size="sm" magnetic={false} />
+          <CtaButton size="sm" magnetic={false} onOpenDialog={() => openLeadDialog()} />
         </div>
 
         <button
@@ -138,7 +138,10 @@ export function Header() {
           ))}
         </ul>
         <div className="mt-5">
-          <CtaButton className="w-full" magnetic={false} />
+          <CtaButton className="w-full" magnetic={false} onOpenDialog={() => {
+            setOpen(false);
+            requestAnimationFrame(() => openLeadDialog());
+          }} />
         </div>
       </div>
     </header>

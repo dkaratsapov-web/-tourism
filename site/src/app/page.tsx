@@ -8,7 +8,7 @@ import { DepartureBoard, Formats } from "@/components/sections/Formats";
 import { Natalia } from "@/components/sections/Natalia";
 import { HotelReviews, Letters } from "@/components/sections/Reviews";
 import { Process } from "@/components/sections/Process";
-import { Lead } from "@/components/sections/Lead";
+import { Lead, LeadDialog } from "@/components/sections/Lead";
 import { Footer } from "@/components/sections/Footer";
 import { StickyCta } from "@/components/ui/StickyCta";
 
@@ -40,6 +40,7 @@ export default function Home() {
       </main>
       <Footer />
       <StickyCta />
+      <LeadDialog />
     </>
   );
 }
