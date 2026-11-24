@@ -23,13 +23,10 @@ export function Natalia() {
           <p className="label text-[var(--aegean)]">Рубрика · Кто собирает поездки</p>
           <Lines
             id="natalia-title"
-            className="display mt-4 text-[clamp(2.8rem,6.2vw,6.4rem)]"
+            className="display mt-4 text-[clamp(2.5rem,5vw,5.6rem)]"
             lines={[
-              "Наталья —",
-              <>
-                <em>лицо</em> Fashion
-              </>,
-              "Tours",
+              "Знакомьтесь,",
+              <em key="name">Наталья</em>,
             ]}
           />
           <div data-reveal="fade" className="mt-8 max-w-[34rem] space-y-4 text-[17px] leading-[1.6] text-[var(--ink-soft)]">
