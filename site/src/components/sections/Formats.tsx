@@ -88,7 +88,7 @@ export function DepartureBoard() {
 type Format = { n: string; title: string; text: string; id: string; alt: string; pos?: string; note: string; detail: string };
 
 /**
- * Кадры форматов — атмосфера Higgsfield, не отели из подборки и не наши поездки.
+ * Иллюстрации форматов передают атмосферу поездки.
  */
 const FORMATS: Format[] = [
   // Видео позже: петля format-coast-loop.mp4 (ПК, при наведении или фокусе) — <video> внутри [data-photo-in], постер — этот кадр.

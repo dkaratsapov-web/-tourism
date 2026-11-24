@@ -1,6 +1,5 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -11,12 +10,8 @@ import { Stamp } from "@/components/ui/Stamp";
 import { SplitFlap } from "@/components/ui/SplitFlap";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { Chars } from "@/components/ui/Type";
-import { storyProgress } from "./progress";
 
 gsap.registerPlugin(ScrollTrigger);
-
-// Единственная WebGL-сцена на странице: грузится лениво, отдельным чанком.
-const CloudFlight = dynamic(() => import("@/components/three/CloudFlight"), { ssr: false });
 
 const SCENES = [
   { id: "sbory", label: "СБОРЫ" },
@@ -119,7 +114,7 @@ const FLIGHT_CAPTIONS = [
   { start: 4.12, end: 4.73, position: "top-[48%] text-center md:inset-x-[20%] md:top-[52%]", text: <>Дальше — <em>к побережью</em></> },
 ];
 
-/** Статичная версия истории для «уменьшить движение»: те же тексты и кадры подряд, без пина и WebGL. */
+/** Статичная версия истории для «уменьшить движение»: тексты и кадры подряд, без пина. */
 function StaticStory() {
   return (
     <section id="istoriya" aria-label="История поездки" className="bg-[var(--paper)] px-[var(--gutter)] py-20 md:py-28">
@@ -173,23 +168,7 @@ function StaticStory() {
 export function FlightStory() {
   const reduced = useReducedMotion();
   const root = useRef<HTMLElement>(null);
-  const [near, setNear] = useState(false);
-  const [inView, setInView] = useState(false);
   const [scene, setScene] = useState(0);
-
-  // 3D-сцену подключаем, только когда история близко; кадры рисуем, только когда она на экране.
-  useEffect(() => {
-    const el = root.current;
-    if (!el) return;
-    const ioNear = new IntersectionObserver(([e]) => e.isIntersecting && setNear(true), { rootMargin: "80% 0px" });
-    const ioView = new IntersectionObserver(([e]) => setInView(e.isIntersecting));
-    ioNear.observe(el);
-    ioView.observe(el);
-    return () => {
-      ioNear.disconnect();
-      ioView.disconnect();
-    };
-  }, [reduced]);
 
   useEffect(() => {
     const el = root.current;
@@ -218,10 +197,7 @@ export function FlightStory() {
           end: "bottom bottom",
           scrub: desktop ? 0.8 : 0.5,
           invalidateOnRefresh: true,
-          onUpdate: (self) => {
-            storyProgress.value = self.progress;
-            setScene(sceneAt(self.progress));
-          },
+          onUpdate: (self) => setScene(sceneAt(self.progress)),
         },
       });
 
@@ -240,13 +216,12 @@ export function FlightStory() {
       });
       tl.to(pass, { x: () => toCenter(pass, "x"), y: () => toCenter(pass, "y"), duration: 0.6, ease: "power4.inOut" }, 1.35);
 
-      // Иллюминатор открывается из центра. Облака появляются после того, как кадр заполнил экран.
+      // Иллюминатор открывается из центра. После раскрытия камера медленно приближается к облакам.
       tl.to(q("[data-bg='sky']"), { opacity: 1, duration: 0.8 }, 1.8)
         .to(win, { "--window-x": apertureX, "--window-y": apertureY, duration: 0.35, ease: "power2.out" }, 1.95)
         .to(pass, { opacity: 0, scale: 0.8, duration: 0.3 }, 1.95)
         .to(win, { "--window-x": "0%", "--window-y": "0%", "--window-radius": "0%", duration: 0.62, ease: "power2.inOut" }, 2.3)
-        .fromTo(q("[data-window-poster] [data-photo-in]"), { scale: 1.02 }, { scale: 1.12, duration: 2.65, ease: "power1.inOut" }, 2.3)
-        .to(q("[data-flight-clouds]"), { opacity: 0.85, duration: 0.65, ease: "sine.inOut" }, 2.93);
+        .fromTo(q("[data-window-poster] [data-photo-in]"), { scale: 1.02, yPercent: 0 }, { scale: 1.16, yPercent: -3, duration: 2.65, ease: "power1.inOut" }, 2.3);
 
       const captions = q("[data-flight-caption]");
       FLIGHT_CAPTIONS.forEach(({ start, end }, index) => {
@@ -328,9 +303,6 @@ export function FlightStory() {
             className="absolute inset-0"
             data={{ "data-window-poster": "" }}
           />
-          <div aria-hidden data-flight-clouds className="pointer-events-none absolute inset-0 opacity-0">
-            {near ? <CloudFlight active={inView && scene === 1} /> : null}
-          </div>
           {/* Видео позже: петля story-coast-loop.mp4 (только ПК) — <video muted playsInline loop preload="none">
               внутри [data-photo-in] этого кадра, постер — этот же кадр; играть, только пока сцена на экране. */}
           <Photo
