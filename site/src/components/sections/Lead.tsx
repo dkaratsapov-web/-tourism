@@ -3,7 +3,7 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { useReducedMotion } from "@/lib/useReducedMotion";
-import { DESTINATIONS, LEAD_DIALOG_EVENT, LEAD_DIALOG_ID, LEAD_ID, LEAD_PREFILL_EVENT, TELEGRAM_URL, telegramLink, type LeadPrefill, type TripDestination } from "@/lib/site";
+import { DESTINATIONS, LEAD_DIALOG_EVENT, LEAD_DIALOG_ID, LEAD_ID, TELEGRAM_URL, isContact, telegramLink, type TripDestination } from "@/lib/site";
 import { Chars } from "@/components/ui/Type";
 import { Stamp } from "@/components/ui/Stamp";
 import { Picture, Texture } from "@/components/ui/Media";
@@ -11,15 +11,6 @@ import { Picture, Texture } from "@/components/ui/Media";
 const CHIPS = [...DESTINATIONS.map((d) => d.chip), "Маршрут по стране", "Пока не знаю"];
 
 type Errors = Partial<Record<"name" | "contact" | "consent", string>>;
-
-/** Контакт засчитываем, если это телефон (от 10 цифр), ник или ссылка Telegram, или почта. */
-function isContact(raw: string) {
-  const v = raw.trim();
-  const phone = /^[+\d\s()-]+$/.test(v) && v.replace(/\D/g, "").length >= 10;
-  const telegram = /^@[a-zA-Z][a-zA-Z0-9_]{4,31}$/.test(v) || /(^|\/\/)t\.me\/[a-zA-Z0-9_]{5,}/.test(v);
-  const email = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
-  return phone || telegram || email;
-}
 
 const field =
   "mt-2 block w-full rounded-[10px] border border-[var(--ink)]/25 bg-[var(--white)] px-4 py-3.5 text-[16px] text-[var(--ink)] outline-none transition-[border-color,box-shadow] duration-200 placeholder:text-[var(--ink-soft)] focus:border-[var(--aegean)] focus:shadow-[0_0_0_3px_rgb(169_205_235/0.7)] aria-[invalid=true]:border-[var(--brick)]";
@@ -57,20 +48,6 @@ export function Lead({ popup }: { popup?: { destination?: TripDestination } }) {
   const [errors, setErrors] = useState<Errors>({});
   const [sent, setSent] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
-
-  useEffect(() => {
-    if (popup) return;
-    const prefill = (e: Event) => {
-      const { name, contact } = (e as CustomEvent<LeadPrefill>).detail;
-      setName((value) => name || value);
-      setContact((value) => contact || value);
-      setErrors({});
-      setSent(null);
-      setCopied(false);
-    };
-    window.addEventListener(LEAD_PREFILL_EVENT, prefill);
-    return () => window.removeEventListener(LEAD_PREFILL_EVENT, prefill);
-  }, [popup]);
 
   const toggle = (c: string) => setDest((d) => (d.includes(c) ? d.filter((x) => x !== c) : [...d, c]));
 
@@ -112,7 +89,7 @@ export function Lead({ popup }: { popup?: { destination?: TripDestination } }) {
   return (
     <section id={popup ? undefined : LEAD_ID} aria-labelledby={headingId} className={`relative isolate overflow-hidden ${popup ? "bg-[var(--paper)] p-4 pt-6 sm:p-7" : "bg-[var(--tuff)] px-[var(--gutter)] py-20 md:py-28"}`}>
       {/* Фон — туф Каппадокии. */}
-      <Texture id="tex-tuff" className="opacity-45 mix-blend-multiply" />
+      {!popup && <Texture id="tex-lead-stone" className="opacity-75" pos="50% 50%" />}
       <div className="mx-auto max-w-[1240px]">
         <div className="flex flex-wrap items-end justify-between gap-6">
           <div>

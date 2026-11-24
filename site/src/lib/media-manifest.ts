@@ -192,6 +192,14 @@ export const MEDIA = {
   "story-wing-1672": [
     1672,
     941
+  ],
+  "tex-lead-stone-768": [
+    768,
+    512
+  ],
+  "tex-lead-stone-1536": [
+    1536,
+    1024
   ]
 } as const satisfies Record<string, readonly [number, number]>;
 

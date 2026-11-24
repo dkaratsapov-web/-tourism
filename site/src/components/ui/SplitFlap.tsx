@@ -3,7 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import { useReducedMotion } from "@/lib/useReducedMotion";
 
-const ABC = "АБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЭЮЯ0123456789";
+const ABC = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ";
+const DIGITS = "0123456789";
 const NBSP = " ";
 const TICK = 55;
 
@@ -28,68 +29,53 @@ export function SplitFlap({ text, length, trigger = "view", className = "", ligh
   const n = length ?? text.length;
   const root = useRef<HTMLSpanElement>(null);
   const [initial] = useState(() => pad(text, n));
-  const shown = useRef(initial);
-  const timers = useRef<number[]>([]);
   const reduced = useReducedMotion();
 
-  const run = (target: string, scramble: boolean) => {
+  useEffect(() => {
     const cells = root.current?.querySelectorAll<HTMLElement>(".flap > i");
     if (!cells) return;
-    timers.current.forEach(clearTimeout);
-    timers.current = [];
-    cells.forEach((cell, i) => {
-      const to = target[i] ?? " ";
-      const from = shown.current[i] ?? " ";
-      if (!scramble && to === from) return;
-      // Буквы перещёлкиваются слева направо: задержка 30 мс, всего не дольше ~700 мс.
-      const flips = Math.min(3 + Math.floor(i * 0.5), 8);
-      for (let k = 0; k <= flips; k++) {
-        const id = window.setTimeout(() => {
-          const last = k === flips;
-          const ch = last ? to : ABC[Math.floor(Math.random() * ABC.length)];
-          cell.textContent = ch === " " ? NBSP : ch;
-          cell.animate([{ transform: "rotateX(-80deg)" }, { transform: "rotateX(0deg)" }], {
-            duration: TICK - 5,
-            easing: "cubic-bezier(0.16, 1, 0.3, 1)",
-          });
-        }, i * 30 + k * TICK);
-        timers.current.push(id);
-      }
-    });
-    shown.current = target;
-  };
-
-  // Один раз при входе в экран.
-  useEffect(() => {
-    if (trigger !== "view" || reduced || !root.current) return;
-    const io = new IntersectionObserver(
-      ([e]) => {
-        if (!e.isIntersecting) return;
-        run(shown.current, true);
-        io.disconnect();
-      },
-      { threshold: 0.6 },
-    );
-    io.observe(root.current);
-    return () => io.disconnect();
-  }, [trigger, reduced]);
-
-  // Смена значения (счётчик истории).
-  useEffect(() => {
-    if (trigger !== "value") return;
     const target = pad(text, n);
-    if (target === shown.current) return;
-    if (reduced) {
-      root.current?.querySelectorAll<HTMLElement>(".flap > i").forEach((c, i) => {
-        c.textContent = target[i] === " " ? NBSP : target[i];
+    const timers: number[] = [];
+    const run = (scramble: boolean) => {
+      cells.forEach((cell, i) => {
+        const glyph = target[i] ?? " ";
+        const to = glyph === " " ? NBSP : glyph;
+        if (reduced || to === NBSP) {
+          cell.textContent = to;
+          return;
+        }
+        // При быстрой смене сцены ячейка может ещё показывать промежуточный символ.
+        if (!scramble && cell.textContent === to) return;
+        const alphabet = DIGITS.includes(to) ? DIGITS : ABC;
+        const flips = Math.min(3 + Math.floor(i * 0.5), 8);
+        for (let k = 0; k <= flips; k++) {
+          timers.push(window.setTimeout(() => {
+            cell.textContent = k === flips ? to : alphabet[Math.floor(Math.random() * alphabet.length)];
+            cell.animate([{ transform: "rotateX(-80deg)" }, { transform: "rotateX(0deg)" }], {
+              duration: TICK - 5,
+              easing: "cubic-bezier(0.16, 1, 0.3, 1)",
+            });
+          }, i * 30 + k * TICK));
+        }
       });
-      shown.current = target;
-      return;
-    }
-    run(target, false);
-  }, [text, n, trigger, reduced]);
+    };
 
-  useEffect(() => () => timers.current.forEach(clearTimeout), []);
+    let observer: IntersectionObserver | undefined;
+    if (trigger === "view" && !reduced && root.current) {
+      observer = new IntersectionObserver(([entry]) => {
+        if (!entry.isIntersecting) return;
+        run(true);
+        observer?.disconnect();
+      }, { threshold: 0.6 });
+      observer.observe(root.current);
+    } else {
+      run(false);
+    }
+    return () => {
+      observer?.disconnect();
+      timers.forEach(clearTimeout);
+    };
+  }, [text, n, trigger, reduced]);
 
   return (
     <span ref={root} className={`flap-row ${className}`}>
