@@ -65,6 +65,14 @@ export const MEDIA = {
     1280,
     956
   ],
+  "format-family-800": [
+    800,
+    600
+  ],
+  "format-family-1280": [
+    1280,
+    960
+  ],
   "format-cappadocia-800": [
     800,
     600

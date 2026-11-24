@@ -34,6 +34,7 @@ PLAN = {
     "story-window-m": ([720, 1080], 74),
     "story-flatlay-m": ([720], 76),
     "format-coast": ([800, 1280], 74),
+    "format-family": ([800, 1280], 76),
     "format-cappadocia": ([800, 1280], 74),
     "format-istanbul": ([800, 1280], 74),
     "format-route": ([800, 1280], 74),

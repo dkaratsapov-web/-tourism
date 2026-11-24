@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type FormEvent } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useReducedMotion } from "@/lib/useReducedMotion";
 import { Lines } from "@/components/ui/Type";
-import { Stamp } from "@/components/ui/Stamp";
 import { Photo, Texture } from "@/components/ui/Media";
+import { LEAD_ID, LEAD_PREFILL_EVENT, type LeadPrefill } from "@/lib/site";
+import { scrollToId } from "@/lib/scroll";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -17,6 +18,37 @@ const STEPS = [
   { n: "03", title: "Бронирование и документы", text: "Согласовываем выбранный вариант и оформляем поездку.", img: "step-documents", alt: "Атмосферный кадр: папка для документов в поездку" },
   { n: "04", title: "Связь во время поездки", text: "Остаёмся на связи до возвращения домой. Формат связи — уточнить.", img: "step-onway", alt: "Атмосферный кадр: телефон и стакан чая на террасе" },
 ];
+
+function ProcessForm() {
+  const prefill = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const fields = event.currentTarget.elements;
+    const getValue = (name: string) => (fields.namedItem(name) as HTMLInputElement).value.trim();
+    window.dispatchEvent(new CustomEvent<LeadPrefill>(LEAD_PREFILL_EVENT, { detail: { name: getValue("name"), contact: getValue("contact") } }));
+    scrollToId(LEAD_ID);
+    history.replaceState(null, "", `#${LEAD_ID}`);
+    document.querySelector<HTMLElement>(`#${LEAD_ID} form input[name="when"]`)?.focus({ preventScroll: true });
+  };
+
+  const input = "mt-1 w-full rounded-lg border border-[var(--ink)]/20 bg-[var(--white)] px-3 py-2.5 text-[16px] text-[var(--ink)] placeholder:text-[var(--ink-soft)]";
+
+  return (
+    <form method="dialog" aria-labelledby="process-form-title" onSubmit={prefill} className="mt-6 max-w-[24rem] rounded-[18px] bg-[var(--paper)] p-5 shadow-[0_22px_44px_-30px_rgb(19_41_75/0.6)] md:p-6">
+      <h3 id="process-form-title" className="display text-[29px]">Расскажите о поездке</h3>
+      <label className="mt-4 block text-[14px] font-medium">
+        Имя
+        <input className={input} name="name" autoComplete="given-name" />
+      </label>
+      <label className="mt-3 block text-[14px] font-medium">
+        Телефон или Telegram
+        <input className={input} name="contact" placeholder="+7 … или @ник" />
+      </label>
+      <button type="submit" className="mt-4 flex min-h-11 w-full cursor-pointer items-center justify-between gap-3 rounded-full bg-[var(--ink)] px-4 py-2 text-[14px] font-medium text-[var(--paper)] transition-colors hover:bg-[var(--aegean)]">
+        Продолжить заявку <span aria-hidden>→</span>
+      </button>
+    </form>
+  );
+}
 
 /**
  * «Как мы работаем» — стопка посадочных талонов. Карточки закреплены CSS sticky и ложатся друг на друга;
@@ -44,16 +76,16 @@ export function Process() {
   }, [reduced]);
 
   return (
-    <section id="kak-rabotaem" ref={root} aria-labelledby="process-title" className="relative isolate overflow-hidden bg-[var(--sky)] px-[var(--gutter)] py-20 md:py-32">
+    <section id="kak-rabotaem" ref={root} aria-labelledby="process-title" className="relative isolate overflow-clip bg-[var(--sky)] px-[var(--gutter)] py-20 md:py-32">
       {/* Фон — штукатурка с тенью листьев; multiply оставляет на небесно-голубом только тени. */}
       <Texture id="tex-plaster-shadow" mobileId="tex-plaster-shadow-m" className="opacity-30 mix-blend-multiply" pos="100% 0%" posMobile="50% 0%" />
       <div className="mx-auto grid max-w-[1320px] gap-10 md:grid-cols-12 md:gap-8">
         <div className="md:col-span-4">
-          <div className="md:sticky md:top-[calc(var(--header-h)+40px)]">
+          <div className="[@media(min-width:900px)_and_(min-height:720px)]:sticky [@media(min-width:900px)_and_(min-height:720px)]:top-[calc(var(--header-h)+24px)]">
             <p className="label text-[var(--ink)]">Рубрика · Как мы работаем</p>
             <Lines
               id="process-title"
-              className="display mt-4 text-[clamp(2.6rem,5vw,5rem)]"
+              className="display mt-4 text-[clamp(2.6rem,4.2vw,4.5rem)]"
               lines={[
                 <>
                   Как мы <em>организуем</em>
@@ -61,8 +93,8 @@ export function Process() {
                 "поездку",
               ]}
             />
-            <p className="mt-5 max-w-[22rem] text-[16px] leading-[1.55] text-[var(--ink)]">Четыре шага — четыре талона. Шаги черновые, сверить с реальным процессом.</p>
-            <Stamp kind="bjv" tone="ink" rotate={-7} className="mt-8 hidden w-40 md:block" />
+            <p className="mt-4 max-w-[22rem] text-[16px] leading-[1.55] text-[var(--ink)]">Четыре шага от первого разговора до возвращения домой.</p>
+            <ProcessForm />
           </div>
         </div>
 

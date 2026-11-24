@@ -3,7 +3,7 @@
 import { useEffect, useId, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { useReducedMotion } from "@/lib/useReducedMotion";
-import { DESTINATIONS, LEAD_ID, TELEGRAM_URL, telegramLink } from "@/lib/site";
+import { DESTINATIONS, LEAD_ID, LEAD_PREFILL_EVENT, TELEGRAM_URL, telegramLink, type LeadPrefill } from "@/lib/site";
 import { Chars } from "@/components/ui/Type";
 import { Stamp } from "@/components/ui/Stamp";
 import { Picture, Texture } from "@/components/ui/Media";
@@ -65,8 +65,20 @@ export function Lead() {
       const chip = (e as CustomEvent<string>).detail;
       setDest((d) => (d.includes(chip) ? d : [...d, chip]));
     };
+    const prefill = (e: Event) => {
+      const { name, contact } = (e as CustomEvent<LeadPrefill>).detail;
+      setName((value) => name || value);
+      setContact((value) => contact || value);
+      setErrors({});
+      setSent(null);
+      setCopied(false);
+    };
     window.addEventListener(DEST_EVENT, on);
-    return () => window.removeEventListener(DEST_EVENT, on);
+    window.addEventListener(LEAD_PREFILL_EVENT, prefill);
+    return () => {
+      window.removeEventListener(DEST_EVENT, on);
+      window.removeEventListener(LEAD_PREFILL_EVENT, prefill);
+    };
   }, []);
 
   const toggle = (c: string) => setDest((d) => (d.includes(c) ? d.filter((x) => x !== c) : [...d, c]));

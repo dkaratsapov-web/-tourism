@@ -113,6 +113,12 @@ const TEXT = {
   prilet: { h: "Встреча и дорога до отеля", p: "Трансфер и заселение — в плане поездки заранее. Уточнить, входит ли трансфер." },
 };
 
+const FLIGHT_CAPTIONS = [
+  { start: 2.9, end: 3.45, position: "top-[52%] md:top-auto md:bottom-[15%] md:right-auto", text: <>Пока вы <em>в пути</em></> },
+  { start: 3.5, end: 4.07, position: "top-[28%] md:top-[29%] md:left-auto md:text-right", text: <>Отели и переезды <em>уже в плане</em></> },
+  { start: 4.12, end: 4.73, position: "top-[48%] text-center md:inset-x-[20%] md:top-[52%]", text: <>Дальше — <em>к побережью</em></> },
+];
+
 /** Статичная версия истории для «уменьшить движение»: те же тексты и кадры подряд, без пина и WebGL. */
 function StaticStory() {
   return (
@@ -196,11 +202,8 @@ export function FlightStory() {
       const pass = q("[data-pass]")[0] as HTMLElement;
       const win = q("[data-window]")[0] as HTMLElement;
       // Размеры окна иллюминатора: на телефоне почти весь кадр — меньше роста маски, больше полёта.
-      const winW = () => (desktop ? 300 : stage.clientWidth * 0.86);
-      const winH = () => (desktop ? 400 : stage.clientHeight * 0.66);
-      const R = desktop ? 150 : 170;
-      const clip = (w: number, h: number, r: number) =>
-        `inset(${(stage.clientHeight - h) / 2}px ${(stage.clientWidth - w) / 2}px ${(stage.clientHeight - h) / 2}px ${(stage.clientWidth - w) / 2}px round ${r}px)`;
+      const apertureX = () => `${desktop ? Math.max(0, 50 - 15000 / stage.clientWidth) : 7}%`;
+      const apertureY = () => `${desktop ? Math.max(0, 50 - 20000 / stage.clientHeight) : 17}%`;
       // Смещение элемента к центру кадра по раскладке (offset*), а не по текущему transform.
       const toCenter = (n: HTMLElement, axis: "x" | "y") =>
         axis === "x"
@@ -237,20 +240,19 @@ export function FlightStory() {
       });
       tl.to(pass, { x: () => toCenter(pass, "x"), y: () => toCenter(pass, "y"), duration: 0.6, ease: "power4.inOut" }, 1.35);
 
-      // 2–2.9 · Талон становится иллюминатором: маска растёт из окна до полного кадра.
+      // Иллюминатор открывается из центра. Облака появляются после того, как кадр заполнил экран.
       tl.to(q("[data-bg='sky']"), { opacity: 1, duration: 0.8 }, 1.8)
-        .fromTo(win, { clipPath: () => clip(0, 0, R) }, { clipPath: () => clip(winW(), winH(), R), duration: 0.35, ease: "expo.out" }, 1.95)
+        .to(win, { "--window-x": apertureX, "--window-y": apertureY, duration: 0.35, ease: "power2.out" }, 1.95)
         .to(pass, { opacity: 0, scale: 0.8, duration: 0.3 }, 1.95)
-        .fromTo(q("[data-bezel]"), { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.3, ease: "expo.out" }, 1.95)
-        .to(win, { clipPath: () => clip(stage.clientWidth, stage.clientHeight, 0), duration: 0.9, ease: "power4.inOut" }, 2.3)
-        .to(q("[data-bezel]"), { scale: 4.5, opacity: 0, duration: 0.9, ease: "power4.inOut" }, 2.3)
-        // Постер иллюминатора чуть приближается вместе с окном и растворяется в небе: дальше летим сквозь 3D-облака.
-        .fromTo(q("[data-window-poster] [data-photo-in]"), { scale: 1.12 }, { scale: 1, duration: 0.9, ease: "power4.inOut" }, 2.3)
-        .to(q("[data-window-poster]"), { opacity: 0, duration: 0.6 }, 2.9);
+        .to(win, { "--window-x": "0%", "--window-y": "0%", "--window-radius": "0%", duration: 0.62, ease: "power2.inOut" }, 2.3)
+        .fromTo(q("[data-window-poster] [data-photo-in]"), { scale: 1.02 }, { scale: 1.12, duration: 2.65, ease: "power1.inOut" }, 2.3)
+        .to(q("[data-flight-clouds]"), { opacity: 0.85, duration: 0.65, ease: "sine.inOut" }, 2.93);
 
-      // 2.9–5 · Полёт: облака (WebGL читает storyProgress), подпись.
-      tl.fromTo(q("[data-cap='polet']"), { autoAlpha: 0, y: 40 }, { autoAlpha: 1, y: 0, duration: 0.4, ease: "expo.out" }, 3.0)
-        .to(q("[data-cap='polet']"), { autoAlpha: 0, y: -40, duration: 0.35, ease: "power2.in" }, 4.4);
+      const captions = q("[data-flight-caption]");
+      FLIGHT_CAPTIONS.forEach(({ start, end }, index) => {
+        tl.fromTo(captions[index], { autoAlpha: 0, y: 14 }, { autoAlpha: 1, y: 0, duration: 0.16, ease: "power2.out" }, start)
+          .to(captions[index], { autoAlpha: 0, y: -10, duration: 0.14, ease: "power2.in" }, end);
+      });
 
       // 4.8–6.2 · Уайт-аут: под белым меняется кадр на побережье.
       tl.to(q("[data-whiteout]"), { opacity: 1, duration: 0.55 }, 4.8)
@@ -314,9 +316,7 @@ export function FlightStory() {
         </div>
 
         {/* Иллюминатор → небо и облака → побережье → терраса */}
-        <div data-window className="absolute inset-0 bg-gradient-to-b from-[#86b9e2] via-[var(--sky)] to-[#eef5fb]" style={{ clipPath: "inset(50% 50% 50% 50% round 150px)" }}>
-          {/* Постер «вид из иллюминатора»: виден в окне, пока растёт маска; когда окно раскрыто
-              на весь экран, растворяется и дальше летим сквозь 3D-облака (CloudFlight). */}
+        <div data-window className="absolute inset-0 bg-[var(--sky)] [--window-x:50%] [--window-y:50%] [--window-radius:50%] [clip-path:inset(var(--window-y)_var(--window-x)_round_var(--window-radius))]">
           <Photo
             id="story-window"
             mobileId="story-window-m"
@@ -328,7 +328,9 @@ export function FlightStory() {
             className="absolute inset-0"
             data={{ "data-window-poster": "" }}
           />
-          {near ? <CloudFlight active={inView && scene <= 1} /> : null}
+          <div aria-hidden data-flight-clouds className="pointer-events-none absolute inset-0 opacity-0">
+            {near ? <CloudFlight active={inView && scene === 1} /> : null}
+          </div>
           {/* Видео позже: петля story-coast-loop.mp4 (только ПК) — <video muted playsInline loop preload="none">
               внутри [data-photo-in] этого кадра, постер — этот же кадр; играть, только пока сцена на экране. */}
           <Photo
@@ -362,16 +364,16 @@ export function FlightStory() {
             />
           </Photo>
         </div>
-        <div aria-hidden data-bezel className="pointer-events-none absolute left-1/2 top-1/2 h-[66svh] w-[86vw] -translate-x-1/2 -translate-y-1/2 rounded-[170px] border-[14px] border-[var(--white)] opacity-0 shadow-[0_0_0_1px_rgb(19_41_75/0.12)] md:h-[400px] md:w-[300px] md:rounded-[150px]" />
         <div aria-hidden data-whiteout className="pointer-events-none absolute inset-0 bg-[var(--white)] opacity-0" />
 
         {/* Подписи сцен */}
-        <div data-cap="polet" className="invisible absolute inset-x-[var(--gutter)] top-[calc(var(--header-h)+80px)] max-w-[40rem] md:top-auto md:bottom-[12%]">
-          <p className="label text-[var(--ink)]">Рубрика · Полёт</p>
-          <h2 className="display mt-3 text-[clamp(2.3rem,4.8vw,4.8rem)]">
-            Пока вы в пути, <em>детали поездки</em> уже в плане
-          </h2>
-        </div>
+        {FLIGHT_CAPTIONS.map(({ start, position, text }) => (
+          <div key={start} data-flight-caption className={`invisible absolute inset-x-[var(--gutter)] ${position}`}>
+            <h2 className="display relative isolate inline-block max-w-[15ch] text-[clamp(2.8rem,4.8vw,5.5rem)] before:absolute before:-inset-x-8 before:-inset-y-6 before:-z-10 before:bg-[radial-gradient(ellipse,rgb(246_243_236/0.85),transparent_72%)]">
+              {text}
+            </h2>
+          </div>
+        ))}
         <div data-cap="prilet" className="invisible absolute inset-x-[var(--gutter)] top-[calc(var(--header-h)+80px)] max-w-[36rem]">
           <div className="w-fit bg-[var(--paper)] px-5 pb-5 pt-4 md:px-7 md:pb-7">
             <p className="label text-[var(--aegean)]">Рубрика · Прилёт</p>

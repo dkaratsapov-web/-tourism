@@ -16,6 +16,10 @@ export function telegramLink(text: string) {
 /** Якорь блока заявки — на него ведут все кнопки «Обсудить поездку». */
 export const LEAD_ID = "zayavka";
 
+/** Перенос полей из короткой формы в основной посадочный талон. */
+export const LEAD_PREFILL_EVENT = "ft:lead-prefill";
+export type LeadPrefill = { name: string; contact: string };
+
 /** Пункты основного меню. */
 export const NAV = [
   { id: "formaty", label: "Форматы" },

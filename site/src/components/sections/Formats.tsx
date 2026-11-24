@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState, type FocusEvent } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useReducedMotion } from "@/lib/useReducedMotion";
-import { Cutout, Photo, Picture, Texture } from "@/components/ui/Media";
+import { Photo, Texture } from "@/components/ui/Media";
 import { SplitFlap } from "@/components/ui/SplitFlap";
 import { Stamp } from "@/components/ui/Stamp";
 import { Lines } from "@/components/ui/Type";
@@ -85,19 +85,18 @@ export function DepartureBoard() {
   );
 }
 
-type Format = { n: string; title: string; text: string; id?: string; alt: string; pos?: string };
+type Format = { n: string; title: string; text: string; id: string; alt: string; pos?: string; note: string; detail: string };
 
 /**
  * Кадры форматов — атмосфера Higgsfield, не отели из подборки и не наши поездки.
- * «Отдых с детьми» — натюрморт: детская панама на льне (о семье говорит вещь, а не ребёнок).
  */
 const FORMATS: Format[] = [
   // Видео позже: петля format-coast-loop.mp4 (ПК, при наведении или фокусе) — <video> внутри [data-photo-in], постер — этот кадр.
-  { n: "01", title: "Отель у моря", text: "Сравниваем отели по сервису, питанию, пляжу и атмосфере, а не только по звёздам.", id: "format-coast", alt: "Атмосферный кадр: побережье Бодрума", pos: "30% 50%" },
-  { n: "02", title: "Отдых с детьми", text: "Подбираем отель под возраст ребёнка: питание, пляж, анимация, дорога.", alt: "Атмосферный кадр: детская соломенная панама на льняной ткани" },
-  { n: "03", title: "Поездка вдвоём", text: "Атмосфера, локация и формат проживания под настроение пары.", id: "format-istanbul", alt: "Атмосферный кадр: Босфор утром", pos: "70% 50%" },
+  { n: "01", title: "Отель у моря", text: "Сравниваем отели по сервису, питанию, пляжу и атмосфере, а не только по звёздам.", id: "format-coast", alt: "Атмосферный кадр: побережье Бодрума", pos: "30% 50%", note: "Сколько шагов до моря?", detail: "Посмотрим, как устроен спуск к пляжу, какой там берег и есть ли рядом места для прогулок." },
+  { n: "02", title: "Отдых с детьми", text: "Подбираем отель под возраст ребёнка: питание, пляж, анимация, дорога.", id: "format-family", alt: "Атмосферный кадр: дети строят замок из песка на берегу моря", pos: "48% 54%", note: "У каждого возраста свой отдых", detail: "Для малышей важны тень и пологий вход в море. Для детей постарше посмотрим, чем заняться в отеле и рядом." },
+  { n: "03", title: "Поездка вдвоём", text: "Атмосфера, локация и формат проживания под настроение пары.", id: "format-istanbul", alt: "Атмосферный кадр: Босфор утром", pos: "70% 50%", note: "Город или пауза у моря?", detail: "Можно начать со Стамбула и закончить несколькими днями на побережье. Подберём удобную стыковку." },
   // Видео позже: format-cappadocia.mp4 (ПК, один раз при входе карточки в кадр, остаётся на последнем кадре) — так же, постер — этот кадр.
-  { n: "04", title: "Маршрут по стране", text: "Каппадокия, Стамбул и море — отели, перелёты и переезды в одной поездке.", id: "format-cappadocia", alt: "Атмосферный кадр: воздушные шары над Каппадокией", pos: "50% 40%" },
+  { n: "04", title: "Маршрут по стране", text: "Каппадокия, Стамбул и море — отели, перелёты и переезды в одной поездке.", id: "format-cappadocia", alt: "Атмосферный кадр: воздушные шары над Каппадокией", pos: "50% 40%", note: "Сколько ночей на каждую остановку?", detail: "Расставим остановки и переезды так, чтобы осталось время погулять и отдохнуть между ними." },
 ];
 
 const CARD_SIZES = "(min-width: 900px) min(36vw, 560px), calc(100vw - 2 * var(--gutter))";
@@ -110,6 +109,24 @@ export function Formats() {
   const reduced = useReducedMotion();
   const root = useRef<HTMLElement>(null);
   const track = useRef<HTMLDivElement>(null);
+  const trackScroll = useRef<ScrollTrigger | null>(null);
+  const [openFormat, setOpenFormat] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!openFormat) return;
+    const dismiss = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpenFormat(null);
+    };
+    const outside = (event: PointerEvent) => {
+      if (!(event.target as Element).closest(`[data-format="${openFormat}"]`)) setOpenFormat(null);
+    };
+    document.addEventListener("keydown", dismiss);
+    document.addEventListener("pointerdown", outside);
+    return () => {
+      document.removeEventListener("keydown", dismiss);
+      document.removeEventListener("pointerdown", outside);
+    };
+  }, [openFormat]);
 
   useEffect(() => {
     if (reduced || !root.current || !track.current) return;
@@ -133,13 +150,29 @@ export function Formats() {
           onRefreshInit: setHeight,
         },
       });
+      trackScroll.current = tween.scrollTrigger ?? null;
       return () => {
+        trackScroll.current = null;
         tween.kill();
         section.style.removeProperty("--formats-h");
       };
     });
     return () => mm.revert();
   }, [reduced]);
+
+  const onFormatFocus = (event: FocusEvent<HTMLButtonElement>, format: string) => {
+    const button = event.currentTarget;
+    if (!button.matches(":focus-visible")) return;
+    setOpenFormat(format);
+    const card = button.closest<HTMLElement>("article");
+    const scroll = trackScroll.current;
+    if (!card || !scroll) return;
+    const bounds = card.getBoundingClientRect();
+    if (bounds.left < 0 || bounds.right > window.innerWidth) {
+      const x = card.offsetLeft - (window.innerWidth - card.offsetWidth) / 2;
+      scroll.scroll(gsap.utils.clamp(scroll.start, scroll.end, scroll.start + x));
+    }
+  };
 
   return (
     <section ref={root} aria-labelledby="formats-title" className="relative bg-[var(--paper)] min-[900px]:h-[var(--formats-h,auto)]">
@@ -157,24 +190,14 @@ export function Formats() {
           />
           <Stamp kind="nav" rotate={-8} className="absolute right-[var(--gutter)] top-0 w-28 md:w-40" />
         </div>
-        <div ref={track} className="formats-track mt-10 flex flex-col gap-10 px-[var(--gutter)] min-[900px]:mt-12 min-[900px]:w-max min-[900px]:flex-row min-[900px]:gap-8">
+        <div ref={track} className="formats-track relative mt-10 flex flex-col gap-10 px-[var(--gutter)] min-[900px]:mt-12 min-[900px]:w-max min-[900px]:flex-row min-[900px]:gap-8">
           {FORMATS.map((f, i) => (
-            <article key={f.n} className={`group flex flex-col min-[900px]:w-[min(36vw,560px)] ${i % 2 ? "min-[900px]:pt-16" : ""}`}>
+            <article key={f.n} data-format={f.n} className={`group flex flex-col min-[900px]:w-[min(36vw,560px)] ${i % 2 ? "min-[900px]:pt-16" : ""}`}
+              onPointerEnter={(event) => { if (event.pointerType === "mouse") setOpenFormat(f.n); }}
+              onPointerLeave={(event) => { if (event.pointerType === "mouse" && !event.currentTarget.querySelector(":focus-visible")) setOpenFormat((open) => open === f.n ? null : open); }}
+            >
               <div className="relative">
-                {f.id ? (
-                  <Photo id={f.id} alt={f.alt} sizes={CARD_SIZES} pos={f.pos} reveal={i % 2 ? "photo-center" : "photo"} className="aspect-[4/3] w-full min-[900px]:aspect-[5/4] min-[900px]:max-h-[44svh]" />
-                ) : (
-                  <div data-reveal={i % 2 ? "photo-center" : "photo"} className="photo aspect-[4/3] w-full bg-[var(--paper)] min-[900px]:aspect-[5/4] min-[900px]:max-h-[44svh]">
-                    <div className="photo-mask">
-                      <div className="photo-in" data-photo-in="">
-                        <Picture id="tex-linen" alt="" decorative sizes={CARD_SIZES} className="absolute inset-0" />
-                        <div className="absolute left-1/2 top-1/2 w-[48%] -translate-x-1/2 -translate-y-1/2 rotate-[-8deg]">
-                          <Cutout name="pack-panama-560" alt={f.alt} />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
+                <Photo id={f.id} alt={f.alt} sizes={CARD_SIZES} pos={f.pos} reveal={i % 2 ? "photo-center" : "photo"} className="aspect-[4/3] w-full min-[900px]:aspect-[5/4] min-[900px]:max-h-[44svh]" />
                 {f.n === "04" ? (
                   // Врезка «дорога»: маршрут — это ещё и переезды между местами.
                   <Photo
@@ -186,6 +209,30 @@ export function Formats() {
                     className="absolute! -bottom-5 -right-2 aspect-square w-[38%] border-[5px] border-[var(--white)] shadow-[0_18px_30px_-18px_rgb(19_41_75/0.55)] md:border-[6px]"
                   />
                 ) : null}
+                <button
+                  type="button"
+                  aria-label={`Подробнее: ${f.title}`}
+                  aria-expanded={openFormat === f.n}
+                  aria-controls={`format-note-${f.n}`}
+                  onFocus={(event) => onFormatFocus(event, f.n)}
+                  onBlur={() => setOpenFormat((open) => open === f.n ? null : open)}
+                  onClick={() => setOpenFormat((open) => open === f.n ? null : f.n)}
+                  className="absolute right-3 top-3 z-10 grid size-11 cursor-pointer place-items-center rounded-full bg-[var(--paper)] text-[var(--ink)] shadow-sm transition-colors hover:bg-[var(--white)] aria-expanded:bg-[var(--ink)] aria-expanded:text-[var(--paper)]"
+                >
+                  <svg aria-hidden width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <path d="M3 9h12" />
+                    {openFormat === f.n ? null : <path d="M9 3v12" />}
+                  </svg>
+                </button>
+                <div
+                  id={`format-note-${f.n}`}
+                  aria-hidden={openFormat !== f.n}
+                  className={`absolute bottom-3 left-3 right-3 z-10 origin-bottom-left bg-[var(--ink)] px-4 py-3 text-[var(--paper)] shadow-[0_14px_28px_-10px_rgb(19_41_75/0.65)] transition-[opacity,transform,visibility] duration-200 ease-[var(--ease-expo)] sm:bottom-5 sm:left-5 sm:right-auto sm:max-w-[min(22rem,calc(100%-2.5rem))] sm:px-5 sm:py-4 motion-reduce:transform-none motion-reduce:transition-none ${openFormat === f.n ? "visible translate-y-0 opacity-100" : "invisible translate-y-2 opacity-0"}`}
+                >
+                  <p className="label text-[var(--sky)]">Что учтём</p>
+                  <p className="display mt-2 border-t border-dashed border-[var(--sky)]/45 pt-2 text-[22px] sm:text-[27px]">{f.note}</p>
+                  <p className="mt-2 text-[14px] leading-snug text-[var(--paper)]/90 sm:text-[15px]">{f.detail}</p>
+                </div>
               </div>
               <div className="mt-5 flex items-baseline gap-4">
                 <span className="display text-[44px] italic text-[var(--brick)] md:text-[56px]">{f.n}</span>
