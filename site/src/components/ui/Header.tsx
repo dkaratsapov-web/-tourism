@@ -1,19 +1,20 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type MouseEvent } from "react";
 import { NAV, LEAD_ID } from "@/lib/site";
-import { scroller } from "@/lib/scroll";
+import { scroller, scrollToId } from "@/lib/scroll";
 import { CtaButton } from "./CtaButton";
 
 /**
  * Шапка: всегда на месте (кнопка заявки доступна на всём пути).
- * Активный раздел отмечается кирпичной точкой. На телефоне — меню во весь экран.
+ * Активный раздел отмечается кирпичной точкой. На телефоне — раскрывающееся меню.
  */
 export function Header() {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState<string | null>(null);
   const btn = useRef<HTMLButtonElement>(null);
   const panel = useRef<HTMLDivElement>(null);
+  const nextAnchor = useRef<string | null>(null);
 
   // Какой раздел сейчас в центре экрана.
   useEffect(() => {
@@ -31,7 +32,7 @@ export function Header() {
     return () => io.disconnect();
   }, []);
 
-  // Меню во весь экран: Escape закрывает, фон недоступен, скролл стоит, фокус возвращается на кнопку.
+  // Пока меню открыто, блокируем скролл и возвращаем фокус на кнопку после закрытия.
   useEffect(() => {
     if (!open) return;
     const main = document.getElementById("main");
@@ -41,50 +42,72 @@ export function Header() {
     document.body.style.overflow = "hidden";
     panel.current?.querySelector<HTMLElement>("a")?.focus();
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    const desktop = window.matchMedia("(min-width: 768px)");
+    const onResize = () => {
+      if (desktop.matches) setOpen(false);
+    };
     document.addEventListener("keydown", onKey);
+    desktop.addEventListener("change", onResize);
     const button = btn.current;
     return () => {
       document.removeEventListener("keydown", onKey);
+      desktop.removeEventListener("change", onResize);
       main?.removeAttribute("inert");
       scroller.lenis?.start();
       document.body.style.overflow = prev;
-      button?.focus();
+      if (!desktop.matches) button?.focus({ preventScroll: true });
+      const id = nextAnchor.current;
+      if (id) {
+        nextAnchor.current = null;
+        scrollToId(id);
+        history.replaceState(null, "", `#${id}`);
+      }
     };
   }, [open]);
 
+  const onMenuClick = (event: MouseEvent<HTMLElement>) => {
+    const id = (event.target as Element).closest<HTMLAnchorElement>("a[href^='#']")?.hash.slice(1);
+    if (!id) return;
+    event.preventDefault();
+    event.stopPropagation();
+    nextAnchor.current = id;
+    setOpen(false);
+  };
+
   return (
-    <header className="fixed inset-x-0 top-0 z-50 h-[var(--header-h)] border-b border-[var(--ink)]/10 bg-[var(--paper)]">
-      <div className="flex h-full items-center justify-between gap-6 px-[var(--gutter)]">
-        <a href="#main" className="group flex items-baseline gap-2 text-[17px] font-semibold tracking-[-0.01em]" aria-label="Fashion Tours — в начало">
-          <span>Fashion Tours</span>
-          <span className="hidden text-[12px] font-medium tracking-[0.12em] text-[var(--ink-soft)] uppercase lg:inline">Турция</span>
+    <header className="pointer-events-none fixed inset-x-0 top-[var(--header-inset)] z-50 px-3 md:px-6">
+      {open && <div aria-hidden className="pointer-events-auto fixed inset-0 bg-[var(--ink)]/20 md:hidden" onClick={() => setOpen(false)} />}
+      <div className="pointer-events-auto relative mx-auto flex h-[calc(var(--header-h)-var(--header-inset))] max-w-[1180px] items-center justify-between gap-3 rounded-full border border-[var(--ink)]/12 bg-[var(--paper)]/95 pr-1.5 pl-4 shadow-[0_8px_28px_-12px_rgba(19,41,75,0.38),inset_0_1px_0_var(--white)] backdrop-blur-md md:grid md:grid-cols-[1fr_auto_1fr] md:gap-4 md:pr-2.5 md:pl-6">
+        <a href="#main" onClick={open ? onMenuClick : undefined} className="flex h-11 w-fit shrink-0 items-center gap-3 rounded-full whitespace-nowrap" aria-label="Fashion Tours — в начало">
+          <span className="display text-[23px] [--wght:600] md:text-[26px]">Fashion Tours</span>
+          <span className="hidden border-l border-[var(--ink)]/18 pl-3 text-[10px] font-semibold tracking-[0.14em] text-[var(--ink-soft)] uppercase lg:inline">Турция</span>
         </a>
 
-        <nav aria-label="Основное меню" className="hidden items-center gap-9 md:flex">
+        <nav aria-label="Основное меню" className="hidden items-center gap-1 md:flex lg:gap-2">
           {NAV.map((n) => (
             <a
               key={n.id}
               href={`#${n.id}`}
               aria-current={active === n.id ? "location" : undefined}
-              className={`link-draw relative flex h-11 items-center text-[14px] font-medium transition-colors ${active === n.id ? "text-[var(--ink)]" : "text-[var(--ink-soft)] hover:text-[var(--ink)]"}`}
+              className={`relative flex h-11 items-center rounded-full px-3.5 text-[14px] font-medium whitespace-nowrap transition-colors lg:px-5 ${active === n.id ? "bg-[var(--ink)]/6 text-[var(--ink)]" : "text-[var(--ink-soft)] hover:bg-[var(--ink)]/5 hover:text-[var(--ink)]"}`}
             >
               <span
                 aria-hidden
-                className={`absolute -left-3.5 top-1/2 h-1.5 w-1.5 -translate-y-1/2 rounded-full bg-[var(--brick)] transition-transform duration-200 ${active === n.id ? "scale-100" : "scale-0"}`}
+                className={`absolute bottom-1.5 left-1/2 size-[4px] -translate-x-1/2 rounded-full bg-[var(--brick)] transition-transform duration-200 ${active === n.id ? "scale-100" : "scale-0"}`}
               />
               {n.label}
             </a>
           ))}
         </nav>
 
-        <div className="hidden md:block">
-          <CtaButton size="sm" />
+        <div className="hidden justify-self-end md:block">
+          <CtaButton size="sm" magnetic={false} />
         </div>
 
         <button
           ref={btn}
           type="button"
-          className="flex h-11 min-w-11 items-center gap-2 rounded-full px-3 text-[15px] font-medium md:hidden"
+          className="flex h-11 min-w-11 items-center gap-2.5 rounded-full bg-[var(--ink)] px-3.5 text-[14px] font-medium text-[var(--paper)] md:hidden"
           aria-expanded={open}
           aria-controls="mobile-menu"
           onClick={() => setOpen((v) => !v)}
@@ -101,20 +124,21 @@ export function Header() {
         ref={panel}
         id="mobile-menu"
         hidden={!open}
-        className="fixed inset-x-0 bottom-0 top-[var(--header-h)] overflow-y-auto bg-[var(--paper)] px-[var(--gutter)] pb-[calc(24px+env(safe-area-inset-bottom))] pt-8 md:hidden"
+        data-lenis-prevent
+        onClick={onMenuClick}
+        className="pointer-events-auto fixed inset-x-3 top-[calc(var(--header-h)+8px)] max-h-[calc(100dvh-var(--header-h)-20px-env(safe-area-inset-bottom))] overflow-y-auto overscroll-contain rounded-[28px] border border-[var(--ink)]/12 bg-[var(--paper)] px-5 pt-4 pb-5 shadow-[0_16px_48px_-16px_rgba(19,41,75,0.34)] md:hidden"
       >
-        <p className="label text-[var(--aegean)]">В номере</p>
-        <ul className="mt-4">
+        <ul>
           {[...NAV, { id: "pisma", label: "Письма читателей" }].map((n) => (
             <li key={n.id} className="border-b border-[var(--ink)]/12">
-              <a href={`#${n.id}`} onClick={() => setOpen(false)} className="display flex min-h-16 items-center py-3 text-[34px]">
+              <a href={`#${n.id}`} aria-current={active === n.id ? "location" : undefined} className="display flex min-h-14 items-center rounded-md py-3 text-[28px]">
                 {n.label}
               </a>
             </li>
           ))}
         </ul>
-        <div className="mt-8" onClick={() => setOpen(false)}>
-          <CtaButton size="lg" className="w-full" magnetic={false} />
+        <div className="mt-5">
+          <CtaButton className="w-full" magnetic={false} />
         </div>
       </div>
     </header>
