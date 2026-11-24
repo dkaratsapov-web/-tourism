@@ -156,7 +156,7 @@ function StaticStory() {
         {[
           { n: "02 / 04 · Полёт", h: TEXT.polet.h, p: TEXT.polet.p, id: "story-wing", alt: "Атмосферный кадр: крыло самолёта над облаками утром", pos: "46% 54%", posM: "32% 58%" },
           { n: "03 / 04 · Прилёт", h: TEXT.prilet.h, p: TEXT.prilet.p, id: "story-coast", alt: "Атмосферный кадр: Эгейское побережье сверху", pos: "45% 50%", posM: "50% 40%" },
-          { n: "04 / 04 · Терраса", h: "Здесь начинается отпуск", p: "", id: "story-terrace", alt: "Атмосферный кадр: терраса с видом на море вечером", pos: "60% 60%", posM: "60% 55%" },
+          { n: "04 / 04 · Терраса", h: "Здесь начинается отпуск", p: "", id: "story-terrace", alt: "Атмосферный кадр: солнечная терраса с видом на Эгейское море", pos: "58% 55%", posM: "50% 55%" },
         ].map((s) => (
           <div key={s.n} className="grid items-center gap-8 md:grid-cols-2">
             <div>
@@ -350,10 +350,10 @@ export function FlightStory() {
           <Photo
             id="story-terrace"
             mobileId="story-terrace-m"
-            alt="Атмосферный кадр: терраса с видом на море вечером"
+            alt="Атмосферный кадр: солнечная терраса с видом на Эгейское море"
             sizes="100vw"
-            pos="50% 70%"
-            posMobile="62% 50%"
+            pos="58% 55%"
+            posMobile="50% 55%"
             reveal="none"
             className="absolute inset-0 [clip-path:inset(100%_0_0_0)]"
             data={{ "data-terrace": "" }}

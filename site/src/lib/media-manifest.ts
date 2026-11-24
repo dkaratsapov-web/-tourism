@@ -21,13 +21,13 @@ export const MEDIA = {
     1600,
     905
   ],
-  "story-terrace-1280": [
-    1280,
-    720
+  "story-terrace-1120": [
+    1120,
+    630
   ],
-  "story-terrace-1920": [
-    1920,
-    1080
+  "story-terrace-1672": [
+    1672,
+    941
   ],
   "story-window-1280": [
     1280,
@@ -49,13 +49,13 @@ export const MEDIA = {
     1080,
     1920
   ],
-  "story-terrace-m-720": [
-    720,
-    1273
+  "story-terrace-m-480": [
+    480,
+    753
   ],
-  "story-terrace-m-1080": [
-    1080,
-    1910
+  "story-terrace-m-600": [
+    600,
+    941
   ],
   "story-window-m-720": [
     720,
