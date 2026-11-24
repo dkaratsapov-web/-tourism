@@ -1,6 +1,5 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -11,11 +10,9 @@ import { Stamp } from "@/components/ui/Stamp";
 import { SplitFlap } from "@/components/ui/SplitFlap";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { Chars } from "@/components/ui/Type";
-import { storyProgress } from "./progress";
+import { asset } from "@/lib/site";
 
 gsap.registerPlugin(ScrollTrigger);
-
-const CloudFlight = dynamic(() => import("@/components/three/CloudFlight"), { ssr: false });
 
 const SCENES = [
   { id: "sbory", label: "СБОРЫ" },
@@ -118,6 +115,17 @@ const FLIGHT_CAPTIONS = [
   { start: 4.12, end: 4.73, position: "top-[48%] text-center md:inset-x-[20%] md:top-[52%]", text: <>Дальше — <em>к побережью</em></> },
 ];
 
+// Облака на разных расстояниях расходятся от центра кадра по ходу полёта.
+const CLOUDS = [
+  { x: 12, y: 56, size: 72, quad: "0% 0%", drift: -72, start: 2.94 },
+  { x: 86, y: 64, size: 65, quad: "100% 0%", drift: 65, start: 3.02 },
+  { x: 47, y: 74, size: 54, quad: "0% 100%", drift: -18, start: 3.18 },
+  { x: 71, y: 48, size: 57, quad: "100% 100%", drift: 48, start: 3.4 },
+  { x: 34, y: 53, size: 63, quad: "100% 0%", drift: -55, start: 3.6 },
+  { x: 65, y: 72, size: 78, quad: "0% 0%", drift: 40, start: 3.86 },
+  { x: 34, y: 66, size: 90, quad: "100% 100%", drift: -38, start: 4.04 },
+];
+
 /** Статичная версия истории для «уменьшить движение»: тексты и кадры подряд, без пина. */
 function StaticStory() {
   return (
@@ -173,26 +181,6 @@ export function FlightStory() {
   const reduced = useReducedMotion();
   const root = useRef<HTMLElement>(null);
   const [scene, setScene] = useState(0);
-  const [inView, setInView] = useState(false);
-  const [near, setNear] = useState(false);
-
-  useEffect(() => {
-    const section = root.current;
-    if (reduced || !section) return;
-    const preload = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) {
-        setNear(true);
-        preload.disconnect();
-      }
-    }, { rootMargin: "65% 0px" });
-    const visibility = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting));
-    preload.observe(section);
-    visibility.observe(section);
-    return () => {
-      preload.disconnect();
-      visibility.disconnect();
-    };
-  }, [reduced]);
 
   useEffect(() => {
     const el = root.current;
@@ -221,10 +209,7 @@ export function FlightStory() {
           end: "bottom bottom",
           scrub: desktop ? 0.8 : 0.5,
           invalidateOnRefresh: true,
-          onUpdate: (self) => {
-            storyProgress.value = self.progress;
-            setScene(sceneAt(self.progress));
-          },
+          onUpdate: (self) => setScene(sceneAt(self.progress)),
         },
       });
 
@@ -249,7 +234,15 @@ export function FlightStory() {
         .to(pass, { opacity: 0, scale: 0.8, duration: 0.3 }, 1.95)
         .to(win, { "--window-x": "0%", "--window-y": "0%", "--window-radius": "0%", duration: 0.62, ease: "power2.inOut" }, 2.3)
         .fromTo(q("[data-window-poster] [data-photo-in]"), { scale: 1.02 }, { scale: 1.05, duration: 0.62, ease: "power2.inOut" }, 2.3)
-        .to(q("[data-flight-clouds]"), { "--flight-blend": 1, duration: 0.7, ease: "sine.inOut" }, 2.92);
+        .to(q("[data-flight-clouds]"), { opacity: 1, duration: 0.55, ease: "sine.inOut" }, 2.92);
+
+      const cloudLayers = q("[data-cloud-layer]");
+      CLOUDS.forEach(({ drift, start }, i) => {
+        const end = Math.min(start + 1.25, 5.15);
+        tl.fromTo(cloudLayers[i], { scale: 0.48, xPercent: -50, yPercent: -50 }, { scale: 1.95, xPercent: -50 + drift, yPercent: -20, duration: end - start, ease: "power1.in" }, start)
+          .to(cloudLayers[i], { opacity: 0.92, duration: 0.22 }, start)
+          .to(cloudLayers[i], { opacity: 0, duration: 0.28 }, end - 0.28);
+      });
 
       const captions = q("[data-flight-caption]");
       FLIGHT_CAPTIONS.forEach(({ start, end }, index) => {
@@ -330,8 +323,15 @@ export function FlightStory() {
             className="absolute inset-0"
             data={{ "data-window-poster": "" }}
           />
-          <div aria-hidden data-flight-clouds className="pointer-events-none absolute inset-0 [--flight-blend:0]">
-            {near ? <CloudFlight active={inView && scene === 1} /> : null}
+          <div aria-hidden data-flight-clouds className="pointer-events-none absolute inset-0 overflow-hidden opacity-0">
+            {CLOUDS.map(({ x, y, size, quad, start }) => (
+              <span
+                key={start}
+                data-cloud-layer
+                className="absolute block aspect-square opacity-0 [mask-image:radial-gradient(ellipse,#000_34%,transparent_70%)]"
+                style={{ left: `${x}%`, top: `${y}%`, width: `max(${size}vw, ${size * 0.78}svh)`, backgroundImage: `url(${asset("/media/w/tex-cloud-atlas-rgba-1024.webp")})`, backgroundPosition: quad, backgroundSize: "200% 200%", backgroundRepeat: "no-repeat" }}
+              />
+            ))}
           </div>
           {/* Видео позже: петля story-coast-loop.mp4 (только ПК) — <video muted playsInline loop preload="none">
               внутри [data-photo-in] этого кадра, постер — этот же кадр; играть, только пока сцена на экране. */}
