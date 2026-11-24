@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -10,8 +11,11 @@ import { Stamp } from "@/components/ui/Stamp";
 import { SplitFlap } from "@/components/ui/SplitFlap";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { Chars } from "@/components/ui/Type";
+import { storyProgress } from "./progress";
 
 gsap.registerPlugin(ScrollTrigger);
+
+const CloudFlight = dynamic(() => import("@/components/three/CloudFlight"), { ssr: false });
 
 const SCENES = [
   { id: "sbory", label: "СБОРЫ" },
@@ -142,7 +146,7 @@ function StaticStory() {
           />
         </div>
         {[
-          { n: "02 / 04 · Полёт", h: TEXT.polet.h, p: TEXT.polet.p, id: "story-window", alt: "Атмосферный кадр: крыло самолёта над облаками утром", pos: "40% 55%", posM: "50% 70%" },
+          { n: "02 / 04 · Полёт", h: TEXT.polet.h, p: TEXT.polet.p, id: "story-wing", alt: "Атмосферный кадр: крыло самолёта над облаками утром", pos: "46% 54%", posM: "32% 58%" },
           { n: "03 / 04 · Прилёт", h: TEXT.prilet.h, p: TEXT.prilet.p, id: "story-coast", alt: "Атмосферный кадр: Эгейское побережье сверху", pos: "45% 50%", posM: "50% 40%" },
           { n: "04 / 04 · Терраса", h: "Здесь начинается отпуск", p: "", id: "story-terrace", alt: "Атмосферный кадр: терраса с видом на море вечером", pos: "60% 60%", posM: "60% 55%" },
         ].map((s) => (
@@ -152,7 +156,7 @@ function StaticStory() {
               <h2 className="display mt-3 text-[clamp(2.4rem,5vw,4.6rem)]">{s.h}</h2>
               {s.p ? <p className="mt-4 max-w-md text-[17px] text-[var(--ink-soft)]">{s.p}</p> : <CtaButton className="mt-8" />}
             </div>
-            <Photo id={s.id} mobileId={`${s.id}-m`} alt={s.alt} sizes="(min-width: 768px) 50vw, 100vw" pos={s.pos} posMobile={s.posM} reveal="none" className="aspect-[4/5] md:aspect-[4/3]" />
+            <Photo id={s.id} mobileId={s.id === "story-wing" ? undefined : `${s.id}-m`} alt={s.alt} sizes="(min-width: 768px) 50vw, 100vw" pos={s.pos} posMobile={s.posM} reveal="none" className="aspect-[4/5] md:aspect-[4/3]" />
           </div>
         ))}
       </div>
@@ -169,6 +173,26 @@ export function FlightStory() {
   const reduced = useReducedMotion();
   const root = useRef<HTMLElement>(null);
   const [scene, setScene] = useState(0);
+  const [inView, setInView] = useState(false);
+  const [near, setNear] = useState(false);
+
+  useEffect(() => {
+    const section = root.current;
+    if (reduced || !section) return;
+    const preload = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setNear(true);
+        preload.disconnect();
+      }
+    }, { rootMargin: "65% 0px" });
+    const visibility = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting));
+    preload.observe(section);
+    visibility.observe(section);
+    return () => {
+      preload.disconnect();
+      visibility.disconnect();
+    };
+  }, [reduced]);
 
   useEffect(() => {
     const el = root.current;
@@ -197,7 +221,10 @@ export function FlightStory() {
           end: "bottom bottom",
           scrub: desktop ? 0.8 : 0.5,
           invalidateOnRefresh: true,
-          onUpdate: (self) => setScene(sceneAt(self.progress)),
+          onUpdate: (self) => {
+            storyProgress.value = self.progress;
+            setScene(sceneAt(self.progress));
+          },
         },
       });
 
@@ -216,12 +243,13 @@ export function FlightStory() {
       });
       tl.to(pass, { x: () => toCenter(pass, "x"), y: () => toCenter(pass, "y"), duration: 0.6, ease: "power4.inOut" }, 1.35);
 
-      // Иллюминатор открывается из центра. После раскрытия камера медленно приближается к облакам.
+      // Иллюминатор открывается из центра. Облака проявляются после раскрытия маски.
       tl.to(q("[data-bg='sky']"), { opacity: 1, duration: 0.8 }, 1.8)
         .to(win, { "--window-x": apertureX, "--window-y": apertureY, duration: 0.35, ease: "power2.out" }, 1.95)
         .to(pass, { opacity: 0, scale: 0.8, duration: 0.3 }, 1.95)
         .to(win, { "--window-x": "0%", "--window-y": "0%", "--window-radius": "0%", duration: 0.62, ease: "power2.inOut" }, 2.3)
-        .fromTo(q("[data-window-poster] [data-photo-in]"), { scale: 1.02, yPercent: 0 }, { scale: 1.16, yPercent: -3, duration: 2.65, ease: "power1.inOut" }, 2.3);
+        .fromTo(q("[data-window-poster] [data-photo-in]"), { scale: 1.02 }, { scale: 1.05, duration: 0.62, ease: "power2.inOut" }, 2.3)
+        .to(q("[data-flight-clouds]"), { "--flight-blend": 1, duration: 0.7, ease: "sine.inOut" }, 2.92);
 
       const captions = q("[data-flight-caption]");
       FLIGHT_CAPTIONS.forEach(({ start, end }, index) => {
@@ -293,16 +321,18 @@ export function FlightStory() {
         {/* Иллюминатор → небо и облака → побережье → терраса */}
         <div data-window className="absolute inset-0 bg-[var(--sky)] [--window-x:50%] [--window-y:50%] [--window-radius:50%] [clip-path:inset(var(--window-y)_var(--window-x)_round_var(--window-radius))]">
           <Photo
-            id="story-window"
-            mobileId="story-window-m"
+            id="story-wing"
             alt="Атмосферный кадр: крыло самолёта над облаками утром"
             sizes="100vw"
-            pos="38% 60%"
-            posMobile="40% 72%"
+            pos="46% 54%"
+            posMobile="32% 58%"
             reveal="none"
             className="absolute inset-0"
             data={{ "data-window-poster": "" }}
           />
+          <div aria-hidden data-flight-clouds className="pointer-events-none absolute inset-0 [--flight-blend:0]">
+            {near ? <CloudFlight active={inView && scene === 1} /> : null}
+          </div>
           {/* Видео позже: петля story-coast-loop.mp4 (только ПК) — <video muted playsInline loop preload="none">
               внутри [data-photo-in] этого кадра, постер — этот же кадр; играть, только пока сцена на экране. */}
           <Photo

@@ -6,6 +6,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useReducedMotion } from "@/lib/useReducedMotion";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { Placeholder } from "@/components/ui/Placeholder";
+import { Picture } from "@/components/ui/Media";
 import { Stamp } from "@/components/ui/Stamp";
 import { LEAD_ID } from "@/lib/site";
 
@@ -99,7 +100,19 @@ export function Hero() {
   return (
     <section ref={root} className="hero relative" aria-labelledby="hero-title">
       <div className="hero-stage bg-[color-mix(in_oklab,var(--tuff)_38%,var(--paper))]">
-        <div data-cover className="hero-cover relative flex min-h-svh flex-col bg-[var(--paper)] px-[var(--gutter)] pb-6 pt-[calc(var(--header-h)+12px)] md:pb-9">
+        <div data-cover className="hero-cover relative isolate flex min-h-svh flex-col bg-[var(--paper)] px-[var(--gutter)] pb-6 pt-[calc(var(--header-h)+12px)] md:pb-9">
+          <div aria-hidden className="hero-cover-art pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+            <Picture
+              id="hero-aegean"
+              alt=""
+              decorative
+              eager
+              sizes="(min-width: 768px) 88vw, 100vw"
+              pos="70% 58%"
+              posMobile="76% 52%"
+              className="absolute inset-0 md:left-[12%]"
+            />
+          </div>
           <div data-cover-frame aria-hidden className="pointer-events-none absolute inset-0 z-30 border-[5px] border-[var(--ink)] opacity-0" />
           <div data-cover-shade aria-hidden className="pointer-events-none absolute inset-0 z-30 bg-[var(--ink)] opacity-0" />
 

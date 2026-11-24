@@ -1,6 +1,18 @@
 // Сгенерировано tools/web/media_variants.py — не править руками.
 /** Размеры веб-вариантов кадров из public/media/w (ширина, высота) — для width/height у <img>. */
 export const MEDIA = {
+  "hero-aegean-640": [
+    640,
+    427
+  ],
+  "hero-aegean-960": [
+    960,
+    640
+  ],
+  "hero-aegean-1536": [
+    1536,
+    1024
+  ],
   "story-coast-1280": [
     1280,
     724
@@ -168,6 +180,18 @@ export const MEDIA = {
   "tex-cloud-atlas-rgba-1024": [
     1024,
     1024
+  ],
+  "story-wing-800": [
+    800,
+    450
+  ],
+  "story-wing-1280": [
+    1280,
+    720
+  ],
+  "story-wing-1672": [
+    1672,
+    941
   ]
 } as const satisfies Record<string, readonly [number, number]>;
 

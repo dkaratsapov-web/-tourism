@@ -236,6 +236,21 @@ select {
 
 /* ---------- Обложка ---------- */
 
+.hero-cover-art::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, var(--paper) 0%, rgb(246 243 236 / 0.63) 24%, transparent 62%, rgb(246 243 236 / 0.16) 100%),
+    linear-gradient(90deg, var(--paper) 14%, rgb(246 243 236 / 0.92) 37%, rgb(246 243 236 / 0.38) 63%, transparent 92%);
+}
+
+@media (max-width: 767px) {
+  .hero-cover-art::after {
+    background: linear-gradient(180deg, var(--paper) 4%, rgb(246 243 236 / 0.84) 22%, rgb(246 243 236 / 0.35) 46%, var(--paper) 76%);
+  }
+}
+
 .masthead {
   font-family: var(--font-display-face), "Times New Roman", serif;
   font-variation-settings: "wdth" 100, "wght" 560;

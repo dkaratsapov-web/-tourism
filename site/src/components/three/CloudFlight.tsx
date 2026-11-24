@@ -132,20 +132,22 @@ function Sun() {
 export default function CloudFlight({ active }: { active: boolean }) {
   // Компонент грузится только в браузере (ssr: false), поэтому window доступен сразу.
   const [mobile] = useState(() => window.matchMedia("(max-width: 899px)").matches);
+  const [ready, setReady] = useState(false);
   return (
     <Canvas
-      dpr={mobile ? [1, 1.25] : [1, 1.5]}
+      dpr={mobile ? 1 : [1, 1.25]}
       frameloop={active ? "always" : "never"}
       camera={{ fov: mobile ? 62 : 55, position: [0, 0.3, 6], near: 0.1, far: 140 }}
       gl={{ antialias: false, alpha: true, powerPreference: "high-performance" }}
       aria-hidden
-      style={{ position: "absolute", inset: 0 }}
+      onCreated={() => setReady(true)}
+      style={{ position: "absolute", inset: 0, opacity: ready ? "var(--flight-blend)" : 0, background: "linear-gradient(#86b9e2, #a9cdeb 52%, #eef5fb)" }}
     >
       <fog attach="fog" args={["#d9e8f5", 18, 90]} />
       <Sun />
       {/* Пока атлас грузится, облаков нет: под канвасом виден градиент неба. */}
       <Suspense fallback={null}>
-        <Clouds count={mobile ? 60 : 140} />
+        <Clouds count={mobile ? 60 : 112} />
       </Suspense>
     </Canvas>
   );
