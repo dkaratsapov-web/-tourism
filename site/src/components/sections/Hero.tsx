@@ -159,7 +159,6 @@ export function Hero() {
             <div className="rise mt-5 md:mt-8" style={{ "--d": "740ms" } as React.CSSProperties}>
               <CtaButton id="hero-cta" size="lg" className="w-full md:w-auto" />
             </div>
-            <p className="label mt-5 hidden text-[var(--ink-soft)] md:block">Наталья, Fashion Tours · подпись уточнить</p>
           </div>
         </div>
 
