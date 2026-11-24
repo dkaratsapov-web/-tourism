@@ -7,4 +7,4 @@
 :HL["/-tourism/_next/static/media/c50b0495a1ff0f08-s.p.2sla2yow9-9p_.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
 :HL["/-tourism/_next/static/media/d84423dcc5d3d922-s.p.1o_-s8nc7i9h1.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
 1:[["children",{"s":"__PAGE__","h":160}]]
-0:{"b":"7O0BIFEx_aljxZ1q-vZ6Y","t":{"t":{"s":"","h":80,"c":"$Q1"}}}
+0:{"b":"3zGMfFY8hYQMBT4nFaWis","t":{"t":{"s":"","h":80,"c":"$Q1"}}}
