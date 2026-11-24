@@ -237,31 +237,14 @@ select {
 /* ---------- Обложка ---------- */
 
 .masthead {
-  position: relative;
   font-family: var(--font-display-face), "Times New Roman", serif;
+  font-variation-settings: "wdth" 100, "wght" 560;
   font-kerning: none;
   font-feature-settings: "kern" 0;
   line-height: 0.8;
   letter-spacing: -0.015em;
   white-space: nowrap;
   color: var(--ink);
-}
-.mh-a,
-.mh-b {
-  display: block;
-  font-variation-settings: "wdth" 100, "wght" 560;
-}
-.mh-b {
-  position: absolute;
-  inset: 0 auto auto 0;
-  opacity: 0;
-  font-variation-settings: "wdth" var(--wdth, 100), "wght" 560;
-}
-.hero[data-fold] .mh-a {
-  opacity: 0;
-}
-.hero[data-fold] .mh-b {
-  opacity: 1;
 }
 .mh-row {
   display: block;
