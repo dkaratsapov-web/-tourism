@@ -16,14 +16,19 @@ const TILE_OFFSETS = [
 const PANEL = asset("/media/iznik-panel.webp");
 
 const FACTS = [
-  { title: "Тюльпаны Изника", text: "Во второй половине XVI века тюльпаны и гиацинты стали характерными мотивами османской керамики. Их часто рисовали рядом с крупными стилизованными цветами.", position: "left-[26%] top-[23%]" },
-  { title: "Лист саз", text: "Длинный зубчатый лист называют саз. Этот мотив пришёл из персидского искусства ко двору османских султанов в XVI веке. На изразцах поверх такого листа иногда рисовали тюльпан.", position: "right-[23%] top-[24%] sm:top-[48%]" },
+  { title: "1985", text: "Гёреме и скалы Каппадокии вошли в список ЮНЕСКО." },
+  { title: "Под Босфором", text: "Поезд Marmaray соединяет Европу и Азию под проливом." },
+  { title: "Чай сегодня", text: "Стакан чая в Турции — жест гостеприимства." },
+  { title: "1988", text: "Памуккале и античный Иераполис вошли в список ЮНЕСКО." },
+  { title: "Изник", text: "На старых изразцах тюльпан рисовали поверх зубчатого листа." },
+  { title: "Эбру", text: "Узор рисуют на воде, а потом переносят на бумагу." },
+  { title: "2013", text: "Традицию турецкого кофе внесли в список ЮНЕСКО." },
+  { title: "Газиантеп", text: "Город гастрономии ЮНЕСКО проводит фестиваль фисташек." },
+  { title: "Гёбекли-Тепе", text: "Каменные сооружения здесь старше 10 000 лет." },
 ];
 
 export function TurkishTiles() {
-  const [hovered, setHovered] = useState<number | null>(null);
   const [selected, setSelected] = useState<number | null>(null);
-  const active = hovered ?? selected;
   const root = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -68,47 +73,37 @@ export function TurkishTiles() {
     >
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_24%_40%,#244d85,transparent_67%)]" />
       <div className="mx-auto grid max-w-[1280px] items-center gap-10 md:grid-cols-[1fr_0.84fr] md:gap-[7vw]">
-        <figure onPointerLeave={() => setHovered(null)} onKeyDown={(event) => { if (event.key === "Escape") { setHovered(null); setSelected(null); } }} className="relative mx-auto w-full max-w-[620px] p-2 outline outline-1 outline-[#a9cdeb]/35 md:p-3">
-          <div
-            role="img"
-            aria-label="Керамическое панно в стиле Изника с кобальтовыми листьями и красными тюльпанами"
-            className="grid aspect-square grid-cols-3 grid-rows-3 gap-[2px] md:gap-[3px]"
-          >
-            {TILE_OFFSETS.map((_, i) => (
-              <div
-                key={i}
-                aria-hidden
+        <figure aria-label="Интерактивное панно в стиле Изника" className="mx-auto w-full max-w-[620px] p-2 outline outline-1 outline-[#a9cdeb]/35 md:p-3">
+          <div className="grid aspect-square grid-cols-3 grid-rows-3 gap-[2px] md:gap-[3px]">
+            {FACTS.map((fact, i) => (
+              <button
+                key={fact.title}
+                type="button"
                 data-iznik-tile
-                className="border border-[#f6f3ec]/45 bg-[#eeeadc] [background-size:300%_300%]"
-                style={{
-                  backgroundImage: `url("${PANEL}")`,
-                  backgroundPosition: `${(i % 3) * 50}% ${Math.floor(i / 3) * 50}%`,
-                }}
-              />
+                aria-label={fact.title}
+                aria-describedby={`iznik-fact-${i}`}
+                aria-pressed={selected === i}
+                onClick={() => setSelected(selected === i ? null : i)}
+                onKeyDown={(event) => { if (event.key === "Escape") setSelected(null); }}
+                className="group relative min-w-0 cursor-pointer [perspective:750px] focus-visible:z-10"
+              >
+                <span className={`absolute inset-0 transition-transform duration-500 [transform-style:preserve-3d] motion-reduce:transition-none [@media(hover:hover)]:group-hover:[transform:rotateY(180deg)] ${selected === i ? "[transform:rotateY(180deg)]" : ""}`}>
+                  <span
+                    aria-hidden="true"
+                    className="absolute inset-0 border border-[#f6f3ec]/45 bg-[#eeeadc] [backface-visibility:hidden] [background-size:300%_300%]"
+                    style={{
+                      backgroundImage: `url("${PANEL}")`,
+                      backgroundPosition: `${(i % 3) * 50}% ${Math.floor(i / 3) * 50}%`,
+                    }}
+                  />
+                  <span className="absolute inset-0 flex flex-col items-center justify-center gap-1 border border-[#f6f3ec]/45 bg-[#f6f3ec] p-1 text-center text-[#101f44] [backface-visibility:hidden] [transform:rotateY(180deg)] sm:gap-2 sm:p-2">
+                    <span className="font-display text-[clamp(11px,1.65vw,24px)] font-semibold leading-none text-[#a3433b]">{fact.title}</span>
+                    <span id={`iznik-fact-${i}`} className="text-[clamp(9px,1.13vw,15px)] font-medium leading-[1.18] sm:leading-snug">{fact.text}</span>
+                  </span>
+                </span>
+              </button>
             ))}
           </div>
-          {FACTS.map((fact, i) => (
-            <button
-              key={fact.title}
-              type="button"
-              aria-label={fact.title}
-              aria-expanded={active === i}
-              aria-controls="iznik-fact"
-              onPointerEnter={(event) => { if (event.pointerType === "mouse") setHovered(i); }}
-              onClick={() => { setHovered(null); setSelected(active === i && selected === i ? null : i); }}
-              className={`absolute z-30 grid size-11 cursor-pointer place-items-center rounded-full border border-white/80 text-xl shadow-[0_3px_15px_#101f4480] transition-colors ${fact.position} ${active === i ? "bg-[#a3433b] text-white" : "bg-[#101f44] text-white"}`}
-            >
-              <span aria-hidden>{active === i ? "−" : "+"}</span>
-            </button>
-          ))}
-          <figcaption id="iznik-fact" aria-live="polite" className={`absolute inset-x-3 bottom-3 z-20 border-l-2 border-[#a3433b] bg-[#f6f3ec] px-4 py-3 text-[#101f44] shadow-lg sm:px-5 sm:py-4 ${active === null ? "hidden" : ""}`}>
-            {active !== null && (
-              <>
-                <p className="display text-[23px]">{FACTS[active].title}</p>
-                <p className="mt-1 text-[13px] leading-relaxed sm:text-[15px]">{FACTS[active].text}</p>
-              </>
-            )}
-          </figcaption>
         </figure>
         <div data-iznik-caption className="max-w-[36rem] pb-2">
           <p className="mb-5 flex items-center gap-3 text-[14px] font-medium text-[#a9cdeb]">
@@ -120,6 +115,10 @@ export function TurkishTiles() {
           </h2>
           <p className="mt-6 max-w-[30rem] text-[17px] leading-relaxed text-[#dae4f4] md:text-[18px]">
             Красные тюльпаны, кобальтовые листья и бирюзовые стебли. Присмотритесь к изразцам в мечетях и дворцах Стамбула — знакомые узоры каждый раз складываются по-новому.
+          </p>
+          <p className="mt-5 text-[14px] text-[#a9cdeb]">
+            <span className="hidden [@media(hover:hover)]:inline">Наведите курсор или нажмите на плитку</span>
+            <span className="[@media(hover:hover)]:hidden">Нажмите на плитку</span>
           </p>
         </div>
       </div>
