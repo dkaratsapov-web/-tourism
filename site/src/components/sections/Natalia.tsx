@@ -1,5 +1,4 @@
 import { Placeholder } from "@/components/ui/Placeholder";
-import { Stamp } from "@/components/ui/Stamp";
 import { Picture, Texture } from "@/components/ui/Media";
 import { Lines } from "@/components/ui/Type";
 
@@ -17,7 +16,6 @@ export function Natalia() {
             label="Портрет Натальи — нужна съёмка, вертикаль 3:4"
             className="aspect-[4/5] w-full md:aspect-[3/4]"
           />
-          <Stamp kind="tag" rotate={-10} className="absolute -right-3 -top-10 w-20 md:-right-12 md:w-28" />
         </div>
         <div className="md:col-span-6 md:col-start-7 md:pt-10">
           <p className="label text-[var(--aegean)]">Рубрика · Кто собирает поездки</p>
