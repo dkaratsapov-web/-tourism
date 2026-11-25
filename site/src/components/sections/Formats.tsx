@@ -175,7 +175,7 @@ export function Formats() {
   };
 
   return (
-    <section ref={root} aria-labelledby="formats-title" className="relative bg-[var(--paper)] min-[900px]:h-[var(--formats-h,auto)]">
+    <section id="trip-formats" ref={root} aria-labelledby="formats-title" className="relative bg-[var(--paper)] min-[900px]:h-[var(--formats-h,auto)]">
       <div className="formats-frame overflow-hidden py-20 min-[900px]:sticky min-[900px]:top-0 min-[900px]:flex min-[900px]:h-svh min-[900px]:flex-col min-[900px]:justify-center min-[900px]:pb-10 min-[900px]:pt-[calc(var(--header-h)+28px)]">
         <div className="relative px-[var(--gutter)]">
           <p className="label text-[var(--aegean)]">Форматы</p>

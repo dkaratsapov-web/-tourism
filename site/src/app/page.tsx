@@ -11,6 +11,7 @@ import { HotelReviews, Letters } from "@/components/sections/Reviews";
 import { Process } from "@/components/sections/Process";
 import { Lead, LeadDialog } from "@/components/sections/Lead";
 import { Footer } from "@/components/sections/Footer";
+import { SectionIndex } from "@/components/ui/SectionIndex";
 import { StickyCta } from "@/components/ui/StickyCta";
 
 const PLACES = ["Анталия", "Каппадокия", "Бодрум", "Стамбул", "Эгейское побережье"];
@@ -21,6 +22,7 @@ export default function Home() {
       <SmoothScroll />
       <RevealObserver />
       <Header />
+      <SectionIndex />
       <main id="main">
         <Hero />
         <FlightStory />

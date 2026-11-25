@@ -3,7 +3,7 @@ import { TELEGRAM_URL } from "@/lib/site";
 /** Подвал: узкий мастхед, контакты и юридические заглушки (152-ФЗ — документы готовятся). */
 export function Footer() {
   return (
-    <footer className="bg-[var(--ink)] px-[var(--gutter)] pb-[calc(96px+env(safe-area-inset-bottom))] pt-16 text-[var(--paper)] md:pb-10 md:pt-24">
+    <footer id="contacts" className="bg-[var(--ink)] px-[var(--gutter)] pb-[calc(96px+env(safe-area-inset-bottom))] pt-16 text-[var(--paper)] md:pb-10 md:pt-24">
       <p aria-hidden className="display overflow-hidden whitespace-nowrap text-[16vw] leading-[0.8] [--wdth:62.5] [--wght:600] md:text-[17.4vw]">
         Fashion Tours
       </p>

@@ -8,7 +8,7 @@ import { Cutout, Photo } from "@/components/ui/Media";
 import type { MediaName } from "@/lib/media-manifest";
 import { Stamp } from "@/components/ui/Stamp";
 import { SplitFlap } from "@/components/ui/SplitFlap";
-import { CtaButton } from "@/components/ui/CtaButton";
+import { QuickLeadForm } from "@/components/ui/QuickLeadForm";
 import { Chars } from "@/components/ui/Type";
 import { asset } from "@/lib/site";
 
@@ -162,7 +162,7 @@ function StaticStory() {
             <div>
               <p className="label text-[var(--aegean)]">{s.n}</p>
               <h2 className="display mt-3 text-[clamp(2.4rem,5vw,4.6rem)]">{s.h}</h2>
-              {s.p ? <p className="mt-4 max-w-md text-[17px] text-[var(--ink-soft)]">{s.p}</p> : <CtaButton className="mt-8" />}
+              {s.p ? <p className="mt-4 max-w-md text-[17px] text-[var(--ink-soft)]">{s.p}</p> : <div className="mt-6"><QuickLeadForm source="terrace" /></div>}
             </div>
             <Photo id={s.id} mobileId={s.id === "story-wing" ? undefined : `${s.id}-m`} alt={s.alt} sizes="(min-width: 768px) 50vw, 100vw" pos={s.pos} posMobile={s.posM} reveal="none" className="aspect-[4/5] md:aspect-[4/3]" />
           </div>
@@ -358,7 +358,7 @@ export function FlightStory() {
             className="absolute inset-0 [clip-path:inset(100%_0_0_0)]"
             data={{ "data-terrace": "" }}
           >
-            {/* Светлая дымка только за заголовком и кнопкой (слева, по высоте текста): на ПК линия горизонта
+            {/* Светлая дымка за заголовком и формой (слева, по высоте текста): на ПК линия горизонта
                 проходит на уровне строк, и тёмное море иначе съедает контраст. Остальной кадр не тронут. */}
             <div
               aria-hidden
@@ -385,10 +385,10 @@ export function FlightStory() {
             <p className="mt-3 max-w-[26rem] text-[15px] leading-[1.5] text-[var(--ink-soft)] md:text-[17px]">{TEXT.prilet.p}</p>
           </div>
         </div>
-        <div data-final className="absolute inset-x-[var(--gutter)] top-[calc(var(--header-h)+56px)]">
-          <Chars text="Здесь начинается отпуск" italicFrom={2} reveal={false} className="display max-w-[12ch] text-[clamp(3.1rem,9.4vw,10rem)] [--wght:480] [&_.ch]:opacity-0" />
-          <div data-final-cta className="invisible mt-6 md:mt-10">
-            <CtaButton size="lg" />
+        <div data-final className="pointer-events-none absolute inset-x-[var(--gutter)] top-[calc(var(--header-h)+52px)]">
+          <Chars text="Здесь начинается отпуск" italicFrom={2} reveal={false} className="display max-w-[12ch] text-[clamp(2.45rem,min(8.2vw,13svh),9rem)] [--wght:480] [&_.ch]:opacity-0" />
+          <div data-final-cta className="pointer-events-auto invisible mt-4 w-fit max-w-full md:mt-6">
+            <QuickLeadForm source="terrace" />
           </div>
           <div data-terrace-stamp className="absolute right-0 top-0 hidden w-36 opacity-0 md:block">
             <Stamp kind="turkiye" reveal="none" rotate={10} id="st-terrace" />

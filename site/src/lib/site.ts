@@ -19,13 +19,6 @@ export const LEAD_ID = "zayavka";
 /** Публичный адрес обработчика заявок. Секреты отправки хранятся в обработчике. */
 export const LEAD_ENDPOINT = process.env.NEXT_PUBLIC_LEAD_ENDPOINT;
 
-export function isContact(raw: string) {
-  const v = raw.trim();
-  const phone = /^[+\d\s()-]+$/.test(v) && v.replace(/\D/g, "").length >= 10;
-  const telegram = /^@[a-zA-Z][a-zA-Z0-9_]{4,31}$/.test(v) || /(^|\/\/)t\.me\/[a-zA-Z0-9_]{5,}/.test(v);
-  const email = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
-  return phone || telegram || email;
-}
 export const LEAD_DIALOG_ID = "trip-dialog";
 export const LEAD_DIALOG_EVENT = "ft:open-lead-dialog";
 

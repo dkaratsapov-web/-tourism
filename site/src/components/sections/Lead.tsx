@@ -3,7 +3,9 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { useReducedMotion } from "@/lib/useReducedMotion";
-import { DESTINATIONS, LEAD_DIALOG_EVENT, LEAD_DIALOG_ID, LEAD_ID, TELEGRAM_URL, isContact, telegramLink, type TripDestination } from "@/lib/site";
+import { DESTINATIONS, LEAD_DIALOG_EVENT, LEAD_DIALOG_ID, LEAD_ID, TELEGRAM_URL, telegramLink, type TripDestination } from "@/lib/site";
+import { CONTACT_ERRORS, CONTACT_LABELS, readContact, type ContactMethod } from "@/lib/contact";
+import { ContactFields } from "@/components/ui/ContactFields";
 import { Chars } from "@/components/ui/Type";
 import { Stamp } from "@/components/ui/Stamp";
 import { Picture, Texture } from "@/components/ui/Media";
@@ -16,11 +18,11 @@ const field =
   "mt-2 block w-full rounded-[10px] border border-[var(--ink)]/25 bg-[var(--white)] px-4 py-3.5 text-[16px] text-[var(--ink)] outline-none transition-[border-color,box-shadow] duration-200 placeholder:text-[var(--ink-soft)] focus:border-[var(--aegean)] focus:shadow-[0_0_0_3px_rgb(169_205_235/0.7)] aria-[invalid=true]:border-[var(--brick)]";
 
 /** Текст сообщения, который уйдёт в Telegram. */
-function buildMessage(v: { name: string; contact: string; when: string; who: string; dest: string[]; comment: string }) {
+function buildMessage(v: { name: string; contact: string; contactMethod: ContactMethod; when: string; who: string; dest: string[]; comment: string }) {
   return [
     "Заявка с сайта Fashion Tours",
     `Имя: ${v.name}`,
-    `Контакт: ${v.contact}`,
+    `${CONTACT_LABELS[v.contactMethod]}: ${v.contact}`,
     v.when && `Когда: ${v.when}`,
     v.who && `Кто едет: ${v.who}`,
     v.dest.length ? `Куда: ${v.dest.join(", ")}` : "",
@@ -39,7 +41,6 @@ export function Lead({ popup }: { popup?: { destination?: TripDestination } }) {
   const reduced = useReducedMotion();
   const uid = useId();
   const [name, setName] = useState("");
-  const [contact, setContact] = useState("");
   const [when, setWhen] = useState("");
   const [who, setWho] = useState("");
   const [comment, setComment] = useState("");
@@ -54,15 +55,16 @@ export function Lead({ popup }: { popup?: { destination?: TripDestination } }) {
   const submit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const next: Errors = {};
+    const { value: contact, method: contactMethod } = readContact(new FormData(e.currentTarget));
     if (!name.trim()) next.name = "Напишите, как к вам обращаться.";
-    if (!isContact(contact)) next.contact = "Оставьте телефон, ник в Telegram (например, @natalia) или почту, чтобы Наталья могла ответить.";
+    if (!contact) next.contact = CONTACT_ERRORS[contactMethod];
     if (!consent) next.consent = "Без согласия на обработку данных мы не можем принять заявку.";
     setErrors(next);
     if (Object.keys(next).length) {
       document.getElementById(`${uid}-${Object.keys(next)[0]}`)?.focus();
       return;
     }
-    const text = buildMessage({ name: name.trim(), contact: contact.trim(), when, who, dest, comment });
+    const text = buildMessage({ name: name.trim(), contact, contactMethod, when, who, dest, comment });
     window.open(telegramLink(text), "_blank", "noopener");
     setSent(text);
   };
@@ -101,7 +103,7 @@ export function Lead({ popup }: { popup?: { destination?: TripDestination } }) {
             )}
           </div>
           {!popup && <p className="max-w-[26rem] text-[16px] leading-[1.55] text-[var(--ink)]">
-            Заполните талон — откроется Telegram с готовым текстом заявки. Наталья ответит там же. Можно сразу{" "}
+            Заполните талон — откроется Telegram с готовым текстом заявки. Укажите, как вам удобнее получить ответ. Можно сразу{" "}
             <a href={TELEGRAM_URL} target="_blank" rel="noopener" className="font-medium underline decoration-1 underline-offset-4">
               написать в Telegram
             </a>
@@ -143,23 +145,13 @@ export function Lead({ popup }: { popup?: { destination?: TripDestination } }) {
                   />
                   {err("name")}
                 </div>
-                <div>
-                  <label htmlFor={`${uid}-contact`} className="label text-[var(--ink-soft)]">
-                    Телефон или Telegram *
-                  </label>
-                  <input
-                    id={`${uid}-contact`}
-                    name="contact"
-                    autoComplete="tel"
-                    value={contact}
-                    onChange={(e) => setContact(e.target.value)}
-                    aria-invalid={!!errors.contact}
-                    aria-describedby={errors.contact ? `${uid}-contact-err` : undefined}
-                    placeholder="+7 … или @ник"
-                    className={field}
-                  />
-                  {err("contact")}
-                </div>
+                <ContactFields
+                  id={`${uid}-contact`}
+                  inputClass={field}
+                  labelClass="label text-[var(--ink-soft)]"
+                  error={errors.contact}
+                  onEdit={() => setErrors((previous) => previous.contact ? { ...previous, contact: undefined } : previous)}
+                />
                 <div>
                   <label htmlFor={`${uid}-when`} className="label text-[var(--ink-soft)]">
                     Когда планируете

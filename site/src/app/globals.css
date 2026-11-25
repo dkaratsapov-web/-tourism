@@ -535,3 +535,102 @@ select {
     opacity: 1 !important;
   }
 }
+
+/* Оглавление: нейтральный ряд закладок, названия раскрываются на бумажной подложке. */
+.section-index {
+  display: none;
+}
+
+@media (min-width: 1024px) and (min-height: 580px) and (hover: hover) {
+  .section-index {
+    position: fixed;
+    z-index: 45;
+    inset-inline-end: 8px;
+    top: 50%;
+    display: block;
+    width: 190px;
+    padding: 10px 0;
+    color: var(--ink);
+    opacity: 0.78;
+    transform: translateY(-50%);
+    pointer-events: none;
+    transition: opacity 230ms ease;
+  }
+
+  .section-index[data-scrolling] { opacity: 0.34; }
+  .section-index:is(:hover, :focus-within) { opacity: 1; }
+
+  .section-index-paper {
+    position: absolute;
+    z-index: -1;
+    inset: 0 0 0 auto;
+    width: 32px;
+    background: var(--paper);
+    border: 1px solid color-mix(in srgb, var(--ink) 16%, transparent);
+    border-radius: 15px 4px 4px 15px;
+    box-shadow: 0 12px 32px -20px #13294b9e;
+    transition: width 280ms var(--ease-expo);
+  }
+
+  .section-index:is(:hover, :focus-within) .section-index-paper { width: 100%; }
+
+  .section-index-title {
+    height: 30px;
+    padding-inline: 14px 32px;
+    font-size: 23px;
+  }
+
+  .section-index a {
+    position: relative;
+    margin-inline-start: auto;
+    display: flex;
+    min-height: 31px;
+    width: 32px;
+    align-items: center;
+    border-radius: 3px;
+    pointer-events: auto;
+  }
+
+  .section-index:is(:hover, :focus-within) a { width: calc(100% - 8px); }
+  .section-index a:is(:hover, :focus-visible) { background: #13294b0b; }
+  .section-index a[aria-current] { font-weight: 650; }
+
+  .section-index-label {
+    padding-inline: 9px 32px;
+    white-space: nowrap;
+    font-size: 13px;
+  }
+
+  .section-index-title,
+  .section-index-label {
+    opacity: 0;
+    transform: translateX(5px);
+    transition: opacity 170ms ease, transform 230ms var(--ease-expo);
+  }
+
+  .section-index:is(:hover, :focus-within) :is(.section-index-title, .section-index-label) {
+    opacity: 1;
+    transform: none;
+  }
+
+  .section-index-marker {
+    position: absolute;
+    inset-inline-end: 10px;
+    width: 11px;
+    height: 2px;
+    border-radius: 4px;
+    background: var(--ink);
+    transition: width 180ms ease, background-color 180ms ease;
+  }
+
+  .section-index a[aria-current] .section-index-marker {
+    width: 16px;
+    height: 3px;
+    background: var(--brick);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .section-index,
+  .section-index * { transition: none; }
+}

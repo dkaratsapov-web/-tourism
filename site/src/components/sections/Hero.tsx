@@ -63,7 +63,7 @@ export function Hero() {
       const cover = hero.querySelector<HTMLElement>("[data-cover]")!;
       const page = hero.querySelector<HTMLElement>("[data-spread]")!;
       const frame = hero.querySelector<HTMLElement>("[data-cover-frame]")!;
-      gsap.set(page, { xPercent: 101 });
+      gsap.set(page, { x: 0, xPercent: 101 });
       gsap.set(cover, { transformOrigin: "0% 50%" });
 
       const tl = gsap.timeline({

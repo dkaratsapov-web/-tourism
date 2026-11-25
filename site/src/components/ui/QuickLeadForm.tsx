@@ -1,14 +1,18 @@
 "use client";
 
 import { useId, useRef, useState, type FormEvent } from "react";
-import { LEAD_ENDPOINT, isContact } from "@/lib/site";
+import { LEAD_ENDPOINT } from "@/lib/site";
+import { CONTACT_ERRORS, readContact } from "@/lib/contact";
+import { ContactFields } from "@/components/ui/ContactFields";
 
-export function QuickLeadForm({ source }: { source: "hero" | "process" }) {
-  const compact = source === "hero";
+export function QuickLeadForm({ source }: { source: "hero" | "process" | "terrace" }) {
+  const compact = source !== "process";
   const titleId = useId();
   const sending = useRef(false);
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [message, setMessage] = useState("");
+  const [contactError, setContactError] = useState("");
+  const [contactVersion, setContactVersion] = useState(0);
 
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -16,10 +20,11 @@ export function QuickLeadForm({ source }: { source: "hero" | "process" }) {
     const form = event.currentTarget;
     const data = new FormData(form);
     const name = String(data.get("name") ?? "").trim();
-    const contact = String(data.get("contact") ?? "").trim();
-    if (!name || !isContact(contact)) {
+    const { value: contact, method: contactMethod } = readContact(data);
+    if (!name || !contact) {
       setStatus("error");
-      setMessage(!name ? "Укажите ваше имя." : "Укажите телефон, Telegram или электронную почту.");
+      setMessage(name ? "" : "Укажите ваше имя.");
+      setContactError(name && !contact ? CONTACT_ERRORS[contactMethod] : "");
       (form.elements.namedItem(name ? "contact" : "name") as HTMLInputElement)?.focus({ preventScroll: true });
       return;
     }
@@ -41,11 +46,12 @@ export function QuickLeadForm({ source }: { source: "hero" | "process" }) {
       const response = await fetch(LEAD_ENDPOINT, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, contact, consent: true, source }),
+        body: JSON.stringify({ name, contact, contactMethod, consent: true, source }),
         signal: AbortSignal.timeout(15000),
       });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       form.reset();
+      setContactVersion((version) => version + 1);
       setStatus("sent");
       setMessage("Заявка отправлена.");
     } catch {
@@ -66,10 +72,13 @@ export function QuickLeadForm({ source }: { source: "hero" | "process" }) {
           Имя
           <input className={input} name="name" autoComplete="given-name" required />
         </label>
-        <label className="block min-w-0 text-[14px] font-medium">
-          Телефон или Telegram
-          <input className={input} name="contact" placeholder="+7 … или @ник" required />
-        </label>
+        <ContactFields
+          key={contactVersion}
+          inputClass={input}
+          labelClass="text-[14px] font-medium"
+          error={contactError}
+          onEdit={() => setContactError("")}
+        />
       </div>
       <div className={compact ? "mt-3 grid gap-3 sm:flex sm:items-center sm:justify-between" : ""}>
         <label className={`flex items-start gap-2 text-[13px] leading-snug text-[var(--ink-soft)] ${compact ? "" : "mt-3"}`}>
