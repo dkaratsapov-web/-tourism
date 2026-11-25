@@ -17,6 +17,7 @@ export function ContactFields({
   error,
   onEdit,
   leadingField,
+  dark = false,
 }: {
   id?: string;
   inputClass: string;
@@ -24,6 +25,7 @@ export function ContactFields({
   error?: string;
   onEdit?: () => void;
   leadingField?: ReactNode;
+  dark?: boolean;
 }) {
   const uid = useId();
   const inputId = id ?? uid;
@@ -34,7 +36,7 @@ export function ContactFields({
   return (
     <fieldset className="min-w-0">
       <legend className={labelClass}>Удобный способ связи</legend>
-      <div className="mt-1 inline-flex max-w-full flex-wrap gap-0.5 rounded-xl border border-[var(--ink)]/12 bg-[var(--ink)]/5 p-0.5">
+      <div className={`mt-1 inline-flex max-w-full flex-wrap gap-0.5 rounded-xl border p-0.5 ${dark ? "border-white/20 bg-white/5" : "border-[var(--ink)]/12 bg-[var(--ink)]/5"}`}>
         {METHODS.map((option) => (
           <label key={option} className="cursor-pointer">
             <input
@@ -45,7 +47,7 @@ export function ContactFields({
               onChange={() => { setMethod(option); onEdit?.(); }}
               className="peer sr-only"
             />
-            <span className="inline-flex min-h-9 items-center rounded-[9px] px-2.5 text-[13px] font-medium text-[var(--ink)] transition-colors hover:bg-[var(--white)] peer-checked:bg-[var(--ink)] peer-checked:text-[var(--paper)] peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-[var(--aegean)]">
+            <span className={`inline-flex min-h-9 items-center rounded-[9px] px-2.5 text-[13px] font-medium transition-colors peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 ${dark ? "text-white hover:bg-white/15 peer-checked:bg-[var(--sky)] peer-checked:text-[#101f36] peer-focus-visible:outline-[var(--sky)]" : "text-[var(--ink)] hover:bg-[var(--white)] peer-checked:bg-[var(--ink)] peer-checked:text-[var(--paper)] peer-focus-visible:outline-[var(--aegean)]"}`}>
               {CONTACT_LABELS[option]}
             </span>
           </label>
@@ -79,7 +81,7 @@ export function ContactFields({
             }}
             className={inputClass}
           />
-          {error && <p id={`${inputId}-err`} className="mt-1.5 text-[14px] text-[var(--brick)]">{error}</p>}
+          {error && <p id={`${inputId}-err`} className={`mt-1.5 text-[14px] ${dark ? "text-[#fecaca]" : "text-[var(--brick)]"}`}>{error}</p>}
         </div>
       </div>
     </fieldset>

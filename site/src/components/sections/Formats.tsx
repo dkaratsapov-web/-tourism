@@ -18,10 +18,30 @@ gsap.registerPlugin(ScrollTrigger);
  * Каждая строка открывает форму с выбранным направлением.
  */
 const DESTINATION_NOTES = {
-  AYT: "Подберём отель в Анталии или на побережье. Сравним пляжи, питание и время дороги из аэропорта.",
-  BJV: "Бухты Эгейского моря, прогулки по Бодруму и отели у воды. Сравним тихие места и районы, где вечером есть куда выйти.",
-  NAV: "Пещерные отели, долины и рассветы в Каппадокии. Соберём маршрут с удобными переездами и временем на прогулки.",
-  IST: "Босфор, старый город и прогулки по разным берегам. Подберём район для проживания и при желании добавим несколько дней у моря.",
+  AYT: {
+    intro: "Пляжный отдых с базой в одном отеле и короткими выездами по побережью.",
+    audience: "Семьям с детьми и тем, кто хочет проводить большую часть отпуска у моря.",
+    sights: "Старый город Анталии, набережные и водопады Дюден.",
+    plan: "Сравним вход в море, тень на пляже, питание и время дороги из аэропорта.",
+  },
+  BJV: {
+    intro: "Эгейское побережье с небольшими бухтами, белыми домами и ужинами у воды.",
+    audience: "Парам и тем, кому важно выбрать между тихой бухтой и вечерними прогулками в городе.",
+    sights: "Марина Бодрума, замок Святого Петра и закат в Гюмюшлюке.",
+    plan: "Подберём бухту под ваш ритм и сравним доступ к пляжу, ресторанам и прогулочным маршрутам.",
+  },
+  NAV: {
+    intro: "Несколько дней среди скальных долин с ночёвкой в пещерном отеле.",
+    audience: "Тем, кто любит пешие прогулки, ранние выезды и активную смену впечатлений.",
+    sights: "Гёреме, скальные долины и рассвет с видом на воздушные шары. Полёты зависят от погоды.",
+    plan: "Подберём базу для прогулок и выстроим переезды, если хочется совместить Каппадокию с морем.",
+  },
+  IST: {
+    intro: "Городская поездка с рынками, паромами по Босфору и прогулками по разным берегам.",
+    audience: "Тем, кто хочет чередовать музеи, кафе и прогулки или добавить город к отдыху у моря.",
+    sights: "Султанахмет, Галата и поездка на пароме в Кадыкёй.",
+    plan: "Выберем район для проживания и соберём дни вокруг соседних кварталов, чтобы меньше времени тратить на дорогу.",
+  },
 };
 
 export function DepartureBoard() {
@@ -61,6 +81,7 @@ export function DepartureBoard() {
           <ul aria-label="Направления">
           {DESTINATIONS.map((d) => {
             const expanded = active === d.code;
+            const notes = DESTINATION_NOTES[d.code];
             const panelId = `destination-${d.code.toLowerCase()}`;
             return (
             <li key={d.code} onPointerEnter={(event) => {
@@ -94,14 +115,24 @@ export function DepartureBoard() {
             </button>
             <div id={panelId} inert={!expanded} className={`grid transition-[grid-template-rows] duration-300 motion-reduce:transition-none ${expanded ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}>
               <div className="min-h-0 overflow-hidden">
-                <div className="grid items-center gap-5 border-b border-[var(--paper)]/20 bg-[var(--paper)]/[0.06] px-4 py-6 md:grid-cols-[1fr_1.2fr] md:px-8">
+                <div className="grid items-start gap-7 border-b border-[var(--paper)]/20 bg-[var(--paper)]/[0.06] px-4 py-6 md:px-8 lg:grid-cols-[1.2fr_1fr] lg:gap-12">
                   <div>
                     <h3 className="display text-[clamp(1.8rem,3vw,3rem)]">{d.chip}</h3>
-                    <p className="mt-3 max-w-[40ch] text-[16px] leading-relaxed text-[var(--paper)]/85">{DESTINATION_NOTES[d.code]}</p>
+                    <p className="mt-2 max-w-[55ch] text-[16px] leading-relaxed text-[var(--paper)]/85">{notes.intro}</p>
+                    <dl className="mt-5 divide-y divide-[var(--paper)]/15 border-y border-[var(--paper)]/15 text-[14px] leading-relaxed">
+                      {[
+                        ["Кому подойдёт", notes.audience],
+                        ["Что посмотреть", notes.sights],
+                        ["Как спланируем", notes.plan],
+                      ].map(([title, description]) => (
+                        <div key={title} className="grid gap-1 py-3 sm:grid-cols-[9rem_1fr]">
+                          <dt className="font-semibold text-[var(--sky)]">{title}</dt>
+                          <dd className="text-[var(--paper)]/90">{description}</dd>
+                        </div>
+                      ))}
+                    </dl>
                   </div>
-                  <div className="text-[var(--ink)]">
-                    <QuickLeadForm source="board" destination={d.chip} />
-                  </div>
+                  <QuickLeadForm source="board" destination={d.chip} />
                 </div>
               </div>
             </div>

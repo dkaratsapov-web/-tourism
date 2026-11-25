@@ -62,6 +62,35 @@ export function QuickLeadForm({ source, destination }: { source: "hero" | "proce
     }
   };
 
+  if (source === "board") {
+    const input = "mt-1 w-full rounded-md border border-white/25 bg-white/[0.07] px-3 py-2.5 text-[16px] text-white placeholder:text-white/55 focus:border-[var(--sky)]";
+    return (
+      <form method="dialog" aria-labelledby={titleId} onSubmit={submit} className="min-w-0 border-t-2 border-[var(--sky)] bg-[#101f36] p-5 text-[var(--paper)] sm:p-6">
+        <h4 id={titleId} className="display text-[27px]">Подобрать поездку</h4>
+        <p className="mt-1 text-[13px] text-[var(--sky)]">{destination}</p>
+        <div className="mt-4">
+          <ContactFields
+            key={contactVersion}
+            dark
+            inputClass={input}
+            labelClass="block text-[13px] font-medium"
+            error={contactError}
+            onEdit={() => setContactError("")}
+            leadingField={<label className="block min-w-0 text-[13px] font-medium">Имя<input className={input} name="name" autoComplete="given-name" required /></label>}
+          />
+        </div>
+        <label className="mt-4 flex items-start gap-2 text-[12px] leading-snug text-[var(--paper)]/80">
+          <input type="checkbox" name="consent" required className="mt-0.5 size-4 shrink-0 accent-[var(--sky)]" />
+          Согласие на обработку персональных данных
+        </label>
+        <button type="submit" disabled={status === "sending"} className="mt-4 flex min-h-11 w-full cursor-pointer items-center justify-between rounded-md bg-[var(--sky)] px-4 text-[14px] font-semibold text-[#101f36] hover:bg-white disabled:cursor-wait disabled:opacity-70">
+          {status === "sending" ? "Отправляем…" : "Запросить подбор"} <span aria-hidden>↗</span>
+        </button>
+        <p role="status" className={message ? `mt-3 text-[14px] ${status === "error" ? "text-[#fecaca]" : "text-[var(--sky)]"}` : "sr-only"}>{message}</p>
+      </form>
+    );
+  }
+
   const input = "mt-1 w-full rounded-lg border border-[var(--ink)]/20 bg-[var(--white)] px-3 py-2.5 text-[16px] text-[var(--ink)] placeholder:text-[var(--ink-soft)]";
 
   return (
