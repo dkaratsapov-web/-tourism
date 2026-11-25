@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type MouseEvent } from "react";
-import { NAV, LEAD_ID, openLeadDialog } from "@/lib/site";
+import { NAV, LEAD_DIALOG_ID, LEAD_ID, openLeadDialog } from "@/lib/site";
 import { scroller, scrollToId } from "@/lib/scroll";
 import { CtaButton } from "./CtaButton";
 
@@ -77,37 +77,38 @@ export function Header() {
   return (
     <header className="pointer-events-none fixed inset-x-0 top-[var(--header-inset)] z-50 px-3 md:px-6">
       {open && <div aria-hidden className="pointer-events-auto fixed inset-0 bg-[var(--ink)]/20 md:hidden" onClick={() => setOpen(false)} />}
-      <div className="pointer-events-auto relative mx-auto flex h-[calc(var(--header-h)-var(--header-inset))] max-w-[1180px] items-stretch justify-between gap-2 rounded-[17px] border border-[var(--ink)]/18 bg-[var(--paper)] pr-1.5 shadow-[0_12px_32px_-14px_rgba(19,41,75,0.55),inset_0_1px_0_white] md:grid md:grid-cols-[1fr_auto_1fr] md:gap-2 md:pr-2">
-        <a href="#main" onClick={open ? onMenuClick : undefined} className="relative -my-px -ml-px flex w-fit shrink-0 flex-col justify-center gap-0.5 rounded-l-[17px] border-r border-dashed border-[var(--sky)]/55 bg-[var(--ink)] px-3.5 whitespace-nowrap text-[var(--paper)] focus-visible:outline-offset-[-4px] sm:px-5 lg:min-w-[215px]" aria-label="Fashion Tours — в начало">
-          <span className="display text-[20px] [--wght:600] md:text-[24px] lg:text-[27px]">Fashion Tours</span>
-          <span className="text-[9px] font-semibold tracking-[0.2em] text-[var(--sky)] uppercase">Турция</span>
+      <div className="pointer-events-auto relative mx-auto flex h-[calc(var(--header-h)-var(--header-inset))] max-w-[1310px] items-center justify-between gap-2 rounded-t-lg border-b-2 border-[var(--ink)] bg-[var(--paper)]/96 px-3 shadow-[0_14px_32px_-22px_#13294b] backdrop-blur-md md:grid md:grid-cols-[1fr_auto_1fr] md:px-4 lg:px-6">
+        <a href="#main" onClick={open ? onMenuClick : undefined} className="flex min-h-11 w-fit shrink-0 items-baseline gap-3 whitespace-nowrap text-[var(--ink)] max-md:items-center" aria-label="Fashion Tours — в начало">
+          <span className="display self-center text-[23px] [--wght:620] md:text-[26px] lg:text-[32px]">Fashion Tours</span>
+          <span className="hidden border-l-2 border-[var(--brick)] pl-2 text-[10px] font-semibold tracking-[0.13em] text-[var(--ink-soft)] uppercase min-[1060px]:inline">Турция</span>
         </a>
 
-        <nav aria-label="Основное меню" className="hidden items-center gap-0.5 self-center rounded-xl border border-[var(--ink)]/10 bg-[var(--ink)]/[0.035] p-0.5 md:flex lg:gap-1">
+        <nav aria-label="Основное меню" className="hidden h-full items-stretch gap-3 md:flex lg:gap-7">
           {NAV.map((n) => (
             <a
               key={n.id}
               href={`#${n.id}`}
               aria-current={active === n.id ? "location" : undefined}
-              className={`relative flex h-11 items-center rounded-[9px] px-2.5 text-[13px] font-medium whitespace-nowrap transition-colors lg:px-4 ${active === n.id ? "bg-[var(--white)] text-[var(--ink)] shadow-sm" : "text-[var(--ink-soft)] hover:bg-[var(--ink)]/5 hover:text-[var(--ink)]"}`}
+              className={`group relative flex items-center px-1 text-[13px] font-medium whitespace-nowrap transition-colors hover:text-[var(--ink)] ${active === n.id ? "text-[var(--ink)]" : "text-[var(--ink-soft)]"}`}
             >
               <span
                 aria-hidden
-                className={`absolute bottom-1.5 left-1/2 size-[4px] -translate-x-1/2 rounded-full bg-[var(--brick)] transition-transform duration-200 ${active === n.id ? "scale-100" : "scale-0"}`}
+                className={`absolute inset-x-1 bottom-0 h-0.5 origin-left bg-[var(--brick)] transition-transform duration-200 motion-reduce:transition-none ${active === n.id ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100 group-focus-visible:scale-x-100"}`}
               />
               {n.label}
             </a>
           ))}
         </nav>
 
-        <div className="relative hidden self-stretch items-center justify-self-end border-l border-dashed border-[var(--ink)]/25 pl-2.5 md:flex lg:pl-4">
-          <CtaButton size="sm" magnetic={false} onOpenDialog={() => openLeadDialog()} />
-        </div>
+        <button type="button" aria-haspopup="dialog" aria-controls={LEAD_DIALOG_ID} onClick={() => openLeadDialog()} className="hidden min-h-11 cursor-pointer items-center gap-2.5 justify-self-end whitespace-nowrap text-[13px] font-semibold text-[var(--ink)] group md:inline-flex">
+          Обсудить поездку
+          <span aria-hidden className="grid size-9 place-items-center rounded-full bg-[var(--brick)] text-lg leading-none text-white transition-colors group-hover:bg-[var(--ink)]">↗</span>
+        </button>
 
         <button
           ref={btn}
           type="button"
-          className="flex h-11 min-w-11 self-center items-center gap-2.5 rounded-[11px] border border-[var(--ink)]/15 bg-[var(--white)] px-3 text-[13px] font-medium text-[var(--ink)] md:hidden"
+          className="flex h-11 min-w-11 self-center items-center gap-2.5 px-1.5 text-[13px] font-medium text-[var(--ink)] md:hidden"
           aria-expanded={open}
           aria-controls="mobile-menu"
           onClick={() => setOpen((v) => !v)}
