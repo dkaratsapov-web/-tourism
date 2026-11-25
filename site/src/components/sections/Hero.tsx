@@ -162,6 +162,12 @@ export function Hero() {
             delay={1200}
             className="absolute bottom-[23%] right-[calc(var(--gutter)-4px)] z-20 hidden w-[11vw] md:block"
           />
+          <p className="relative z-30 mx-auto mt-4 flex w-fit items-center gap-2 rounded-full bg-[var(--paper)]/95 px-3 py-1.5 text-[12px] font-medium text-[var(--ink)] ring-1 ring-[var(--ink)]/10 md:absolute md:bottom-3 md:left-1/2 md:mt-0 md:-translate-x-1/2">
+            Медленно листайте вниз
+            <svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.2" className="text-[var(--brick)]">
+              <path d="M6 1v9m-3-3 3 3 3-3" />
+            </svg>
+          </p>
         </div>
 
         {/* Правая страница разворота — содержание номера. Без JavaScript идёт обычным блоком под обложкой. */}
