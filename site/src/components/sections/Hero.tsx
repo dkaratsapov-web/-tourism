@@ -8,7 +8,6 @@ import { QuickLeadForm } from "@/components/ui/QuickLeadForm";
 import { Placeholder } from "@/components/ui/Placeholder";
 import { Picture } from "@/components/ui/Media";
 import { Stamp } from "@/components/ui/Stamp";
-import { LEAD_ID } from "@/lib/site";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -22,13 +21,6 @@ const CONTENTS = [
   { n: "04", t: "Терраса", s: "Здесь начинается отпуск" },
 ];
 
-const RUBRICS = [
-  { id: "formaty", t: "Форматы Турции" },
-  { id: "natalia", t: "Наталья" },
-  { id: "kak-rabotaem", t: "Как мы работаем" },
-  { id: "pisma", t: "Письма читателей" },
-  { id: LEAD_ID, t: "Заявка" },
-];
 
 /** Мастхед появляется по буквам при загрузке и дальше движется вместе с обложкой. */
 function Masthead() {
@@ -190,16 +182,9 @@ export function Hero() {
               </li>
             ))}
           </ol>
-          <p className="label mt-6 text-[var(--ink-soft)] md:mt-auto">Рубрики</p>
-          <ul className="mt-3 flex flex-wrap gap-x-6 gap-y-1">
-            {RUBRICS.map((r) => (
-              <li key={r.id}>
-                <a href={`#${r.id}`} className="link-draw flex h-11 items-center text-[16px] font-medium">
-                  {r.t}
-                </a>
-              </li>
-            ))}
-          </ul>
+          <p className="mt-6 max-w-[37ch] border-l border-[var(--brick)]/60 pl-4 text-[15px] leading-relaxed text-[var(--ink-soft)] md:mt-auto">
+            Впереди четыре сцены одной поездки — от разговора о вашем отпуске до первого вечера у моря.
+          </p>
         </aside>
       </div>
     </section>

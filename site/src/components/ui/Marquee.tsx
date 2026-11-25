@@ -36,15 +36,12 @@ export function Marquee({ items, dir = 1, className = "", starClass = "text-[var
     if (reduced || !root.current || !track.current || !skewEl.current) return;
     const t = track.current;
     const sk = skewEl.current;
-    let visible = false;
     let x = 0;
     let skew = 0;
     let heading = dir;
     let lastY = window.scrollY;
     let width = (t.firstElementChild as HTMLElement).offsetWidth;
 
-    const io = new IntersectionObserver(([e]) => (visible = e.isIntersecting));
-    io.observe(root.current);
     const ro = new ResizeObserver(() => (width = (t.firstElementChild as HTMLElement).offsetWidth));
     ro.observe(t);
 
@@ -52,7 +49,7 @@ export function Marquee({ items, dir = 1, className = "", starClass = "text-[var
       const y = window.scrollY;
       const v = (y - lastY) * (16.7 / Math.max(dtMs, 1)); // пикселей скролла за кадр 60 Гц
       lastY = y;
-      if (!visible || !width) return;
+      if (!width) return;
       if (Math.abs(v) > 0.4) heading = (Math.sign(v) * dir) as 1 | -1;
       const speed = 0.7 + Math.min(Math.abs(v) * 0.45, 18);
       x -= heading * speed * (dtMs / 16.7);
@@ -63,7 +60,15 @@ export function Marquee({ items, dir = 1, className = "", starClass = "text-[var
       t.style.transform = `translate3d(${x.toFixed(2)}px,0,0)`;
       sk.style.transform = `skewX(${skew.toFixed(2)}deg)`;
     };
-    gsap.ticker.add(tick);
+    const io = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        lastY = window.scrollY;
+        gsap.ticker.add(tick);
+      } else {
+        gsap.ticker.remove(tick);
+      }
+    });
+    io.observe(root.current);
     return () => {
       gsap.ticker.remove(tick);
       io.disconnect();

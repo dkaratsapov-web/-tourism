@@ -201,6 +201,7 @@ export function FlightStory() {
           ? stage.clientWidth / 2 - (n.offsetLeft + n.offsetWidth / 2)
           : stage.clientHeight / 2 - (n.offsetTop + n.offsetHeight / 2);
 
+      let activeScene = -1;
       const tl = gsap.timeline({
         defaults: { ease: "none" },
         scrollTrigger: {
@@ -209,7 +210,12 @@ export function FlightStory() {
           end: "bottom bottom",
           scrub: desktop ? 0.8 : 0.5,
           invalidateOnRefresh: true,
-          onUpdate: (self) => setScene(sceneAt(self.progress)),
+          onUpdate: (self) => {
+            const nextScene = sceneAt(self.progress);
+            if (nextScene === activeScene) return;
+            activeScene = nextScene;
+            setScene(nextScene);
+          },
         },
       });
 
@@ -238,8 +244,9 @@ export function FlightStory() {
 
       const cloudLayers = q("[data-cloud-layer]");
       CLOUDS.forEach(({ drift, start }, i) => {
+        if (!desktop && (i === 1 || i === 3 || i === 5)) return;
         const end = Math.min(start + 1.25, 5.15);
-        tl.fromTo(cloudLayers[i], { scale: 0.48, xPercent: -50, yPercent: -50 }, { scale: 1.95, xPercent: -50 + drift, yPercent: -20, duration: end - start, ease: "power1.in" }, start)
+        tl.fromTo(cloudLayers[i], { scale: 0.48, xPercent: -50, yPercent: -50 }, { scale: desktop ? 1.95 : 1.55, xPercent: -50 + drift, yPercent: -20, duration: end - start, ease: "power1.in" }, start)
           .to(cloudLayers[i], { opacity: 0.92, duration: 0.22 }, start)
           .to(cloudLayers[i], { opacity: 0, duration: 0.28 }, end - 0.28);
       });
@@ -324,11 +331,11 @@ export function FlightStory() {
             data={{ "data-window-poster": "" }}
           />
           <div aria-hidden data-flight-clouds className="pointer-events-none absolute inset-0 overflow-hidden opacity-0">
-            {CLOUDS.map(({ x, y, size, quad, start }) => (
+            {CLOUDS.map(({ x, y, size, quad, start }, i) => (
               <span
                 key={start}
                 data-cloud-layer
-                className="absolute block aspect-square opacity-0 [mask-image:radial-gradient(ellipse,#000_34%,transparent_70%)]"
+                className={`absolute aspect-square opacity-0 [mask-image:radial-gradient(ellipse,#000_34%,transparent_70%)] ${i === 1 || i === 3 || i === 5 ? "hidden min-[900px]:block" : "block"}`}
                 style={{ left: `${x}%`, top: `${y}%`, width: `max(${size}vw, ${size * 0.78}svh)`, backgroundImage: `url(${asset("/media/w/tex-cloud-atlas-rgba-1024.webp")})`, backgroundPosition: quad, backgroundSize: "200% 200%", backgroundRepeat: "no-repeat" }}
               />
             ))}

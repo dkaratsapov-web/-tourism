@@ -204,6 +204,8 @@ select {
 .photo-in {
   position: absolute;
   inset: 0;
+}
+[data-reveal^="photo"] .photo-in {
   transition: transform 1.4s var(--ease-expo);
 }
 /* Маска — на внутреннем слое: IntersectionObserver считает элемент, целиком обрезанный своим clip-path, невидимым. */
@@ -351,7 +353,6 @@ select {
 }
 .marquee-track {
   display: inline-flex;
-  will-change: transform;
 }
 .marquee-skew {
   display: inline-flex;
