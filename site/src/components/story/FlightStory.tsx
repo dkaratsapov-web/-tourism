@@ -233,7 +233,7 @@ export function FlightStory() {
         .to(q("[data-sbory]"), { autoAlpha: 0, y: -40, duration: 0.4, ease: "power2.in" }, 1.45)
         .to(q("[data-word]"), { opacity: 0, duration: 0.4 }, 1.6);
       items.forEach((it, i) => {
-        tl.to(it, { x: () => toCenter(it, "x"), y: () => toCenter(it, "y"), scale: 0.25, rotate: 0, opacity: 0, duration: 0.6, ease: "power4.inOut" }, 1.3 + i * 0.05);
+        tl.to(it, { x: () => toCenter(it, "x"), y: () => toCenter(it, "y"), scale: 0.25, rotate: 0, autoAlpha: 0, duration: 0.6, ease: "power4.inOut" }, 1.3 + i * 0.05);
       });
       tl.to(pass, { x: () => toCenter(pass, "x"), y: () => toCenter(pass, "y"), duration: 0.6, ease: "power4.inOut" }, 1.35);
 
@@ -305,10 +305,15 @@ export function FlightStory() {
         <p aria-hidden data-word className="display pointer-events-none absolute -left-[2vw] top-[30%] whitespace-nowrap text-[42vw] italic leading-none text-[var(--tuff)]/55 md:top-[8%] md:text-[30vw]">
           сборы
         </p>
-        {ITEMS.map((it) => (
-          <div key={it.name} data-item data-depth={it.depth} className={`absolute ${it.pos} ${it.size}`} style={{ rotate: `${it.rot}deg` }}>
-            <Cutout name={it.name} alt={it.alt} decorative={it.decorative} />
-            {it.tag ? <TagLabel /> : null}
+        {ITEMS.map((it, index) => (
+          <div key={it.name} data-item data-depth={it.depth} className={`group absolute ${it.pos} ${it.size}`} style={{ rotate: `${it.rot}deg` }}>
+            <div
+              data-item-hover
+              className={`pointer-events-none relative transition-transform duration-300 ease-out motion-safe:[@media(hover:hover)_and_(pointer:fine)]:group-hover:-translate-y-2.5 motion-safe:[@media(hover:hover)_and_(pointer:fine)]:group-hover:scale-[1.06] ${index % 2 ? "motion-safe:[@media(hover:hover)_and_(pointer:fine)]:group-hover:rotate-[6deg]" : "motion-safe:[@media(hover:hover)_and_(pointer:fine)]:group-hover:-rotate-[6deg]"}`}
+            >
+              <Cutout name={it.name} alt={it.alt} decorative={it.decorative} />
+              {it.tag ? <TagLabel /> : null}
+            </div>
           </div>
         ))}
         <div data-sbory className="absolute inset-x-[var(--gutter)] top-[calc(var(--header-h)+70px)] max-w-[30rem] md:top-auto md:bottom-[16%]">
