@@ -80,7 +80,8 @@ export function Header() {
       <svg aria-hidden="true" className="absolute size-0 overflow-hidden">
         <defs>
           <filter id="fashion-tours-paper-cutout" colorInterpolationFilters="sRGB">
-            <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  -0.638 -2.146 -0.216 0 2.82" />
+            <feColorMatrix result="inkOnly" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  -0.638 -2.146 -0.216 0 2.82" />
+            <feComposite in="inkOnly" in2="SourceAlpha" operator="in" />
           </filter>
         </defs>
       </svg>
