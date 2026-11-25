@@ -50,7 +50,7 @@ export function Process() {
       <div className="mx-auto grid max-w-[1320px] grid-cols-1 gap-10 md:grid-cols-12 md:gap-8">
         <div className="md:col-span-4">
           <div className="[@media(min-width:900px)_and_(min-height:720px)]:sticky [@media(min-width:900px)_and_(min-height:720px)]:top-[calc(var(--header-h)+24px)]">
-            <p className="label text-[var(--ink)]">Рубрика · Как мы работаем</p>
+            <p className="label text-[var(--ink)]">Подбор и сопровождение</p>
             <Lines
               id="process-title"
               className="display mt-4 text-[clamp(2.6rem,4.2vw,4.5rem)]"

@@ -15,10 +15,10 @@ const WORDS = ["FASHION", "TOURS"];
 const NBSP = " ";
 
 const CONTENTS = [
-  { n: "01", t: "Сборы", s: "Сначала — разговор" },
-  { n: "02", t: "Полёт", s: "Детали поездки уже в плане" },
-  { n: "03", t: "Прилёт", s: "Встреча и дорога до отеля" },
-  { n: "04", t: "Терраса", s: "Здесь начинается отпуск" },
+  { n: "01", t: "Анталия", s: "Пляжи и семейные отели" },
+  { n: "02", t: "Бодрум", s: "Тихие бухты и ужины у воды" },
+  { n: "03", t: "Каппадокия", s: "Скальные долины и ранние рассветы" },
+  { n: "04", t: "Стамбул", s: "Босфор, рынки и старые кварталы" },
 ];
 
 
@@ -113,7 +113,7 @@ export function Hero() {
           <div className="rise flex items-center justify-between" style={{ "--d": "60ms" } as React.CSSProperties}>
             <p className="label flex items-center gap-2.5 text-[var(--aegean)]">
               <Stamp kind="airmail" reveal="none" rotate={-6} className="h-7 w-auto md:h-8" />
-              Выпуск: Турция
+              Отдых в Турции
             </p>
             <p className="label hidden text-[var(--ink-soft)] md:block">Онлайн-турагентство · отели и маршруты</p>
           </div>
@@ -160,24 +160,24 @@ export function Hero() {
         <aside data-spread className="spread-page z-40 flex flex-col bg-[var(--white)] px-[var(--gutter)] pb-10 pt-[calc(var(--header-h)+28px)] md:pl-[4.5vw]" aria-labelledby="contents-title">
           <div className="flex items-start justify-between gap-6">
             <div>
-              <p className="label text-[var(--aegean)]">В этом номере</p>
+              <p className="label text-[var(--aegean)]">Направления</p>
               <h2 id="contents-title" className="display mt-3 text-[clamp(2.4rem,4.6vw,4.6rem)]">
-                Турция <em>в четырёх сценах</em>
+                У каждого места <em>свой ритм</em>
               </h2>
             </div>
             <Stamp kind="turkiye" tone="ink" rotate={12} className="w-24 shrink-0 md:w-32" id="st-contents" />
           </div>
           <ol className="mt-6 border-t border-[var(--ink)]/15 md:mt-10">
             {CONTENTS.map((c) => (
-              <li key={c.n} className="flex items-baseline gap-4 border-b border-[var(--ink)]/15 py-3 md:gap-6 md:py-4">
+              <li key={c.n} className="grid grid-cols-[1.5rem_1fr] items-baseline gap-x-3 gap-y-1 border-b border-[var(--ink)]/15 py-2.5 min-[1100px]:grid-cols-[1.5rem_auto_1fr] md:gap-x-5 md:py-3">
                 <span className="label w-6 text-[var(--brick)]">{c.n}</span>
-                <span className="display text-[clamp(2rem,3vw,3rem)]">{c.t}</span>
-                <span className="ml-auto hidden text-right text-[14px] text-[var(--ink-soft)] min-[420px]:block md:text-[15px]">{c.s}</span>
+                <span className="display text-[clamp(1.65rem,2.8vw,3rem)]">{c.t}</span>
+                <span className="col-start-2 text-[14px] text-[var(--ink-soft)] min-[1100px]:col-start-auto min-[1100px]:text-right md:text-[15px]">{c.s}</span>
               </li>
             ))}
           </ol>
           <p className="mt-6 max-w-[37ch] border-l border-[var(--brick)]/60 pl-4 text-[15px] leading-relaxed text-[var(--ink-soft)] md:mt-auto">
-            Впереди четыре сцены одной поездки — от разговора о вашем отпуске до первого вечера у моря.
+            Можно выбрать одно место или соединить город, море и долины в одной поездке.
           </p>
         </aside>
       </div>

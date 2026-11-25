@@ -95,7 +95,7 @@ export function Lead({ popup }: { popup?: { destination?: TripDestination } }) {
       <div className="mx-auto max-w-[1240px]">
         <div className="flex flex-wrap items-end justify-between gap-6">
           <div>
-            <p className="label text-[var(--ink)]">{popup?.destination ? `${popup.destination.code} · ${popup.destination.city}` : "Рубрика · Заявка"}</p>
+            <p className="label text-[var(--ink)]">{popup?.destination ? `${popup.destination.code} · ${popup.destination.city}` : "Заявка"}</p>
             {popup ? (
               <h2 id={headingId} className="display mt-3 pr-8 text-[clamp(2.15rem,5vw,3.4rem)]">Обсудим <em>поездку?</em></h2>
             ) : (

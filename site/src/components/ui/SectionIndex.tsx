@@ -63,9 +63,9 @@ export function SectionIndex() {
   }, []);
 
   return (
-    <nav ref={index} className="section-index" aria-label="Оглавление бортового журнала">
+    <nav ref={index} className="section-index" aria-label="Навигация по разделам">
       <div className="section-index-paper" aria-hidden />
-      <p className="section-index-title display" aria-hidden>Оглавление</p>
+      <p className="section-index-title display" aria-hidden>Разделы</p>
       <ol>
         {SECTIONS.map(({ id, label }) => (
           <li key={id}>

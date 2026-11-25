@@ -308,7 +308,7 @@ export function FlightStory() {
           </div>
         ))}
         <div data-sbory className="absolute inset-x-[var(--gutter)] top-[calc(var(--header-h)+70px)] max-w-[30rem] md:top-auto md:bottom-[16%]">
-          <p className="label text-[var(--aegean)]">Рубрика · Сборы</p>
+          <p className="label text-[var(--aegean)]">Сборы</p>
           <h2 data-reveal="marker" className="display mt-3 text-[clamp(2.5rem,5.6vw,5.6rem)]">
             Сначала — <em className="marker">разговор</em>
           </h2>
@@ -385,7 +385,7 @@ export function FlightStory() {
         ))}
         <div data-cap="prilet" className="invisible absolute inset-x-[var(--gutter)] top-[calc(var(--header-h)+80px)] max-w-[36rem]">
           <div className="w-fit bg-[var(--paper)] px-5 pb-5 pt-4 md:px-7 md:pb-7">
-            <p className="label text-[var(--aegean)]">Рубрика · Прилёт</p>
+            <p className="label text-[var(--aegean)]">Прилёт</p>
             <h2 className="display mt-3 text-[clamp(2.2rem,4.4vw,4.4rem)]">
               Встреча и <em>дорога до отеля</em>
             </h2>

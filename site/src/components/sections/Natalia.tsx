@@ -18,7 +18,7 @@ export function Natalia() {
           />
         </div>
         <div className="md:col-span-6 md:col-start-7 md:pt-10">
-          <p className="label text-[var(--aegean)]">Рубрика · Кто собирает поездки</p>
+          <p className="label text-[var(--aegean)]">Ваш турагент</p>
           <Lines
             id="natalia-title"
             className="display mt-4 text-[clamp(2.5rem,5vw,5.6rem)]"

@@ -14,7 +14,7 @@ export function HotelReviews() {
       <div className="mx-auto max-w-[1320px]">
         <div className="flex flex-wrap items-end justify-between gap-6">
           <div>
-            <p className="label text-[var(--aegean)]">Рубрика · Обзоры</p>
+            <p className="label text-[var(--aegean)]">Видеообзоры</p>
             <Lines
               id="obzory-title"
               className="display mt-4 text-[clamp(2.6rem,5.6vw,5.6rem)]"
@@ -60,13 +60,13 @@ export function Letters() {
   return (
     <section id="pisma" aria-labelledby="pisma-title" className="relative overflow-hidden bg-[var(--paper)] px-[var(--gutter)] py-20 md:py-32">
       <div className="mx-auto max-w-[1320px]">
-        <p className="label text-[var(--aegean)]">Рубрика · Отзывы</p>
+        <p className="label text-[var(--aegean)]">Опыт путешественников</p>
         <Lines
           id="pisma-title"
           className="display mt-4 text-[clamp(2.6rem,5.6vw,5.6rem)]"
           lines={[
             <>
-              Письма <em className="marker">в редакцию</em>
+              Отзывы <em className="marker">о поездках</em>
             </>,
           ]}
         />
@@ -78,7 +78,7 @@ export function Letters() {
                 style={{ "--rot": `${r}deg` } as React.CSSProperties}
               >
                 <Stamp kind="airmail" rotate={i % 2 ? 6 : -4} delay={i * 120} className="absolute right-5 top-5 w-14 md:w-16" id={`st-letter-${i}`} />
-                <p className="label text-[var(--brick)]">Письмо {i + 1}</p>
+                <p className="label text-[var(--brick)]">Отзыв {i + 1}</p>
                 <p className="display mt-6 max-w-[14ch] text-[30px] italic leading-[1.05] md:text-[34px]">Реальный отзыв — уточнить</p>
                 <div aria-hidden className="mt-6 space-y-3">
                   {[0, 1, 2].map((l) => (
