@@ -197,7 +197,7 @@ export function Formats() {
       const section = root.current!;
       const t = track.current!;
       const distance = () => Math.max(0, t.scrollWidth - window.innerWidth);
-      const readingSpace = () => Math.round(gsap.utils.clamp(96, 160, window.innerHeight * 0.14));
+      const readingSpace = () => Math.round(window.innerHeight * 0.5);
       // После входа в экран оставляем время прочитать первые карточки до движения ленты.
       const setHeight = () => section.style.setProperty("--formats-h", `${distance() + window.innerHeight + readingSpace()}px`);
       setHeight();
