@@ -191,12 +191,12 @@ export function FlightStory() {
       const q = gsap.utils.selector(el);
       const stage = q("[data-stage]")[0] as HTMLElement;
       const pass = q("[data-pass]")[0] as HTMLElement;
-      const win = q("[data-window]")[0] as HTMLElement;
+      const mask = q(desktop ? "[data-window]" : "[data-window-poster]")[0] as HTMLElement;
       // Анимируем геометрию одной маски, чтобы браузер не переупаковывал параметры inset между фазами.
       const aperture = { x: 50, y: 50, radius: 48 };
       const drawAperture = () => {
         const { x, y, radius } = aperture;
-        win.style.clipPath = `inset(${y}% ${x}% round ${radius}%)`;
+        mask.style.clipPath = x === 0 && y === 0 ? "none" : `inset(${y}% ${x}% round ${radius}%)`;
       };
       // Смещение элемента к центру кадра по раскладке (offset*), а не по текущему transform.
       const toCenter = (n: HTMLElement, axis: "x" | "y") =>
@@ -211,7 +211,7 @@ export function FlightStory() {
           trigger: el,
           start: "top top",
           end: "bottom bottom",
-          scrub: desktop ? 0.42 : 0.32,
+          scrub: desktop ? 0.42 : true,
           invalidateOnRefresh: true,
         },
         onUpdate() {
@@ -242,7 +242,7 @@ export function FlightStory() {
         .to(aperture, { x: desktop ? 40 : 14, y: desktop ? 28 : 25, duration: 0.34, ease: "sine.inOut", onUpdate: drawAperture }, 1.88)
         .to(pass, { opacity: 0, scale: 0.8, duration: 0.3 }, 1.95)
         .to(aperture, { x: 0, y: 0, radius: 0, duration: 0.7, ease: "sine.inOut", onUpdate: drawAperture }, 2.22)
-        .fromTo(q("[data-window-poster] [data-photo-in]"), { scale: 1.02 }, { scale: 1.05, duration: 0.62, ease: "power2.inOut" }, 2.3)
+        .fromTo(q("[data-window-poster] [data-photo-in]"), { scale: desktop ? 1.02 : 1 }, { scale: desktop ? 1.05 : 1, duration: 0.62, ease: "power2.inOut" }, 2.3)
         .to(q("[data-flight-clouds]"), { opacity: 1, duration: 0.55, ease: "sine.inOut" }, 2.92);
 
       const cloudLayers = q("[data-cloud-layer]");
@@ -282,7 +282,7 @@ export function FlightStory() {
 
       // Прогресс-линия — по всей истории.
       tl.to(q("[data-progress]"), { scaleX: 1, duration: tl.duration() }, 0);
-      return () => win.style.removeProperty("clip-path");
+      return () => mask.style.removeProperty("clip-path");
     };
 
     mm.add("(min-width: 900px)", () => build(true));
@@ -328,7 +328,7 @@ export function FlightStory() {
         </div>
 
         {/* Иллюминатор → небо и облака → побережье → терраса */}
-        <div data-window className="absolute inset-0 bg-[var(--sky)] [clip-path:inset(50%_50%_50%_50%_round_50%)]">
+        <div data-window className="pointer-events-none absolute inset-0 min-[900px]:bg-[var(--sky)] min-[900px]:[clip-path:inset(50%_50%_50%_50%_round_50%)]">
           <Photo
             id="story-wing"
             alt="Атмосферный кадр: крыло самолёта над облаками утром"
@@ -336,7 +336,7 @@ export function FlightStory() {
             pos="46% 54%"
             posMobile="32% 58%"
             reveal="none"
-            className="absolute! inset-0"
+            className="absolute! inset-0 max-[899px]:[clip-path:inset(50%_50%_50%_50%_round_50%)]"
             data={{ "data-window-poster": "" }}
           />
           <div aria-hidden data-flight-clouds className="pointer-events-none absolute inset-0 overflow-hidden opacity-0">

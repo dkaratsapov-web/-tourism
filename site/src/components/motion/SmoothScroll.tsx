@@ -8,6 +8,8 @@ import { useReducedMotion } from "@/lib/useReducedMotion";
 import { scroller, scrollToId } from "@/lib/scroll";
 
 gsap.registerPlugin(ScrollTrigger);
+// Раскрытие панели Safari не должно перематывать закреплённые сцены.
+ScrollTrigger.config({ ignoreMobileResize: true });
 
 /**
  * Плавный скролл Lenis, синхронизированный с GSAP ScrollTrigger.
