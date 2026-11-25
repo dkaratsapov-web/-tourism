@@ -254,7 +254,7 @@ export function FlightStory() {
       tl.to(q("[data-whiteout]"), { opacity: 1, duration: 0.55 }, 4.8)
         .to(q("[data-bg='white']"), { opacity: 1, duration: 0.5 }, 4.9)
         .set(q("[data-sea]"), { autoAlpha: 1 }, 5.35)
-        .fromTo(q("[data-sea] [data-photo-in]"), { scale: 1.25, yPercent: -4 }, { scale: 1, yPercent: 0, duration: 2.1, ease: "power2.out" }, 5.35)
+        .fromTo(q("[data-sea] [data-photo-in]"), { scale: 1.25 }, { scale: 1, duration: 2.1, ease: "power2.out" }, 5.35)
         .to(q("[data-whiteout]"), { opacity: 0, duration: 0.6 }, 5.55);
 
       // 6–7.2 · Прилёт: подпись.
