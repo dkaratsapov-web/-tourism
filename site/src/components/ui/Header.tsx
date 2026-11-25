@@ -77,10 +77,17 @@ export function Header() {
 
   return (
     <header className="pointer-events-none fixed inset-x-0 top-[var(--header-inset)] z-50 px-3 md:px-6">
+      <svg aria-hidden="true" className="absolute size-0 overflow-hidden">
+        <defs>
+          <filter id="fashion-tours-paper-cutout" colorInterpolationFilters="sRGB">
+            <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  -0.638 -2.146 -0.216 0 2.82" />
+          </filter>
+        </defs>
+      </svg>
       {open && <div aria-hidden className="pointer-events-auto fixed inset-0 bg-[var(--ink)]/20 md:hidden" onClick={() => setOpen(false)} />}
       <div className="pointer-events-auto relative mx-auto flex h-[calc(var(--header-h)-var(--header-inset))] max-w-[1180px] items-center justify-between gap-3 rounded-full border border-[var(--ink)]/12 bg-[var(--paper)]/95 pr-1.5 pl-4 shadow-[0_8px_28px_-12px_rgba(19,41,75,0.38),inset_0_1px_0_var(--white)] backdrop-blur-md md:grid md:grid-cols-[1fr_auto_1fr] md:gap-4 md:pr-2.5 md:pl-6">
         <a href="#main" onClick={open ? onMenuClick : undefined} className="flex h-11 w-fit shrink-0 items-center gap-3 rounded-full whitespace-nowrap" aria-label="Fashion Tours — в начало">
-          <Image src={asset("/media/fashion-tours-logo.webp")} alt="" width={420} height={286} unoptimized loading="eager" className="h-11 w-auto mix-blend-multiply md:h-[54px]" />
+          <Image src={asset("/media/fashion-tours-logo.webp")} alt="" width={420} height={286} unoptimized loading="eager" className="h-11 w-auto md:h-[54px]" style={{ filter: "url(#fashion-tours-paper-cutout)" }} />
           <span className="hidden border-l border-[var(--ink)]/18 pl-3 text-[10px] font-semibold tracking-[0.14em] text-[var(--ink-soft)] uppercase lg:inline">Турция</span>
         </a>
 
