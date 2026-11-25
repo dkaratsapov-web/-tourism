@@ -17,7 +17,7 @@ const PANEL = asset("/media/iznik-panel.webp");
 
 const FACTS = [
   { title: "Тюльпаны Изника", text: "Во второй половине XVI века тюльпаны и гиацинты стали характерными мотивами османской керамики. Их часто рисовали рядом с крупными стилизованными цветами.", position: "left-[26%] top-[23%]" },
-  { title: "Лист саз", text: "Длинный зубчатый лист называют саз. Этот мотив пришёл из персидского искусства ко двору османских султанов в XVI веке. На изразцах поверх такого листа иногда рисовали тюльпан.", position: "right-[23%] top-[48%]" },
+  { title: "Лист саз", text: "Длинный зубчатый лист называют саз. Этот мотив пришёл из персидского искусства ко двору османских султанов в XVI веке. На изразцах поверх такого листа иногда рисовали тюльпан.", position: "right-[23%] top-[24%] sm:top-[48%]" },
 ];
 
 export function TurkishTiles() {
@@ -96,7 +96,7 @@ export function TurkishTiles() {
               aria-controls="iznik-fact"
               onPointerEnter={(event) => { if (event.pointerType === "mouse") setHovered(i); }}
               onClick={() => { setHovered(null); setSelected(active === i && selected === i ? null : i); }}
-              className={`absolute z-10 grid size-11 cursor-pointer place-items-center rounded-full border border-white/80 text-xl shadow-[0_3px_15px_#101f4480] transition-colors ${fact.position} ${active === i ? "bg-[#a3433b] text-white" : "bg-[#101f44] text-white"}`}
+              className={`absolute z-30 grid size-11 cursor-pointer place-items-center rounded-full border border-white/80 text-xl shadow-[0_3px_15px_#101f4480] transition-colors ${fact.position} ${active === i ? "bg-[#a3433b] text-white" : "bg-[#101f44] text-white"}`}
             >
               <span aria-hidden>{active === i ? "−" : "+"}</span>
             </button>
