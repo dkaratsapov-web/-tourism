@@ -3,24 +3,24 @@ import { TELEGRAM_URL } from "@/lib/site";
 /** Подвал: узкий мастхед, контакты и юридические заглушки (152-ФЗ — документы готовятся). */
 export function Footer() {
   return (
-    <footer id="contacts" className="bg-[var(--ink)] px-[var(--gutter)] pb-[calc(96px+env(safe-area-inset-bottom))] pt-16 text-[var(--paper)] md:pb-10 md:pt-24">
-      <p aria-hidden className="display overflow-hidden whitespace-nowrap text-[16vw] leading-[0.8] [--wdth:62.5] [--wght:600] md:text-[17.4vw]">
+    <footer id="contacts" className="bg-[var(--ink)] px-[var(--gutter)] pb-[calc(72px+env(safe-area-inset-bottom))] pt-8 text-[var(--paper)] md:pb-6 md:pt-10">
+      <p aria-hidden className="display overflow-hidden whitespace-nowrap text-[12vw] leading-[0.8] [--wdth:62.5] [--wght:600] md:text-[8.5vw]">
         Fashion Tours
       </p>
-      <div className="mt-12 grid gap-8 border-t border-[var(--paper)]/15 pt-8 text-[15px] md:grid-cols-3">
+      <div className="mt-6 grid gap-4 border-t border-[var(--paper)]/15 pt-4 text-[14px] md:grid-cols-3">
         <div>
           <p className="label text-[var(--sky)]">Связь</p>
-          <a href={TELEGRAM_URL} target="_blank" rel="noopener" className="link-draw mt-3 inline-flex h-11 items-center">
+          <a href={TELEGRAM_URL} target="_blank" rel="noopener" className="link-draw mt-2 inline-flex h-11 items-center">
             Telegram — ссылку уточнить у Натальи
           </a>
         </div>
         <div>
           <p className="label text-[var(--sky)]">Документы</p>
-          <p className="mt-3 leading-[1.6] text-[var(--paper)]/75">Политика обработки персональных данных и реквизиты — готовятся.</p>
+          <p className="mt-2 leading-[1.6] text-[var(--paper)]/75">Политика обработки персональных данных и реквизиты — готовятся.</p>
         </div>
         <div>
           <p className="label text-[var(--sky)]">О материалах</p>
-          <p className="mt-3 leading-[1.6] text-[var(--paper)]/75">
+          <p className="mt-2 leading-[1.6] text-[var(--paper)]/75">
             Атмосферные кадры сгенерированы для иллюстрации. Тексты — черновик для согласования с Натальей.
           </p>
         </div>

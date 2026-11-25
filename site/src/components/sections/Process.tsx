@@ -47,7 +47,7 @@ export function Process() {
     <section id="kak-rabotaem" ref={root} aria-labelledby="process-title" className="relative isolate overflow-clip bg-[var(--sky)] px-[var(--gutter)] py-20 md:py-32">
       {/* Фон — штукатурка с тенью листьев; multiply оставляет на небесно-голубом только тени. */}
       <Texture id="tex-plaster-shadow" mobileId="tex-plaster-shadow-m" className="opacity-30 mix-blend-multiply" pos="100% 0%" posMobile="50% 0%" />
-      <div className="mx-auto grid max-w-[1320px] gap-10 md:grid-cols-12 md:gap-8">
+      <div className="mx-auto grid max-w-[1320px] grid-cols-1 gap-10 md:grid-cols-12 md:gap-8">
         <div className="md:col-span-4">
           <div className="[@media(min-width:900px)_and_(min-height:720px)]:sticky [@media(min-width:900px)_and_(min-height:720px)]:top-[calc(var(--header-h)+24px)]">
             <p className="label text-[var(--ink)]">Рубрика · Как мы работаем</p>
