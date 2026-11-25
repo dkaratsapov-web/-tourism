@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { asset } from "@/lib/site";
@@ -15,7 +15,15 @@ const TILE_OFFSETS = [
 
 const PANEL = asset("/media/iznik-panel.webp");
 
+const FACTS = [
+  { title: "Тюльпаны Изника", text: "Во второй половине XVI века тюльпаны и гиацинты стали характерными мотивами османской керамики. Их часто рисовали рядом с крупными стилизованными цветами.", position: "left-[26%] top-[23%]" },
+  { title: "Лист саз", text: "Длинный зубчатый лист называют саз. Этот мотив пришёл из персидского искусства ко двору османских султанов в XVI веке. На изразцах поверх такого листа иногда рисовали тюльпан.", position: "right-[23%] top-[48%]" },
+];
+
 export function TurkishTiles() {
+  const [hovered, setHovered] = useState<number | null>(null);
+  const [selected, setSelected] = useState<number | null>(null);
+  const active = hovered ?? selected;
   const root = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -60,7 +68,7 @@ export function TurkishTiles() {
     >
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_24%_40%,#244d85,transparent_67%)]" />
       <div className="mx-auto grid max-w-[1280px] items-center gap-10 md:grid-cols-[1fr_0.84fr] md:gap-[7vw]">
-        <figure className="mx-auto w-full max-w-[620px] p-2 outline outline-1 outline-[#a9cdeb]/35 md:p-3">
+        <figure onPointerLeave={() => setHovered(null)} onKeyDown={(event) => { if (event.key === "Escape") { setHovered(null); setSelected(null); } }} className="relative mx-auto w-full max-w-[620px] p-2 outline outline-1 outline-[#a9cdeb]/35 md:p-3">
           <div
             role="img"
             aria-label="Керамическое панно в стиле Изника с кобальтовыми листьями и красными тюльпанами"
@@ -79,6 +87,28 @@ export function TurkishTiles() {
               />
             ))}
           </div>
+          {FACTS.map((fact, i) => (
+            <button
+              key={fact.title}
+              type="button"
+              aria-label={fact.title}
+              aria-expanded={active === i}
+              aria-controls="iznik-fact"
+              onPointerEnter={(event) => { if (event.pointerType === "mouse") setHovered(i); }}
+              onClick={() => { setHovered(null); setSelected(active === i && selected === i ? null : i); }}
+              className={`absolute z-10 grid size-11 cursor-pointer place-items-center rounded-full border border-white/80 text-xl shadow-[0_3px_15px_#101f4480] transition-colors ${fact.position} ${active === i ? "bg-[#a3433b] text-white" : "bg-[#101f44] text-white"}`}
+            >
+              <span aria-hidden>{active === i ? "−" : "+"}</span>
+            </button>
+          ))}
+          <figcaption id="iznik-fact" aria-live="polite" className={`absolute inset-x-3 bottom-3 z-20 border-l-2 border-[#a3433b] bg-[#f6f3ec] px-4 py-3 text-[#101f44] shadow-lg sm:px-5 sm:py-4 ${active === null ? "hidden" : ""}`}>
+            {active !== null && (
+              <>
+                <p className="display text-[23px]">{FACTS[active].title}</p>
+                <p className="mt-1 text-[13px] leading-relaxed sm:text-[15px]">{FACTS[active].text}</p>
+              </>
+            )}
+          </figcaption>
         </figure>
         <div data-iznik-caption className="max-w-[36rem] pb-2">
           <p className="mb-5 flex items-center gap-3 text-[14px] font-medium text-[#a9cdeb]">

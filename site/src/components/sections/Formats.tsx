@@ -196,16 +196,17 @@ export function Formats() {
     mm.add("(min-width: 900px)", () => {
       const section = root.current!;
       const t = track.current!;
-      const distance = () => t.scrollWidth - window.innerWidth;
-      // Высота секции = путь ленты + один экран, чтобы sticky-кадр успел проехать.
-      const setHeight = () => section.style.setProperty("--formats-h", `${distance() + window.innerHeight}px`);
+      const distance = () => Math.max(0, t.scrollWidth - window.innerWidth);
+      const readingSpace = () => Math.round(gsap.utils.clamp(96, 160, window.innerHeight * 0.14));
+      // После входа в экран оставляем время прочитать первые карточки до движения ленты.
+      const setHeight = () => section.style.setProperty("--formats-h", `${distance() + window.innerHeight + readingSpace()}px`);
       setHeight();
       const tween = gsap.to(t, {
         x: () => -distance(),
         ease: "none",
         scrollTrigger: {
           trigger: section,
-          start: "top top",
+          start: () => `top+=${readingSpace()} top`,
           end: "bottom bottom",
           scrub: 0.6,
           invalidateOnRefresh: true,
