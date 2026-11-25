@@ -25,8 +25,9 @@ export const LEAD_DIALOG_EVENT = "ft:open-lead-dialog";
 /** Пункты основного меню. */
 export const NAV = [
   { id: "formaty", label: "Форматы" },
-  { id: "natalia", label: "Наталья" },
+  { id: "obzory", label: "Обзоры" },
   { id: "kak-rabotaem", label: "Как мы работаем" },
+  { id: "pisma", label: "Отзывы" },
 ] as const;
 
 /** Направления — общие для табло вылетов и чипов формы. */

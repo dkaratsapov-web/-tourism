@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type MouseEvent } from "react";
-import { NAV, LEAD_DIALOG_ID, LEAD_ID, openLeadDialog } from "@/lib/site";
+import { NAV, LEAD_ID, openLeadDialog } from "@/lib/site";
 import { scroller, scrollToId } from "@/lib/scroll";
 import { CtaButton } from "./CtaButton";
 
@@ -77,38 +77,37 @@ export function Header() {
   return (
     <header className="pointer-events-none fixed inset-x-0 top-[var(--header-inset)] z-50 px-3 md:px-6">
       {open && <div aria-hidden className="pointer-events-auto fixed inset-0 bg-[var(--ink)]/20 md:hidden" onClick={() => setOpen(false)} />}
-      <div className="pointer-events-auto relative mx-auto flex h-[calc(var(--header-h)-var(--header-inset))] max-w-[1310px] items-center justify-between gap-2 rounded-t-lg border-b-2 border-[var(--ink)] bg-[var(--paper)]/96 px-3 shadow-[0_14px_32px_-22px_#13294b] backdrop-blur-md md:grid md:grid-cols-[1fr_auto_1fr] md:px-4 lg:px-6">
-        <a href="#main" onClick={open ? onMenuClick : undefined} className="flex min-h-11 w-fit shrink-0 items-baseline gap-3 whitespace-nowrap text-[var(--ink)] max-md:items-center" aria-label="Fashion Tours — в начало">
-          <span className="display self-center text-[23px] [--wght:620] md:text-[26px] lg:text-[32px]">Fashion Tours</span>
-          <span className="hidden border-l-2 border-[var(--brick)] pl-2 text-[10px] font-semibold tracking-[0.13em] text-[var(--ink-soft)] uppercase min-[1060px]:inline">Турция</span>
+      <div className="pointer-events-auto relative mx-auto flex h-[calc(var(--header-h)-var(--header-inset))] max-w-[1180px] items-center justify-between gap-3 rounded-full border border-[var(--ink)]/12 bg-[var(--paper)]/95 pr-1.5 pl-4 shadow-[0_8px_28px_-12px_rgba(19,41,75,0.38),inset_0_1px_0_var(--white)] backdrop-blur-md md:grid md:grid-cols-[1fr_auto_1fr] md:gap-4 md:pr-2.5 md:pl-6">
+        <a href="#main" onClick={open ? onMenuClick : undefined} className="flex h-11 w-fit shrink-0 items-center gap-3 rounded-full whitespace-nowrap" aria-label="Fashion Tours — в начало">
+          <span className="display text-[23px] [--wght:600] md:text-[26px]">Fashion Tours</span>
+          <span className="hidden border-l border-[var(--ink)]/18 pl-3 text-[10px] font-semibold tracking-[0.14em] text-[var(--ink-soft)] uppercase lg:inline">Турция</span>
         </a>
 
-        <nav aria-label="Основное меню" className="hidden h-full items-stretch gap-3 md:flex lg:gap-7">
+        <nav aria-label="Основное меню" className="hidden items-center gap-1 md:flex lg:gap-2">
           {NAV.map((n) => (
             <a
               key={n.id}
               href={`#${n.id}`}
               aria-current={active === n.id ? "location" : undefined}
-              className={`group relative flex items-center px-1 text-[13px] font-medium whitespace-nowrap transition-colors hover:text-[var(--ink)] ${active === n.id ? "text-[var(--ink)]" : "text-[var(--ink-soft)]"}`}
+              className={`relative flex h-11 items-center rounded-full px-3.5 text-[14px] font-medium whitespace-nowrap transition-colors lg:px-5 ${active === n.id ? "bg-[var(--ink)]/6 text-[var(--ink)]" : "text-[var(--ink-soft)] hover:bg-[var(--ink)]/5 hover:text-[var(--ink)]"}`}
             >
               <span
                 aria-hidden
-                className={`absolute inset-x-1 bottom-0 h-0.5 origin-left bg-[var(--brick)] transition-transform duration-200 motion-reduce:transition-none ${active === n.id ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100 group-focus-visible:scale-x-100"}`}
+                className={`absolute bottom-1.5 left-1/2 size-[4px] -translate-x-1/2 rounded-full bg-[var(--brick)] transition-transform duration-200 ${active === n.id ? "scale-100" : "scale-0"}`}
               />
               {n.label}
             </a>
           ))}
         </nav>
 
-        <button type="button" aria-haspopup="dialog" aria-controls={LEAD_DIALOG_ID} onClick={() => openLeadDialog()} className="hidden min-h-11 cursor-pointer items-center gap-2.5 justify-self-end whitespace-nowrap text-[13px] font-semibold text-[var(--ink)] group md:inline-flex">
-          Обсудить поездку
-          <span aria-hidden className="grid size-9 place-items-center rounded-full bg-[var(--brick)] text-lg leading-none text-white transition-colors group-hover:bg-[var(--ink)]">↗</span>
-        </button>
+        <div className="hidden justify-self-end md:block">
+          <CtaButton size="sm" magnetic={false} onOpenDialog={() => openLeadDialog()} />
+        </div>
 
         <button
           ref={btn}
           type="button"
-          className="flex h-11 min-w-11 self-center items-center gap-2.5 px-1.5 text-[13px] font-medium text-[var(--ink)] md:hidden"
+          className="flex h-11 min-w-11 items-center gap-2.5 rounded-full bg-[var(--ink)] px-3.5 text-[14px] font-medium text-[var(--paper)] md:hidden"
           aria-expanded={open}
           aria-controls="mobile-menu"
           onClick={() => setOpen((v) => !v)}
@@ -127,10 +126,10 @@ export function Header() {
         hidden={!open}
         data-lenis-prevent
         onClick={onMenuClick}
-        className="pointer-events-auto fixed inset-x-3 top-[calc(var(--header-h)+8px)] max-h-[calc(100dvh-var(--header-h)-20px-env(safe-area-inset-bottom))] overflow-y-auto overscroll-contain rounded-[17px] border border-[var(--ink)]/18 bg-[var(--paper)] px-5 pt-4 pb-5 shadow-[0_16px_48px_-16px_rgba(19,41,75,0.34)] md:hidden"
+        className="pointer-events-auto fixed inset-x-3 top-[calc(var(--header-h)+8px)] max-h-[calc(100dvh-var(--header-h)-20px-env(safe-area-inset-bottom))] overflow-y-auto overscroll-contain rounded-[28px] border border-[var(--ink)]/12 bg-[var(--paper)] px-5 pt-4 pb-5 shadow-[0_16px_48px_-16px_rgba(19,41,75,0.34)] md:hidden"
       >
         <ul>
-          {[...NAV, { id: "pisma", label: "Письма читателей" }].map((n) => (
+          {NAV.map((n) => (
             <li key={n.id} className="border-b border-[var(--ink)]/12">
               <a href={`#${n.id}`} aria-current={active === n.id ? "location" : undefined} className="display flex min-h-14 items-center rounded-md py-3 text-[28px]">
                 {n.label}
