@@ -6,7 +6,8 @@ import { CONTACT_ERRORS, readContact } from "@/lib/contact";
 import { ContactFields } from "@/components/ui/ContactFields";
 
 export function QuickLeadForm({ source, destination }: { source: "hero" | "process" | "terrace" | "board"; destination?: string }) {
-  const compact = source !== "process";
+  const editorial = source === "process";
+  const compact = !editorial;
   const titleId = useId();
   const sending = useRef(false);
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
@@ -91,14 +92,17 @@ export function QuickLeadForm({ source, destination }: { source: "hero" | "proce
     );
   }
 
-  const input = "mt-1 w-full rounded-lg border border-[var(--ink)]/20 bg-[var(--white)] px-3 py-2.5 text-[16px] text-[var(--ink)] placeholder:text-[var(--ink-soft)]";
+  const input = editorial
+    ? "mt-1 w-full rounded-none border-b border-[var(--ink)]/35 bg-transparent px-0 py-2 text-[16px] text-[var(--ink)] placeholder:text-[var(--ink-soft)] focus:border-[var(--aegean)]"
+    : "mt-1 w-full rounded-lg border border-[var(--ink)]/20 bg-[var(--white)] px-3 py-2.5 text-[16px] text-[var(--ink)] placeholder:text-[var(--ink-soft)]";
 
   return (
-    <form method="dialog" aria-labelledby={titleId} onSubmit={submit} className={compact ? "max-w-[35rem] rounded-[18px] border border-[var(--ink)]/10 bg-[var(--paper)]/95 p-4 shadow-[0_18px_42px_-30px_rgb(19_41_75/0.65)] md:px-5" : "mt-6 max-w-[24rem] rounded-[18px] bg-[var(--paper)] p-5 shadow-[0_22px_44px_-30px_rgb(19_41_75/0.6)] md:p-6"}>
-      <h3 id={titleId} className={compact ? "display text-[25px]" : "display text-[29px]"}>Расскажите о поездке</h3>
+    <form method="dialog" aria-labelledby={titleId} onSubmit={submit} className={compact ? "max-w-[35rem] rounded-[18px] border border-[var(--ink)]/10 bg-[var(--paper)]/95 p-4 shadow-[0_18px_42px_-30px_rgb(19_41_75/0.65)] md:px-5" : "group/concierge relative mt-6 max-w-[24rem] border-t-[3px] border-[var(--ink)] bg-[#fbf8f0] px-5 pb-5 pt-4 text-[var(--ink)] shadow-[0_22px_44px_-30px_rgb(19_41_75/0.55)] sm:px-6"}>
+      <h3 id={titleId} className={compact ? "display text-[25px]" : "display text-[29px] leading-tight"}>{editorial ? "Обсудим вашу поездку" : "Расскажите о поездке"}</h3>
       <div className="mt-3">
         <ContactFields
           key={contactVersion}
+          editorial={editorial}
           inputClass={input}
           labelClass="block text-[14px] font-medium"
           error={contactError}
@@ -116,8 +120,9 @@ export function QuickLeadForm({ source, destination }: { source: "hero" | "proce
           <input type="checkbox" name="consent" required className="mt-0.5 size-4 shrink-0 accent-[var(--ink)]" />
           Согласие на обработку персональных данных
         </label>
-        <button type="submit" disabled={status === "sending"} className={`flex min-h-11 shrink-0 cursor-pointer items-center justify-between gap-3 rounded-full bg-[var(--ink)] px-4 py-2 text-[14px] font-medium text-[var(--paper)] transition-colors hover:bg-[var(--aegean)] disabled:cursor-wait disabled:opacity-70 ${compact ? "" : "mt-4 w-full"}`}>
-          {status === "sending" ? "Отправляем…" : "Отправить заявку"} <span aria-hidden>→</span>
+        <button type="submit" disabled={status === "sending"} className={`flex min-h-11 shrink-0 cursor-pointer items-center justify-between gap-3 text-[14px] font-semibold transition-colors disabled:cursor-wait disabled:opacity-70 ${editorial ? "mt-3 w-full border-t border-[var(--ink)]/15 bg-transparent text-[var(--ink)] hover:text-[var(--brick)]" : "rounded-full bg-[var(--ink)] px-4 py-2 text-[var(--paper)] hover:bg-[var(--aegean)]"}`}>
+          {status === "sending" ? "Отправляем…" : "Отправить заявку"}
+          <span aria-hidden className={editorial ? "grid size-8 place-items-center rounded-full bg-[var(--ink)] text-[var(--paper)]" : ""}>{editorial ? "↗" : "→"}</span>
         </button>
       </div>
       <p role="status" className={message ? `mt-3 text-[14px] ${status === "error" ? "text-[var(--brick)]" : "text-[var(--ink)]"}` : "sr-only"}>{message}</p>
