@@ -195,6 +195,7 @@ export function FlightStory() {
       // Размеры окна иллюминатора: на телефоне почти весь кадр — меньше роста маски, больше полёта.
       const apertureX = () => `${desktop ? Math.max(0, 50 - 15000 / stage.clientWidth) : 7}%`;
       const apertureY = () => `${desktop ? Math.max(0, 50 - 20000 / stage.clientHeight) : 17}%`;
+      const aperture = () => `inset(${apertureY()} ${apertureX()} ${apertureY()} ${apertureX()} round 50%)`;
       // Смещение элемента к центру кадра по раскладке (offset*), а не по текущему transform.
       const toCenter = (n: HTMLElement, axis: "x" | "y") =>
         axis === "x"
@@ -208,14 +209,14 @@ export function FlightStory() {
           trigger: el,
           start: "top top",
           end: "bottom bottom",
-          scrub: desktop ? 0.8 : 0.5,
+          scrub: desktop ? 0.42 : 0.32,
           invalidateOnRefresh: true,
-          onUpdate: (self) => {
-            const nextScene = sceneAt(self.progress);
-            if (nextScene === activeScene) return;
-            activeScene = nextScene;
-            setScene(nextScene);
-          },
+        },
+        onUpdate() {
+          const nextScene = sceneAt(this.progress());
+          if (nextScene === activeScene) return;
+          activeScene = nextScene;
+          setScene(nextScene);
         },
       });
 
@@ -236,9 +237,9 @@ export function FlightStory() {
 
       // Иллюминатор открывается из центра. Облака проявляются после раскрытия маски.
       tl.to(q("[data-bg='sky']"), { opacity: 1, duration: 0.8 }, 1.8)
-        .to(win, { "--window-x": apertureX, "--window-y": apertureY, duration: 0.35, ease: "power2.out" }, 1.95)
+        .to(win, { clipPath: aperture, duration: 0.35, ease: "power2.out" }, 1.95)
         .to(pass, { opacity: 0, scale: 0.8, duration: 0.3 }, 1.95)
-        .to(win, { "--window-x": "0%", "--window-y": "0%", "--window-radius": "0%", duration: 0.62, ease: "power2.inOut" }, 2.3)
+        .to(win, { clipPath: "inset(0% 0% 0% 0% round 0%)", duration: 0.5, ease: "power2.out" }, 2.3)
         .fromTo(q("[data-window-poster] [data-photo-in]"), { scale: 1.02 }, { scale: 1.05, duration: 0.62, ease: "power2.inOut" }, 2.3)
         .to(q("[data-flight-clouds]"), { opacity: 1, duration: 0.55, ease: "sine.inOut" }, 2.92);
 
@@ -278,7 +279,7 @@ export function FlightStory() {
         .to({}, { duration: 1.2 });
 
       // Прогресс-линия — по всей истории.
-      gsap.fromTo(q("[data-progress]"), { scaleX: 0 }, { scaleX: 1, ease: "none", scrollTrigger: { trigger: el, start: "top top", end: "bottom bottom", scrub: true } });
+      tl.to(q("[data-progress]"), { scaleX: 1, duration: tl.duration() }, 0);
     };
 
     mm.add("(min-width: 900px)", () => build(true));
@@ -319,7 +320,7 @@ export function FlightStory() {
         </div>
 
         {/* Иллюминатор → небо и облака → побережье → терраса */}
-        <div data-window className="absolute inset-0 bg-[var(--sky)] [--window-x:50%] [--window-y:50%] [--window-radius:50%] [clip-path:inset(var(--window-y)_var(--window-x)_round_var(--window-radius))]">
+        <div data-window className="absolute inset-0 bg-[var(--sky)] [clip-path:inset(50%_50%_50%_50%_round_50%)]">
           <Photo
             id="story-wing"
             alt="Атмосферный кадр: крыло самолёта над облаками утром"
@@ -327,7 +328,7 @@ export function FlightStory() {
             pos="46% 54%"
             posMobile="32% 58%"
             reveal="none"
-            className="absolute inset-0"
+            className="absolute! inset-0"
             data={{ "data-window-poster": "" }}
           />
           <div aria-hidden data-flight-clouds className="pointer-events-none absolute inset-0 overflow-hidden opacity-0">
@@ -350,7 +351,7 @@ export function FlightStory() {
             pos="50% 50%"
             posMobile="55% 60%"
             reveal="none"
-            className="invisible absolute inset-0"
+            className="invisible absolute! inset-0"
             data={{ "data-sea": "" }}
           />
           {/* Видео позже: петля story-terrace-loop.mp4 (только ПК) — так же внутри [data-photo-in], постер — этот кадр. */}
@@ -362,7 +363,7 @@ export function FlightStory() {
             pos="58% 55%"
             posMobile="50% 55%"
             reveal="none"
-            className="absolute inset-0 [clip-path:inset(100%_0_0_0)]"
+            className="absolute! inset-0 [clip-path:inset(100%_0_0_0)]"
             data={{ "data-terrace": "" }}
           >
             {/* Светлая дымка за заголовком и формой (слева, по высоте текста): на ПК линия горизонта
