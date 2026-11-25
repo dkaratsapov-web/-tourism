@@ -192,10 +192,12 @@ export function FlightStory() {
       const stage = q("[data-stage]")[0] as HTMLElement;
       const pass = q("[data-pass]")[0] as HTMLElement;
       const win = q("[data-window]")[0] as HTMLElement;
-      // Размеры окна иллюминатора: на телефоне почти весь кадр — меньше роста маски, больше полёта.
-      const apertureX = () => `${desktop ? Math.max(0, 50 - 15000 / stage.clientWidth) : 7}%`;
-      const apertureY = () => `${desktop ? Math.max(0, 50 - 20000 / stage.clientHeight) : 17}%`;
-      const aperture = () => `inset(${apertureY()} ${apertureX()} ${apertureY()} ${apertureX()} round 50%)`;
+      // Анимируем геометрию одной маски, чтобы браузер не переупаковывал параметры inset между фазами.
+      const aperture = { x: 50, y: 50, radius: 48 };
+      const drawAperture = () => {
+        const { x, y, radius } = aperture;
+        win.style.clipPath = `inset(${y}% ${x}% round ${radius}%)`;
+      };
       // Смещение элемента к центру кадра по раскладке (offset*), а не по текущему transform.
       const toCenter = (n: HTMLElement, axis: "x" | "y") =>
         axis === "x"
@@ -237,9 +239,9 @@ export function FlightStory() {
 
       // Иллюминатор открывается из центра. Облака проявляются после раскрытия маски.
       tl.to(q("[data-bg='sky']"), { opacity: 1, duration: 0.8 }, 1.8)
-        .to(win, { clipPath: aperture, duration: 0.35, ease: "power2.out" }, 1.95)
+        .to(aperture, { x: desktop ? 40 : 14, y: desktop ? 28 : 25, duration: 0.34, ease: "sine.inOut", onUpdate: drawAperture }, 1.88)
         .to(pass, { opacity: 0, scale: 0.8, duration: 0.3 }, 1.95)
-        .to(win, { clipPath: "inset(0% 0% 0% 0% round 0%)", duration: 0.5, ease: "power2.out" }, 2.3)
+        .to(aperture, { x: 0, y: 0, radius: 0, duration: 0.7, ease: "sine.inOut", onUpdate: drawAperture }, 2.22)
         .fromTo(q("[data-window-poster] [data-photo-in]"), { scale: 1.02 }, { scale: 1.05, duration: 0.62, ease: "power2.inOut" }, 2.3)
         .to(q("[data-flight-clouds]"), { opacity: 1, duration: 0.55, ease: "sine.inOut" }, 2.92);
 
@@ -280,6 +282,7 @@ export function FlightStory() {
 
       // Прогресс-линия — по всей истории.
       tl.to(q("[data-progress]"), { scaleX: 1, duration: tl.duration() }, 0);
+      return () => win.style.removeProperty("clip-path");
     };
 
     mm.add("(min-width: 900px)", () => build(true));
