@@ -77,19 +77,19 @@ export function Header() {
   return (
     <header className="pointer-events-none fixed inset-x-0 top-[var(--header-inset)] z-50 px-3 md:px-6">
       {open && <div aria-hidden className="pointer-events-auto fixed inset-0 bg-[var(--ink)]/20 md:hidden" onClick={() => setOpen(false)} />}
-      <div className="pointer-events-auto relative mx-auto flex h-[calc(var(--header-h)-var(--header-inset))] max-w-[1180px] items-center justify-between gap-3 rounded-full border border-[var(--ink)]/12 bg-[var(--paper)]/95 pr-1.5 pl-4 shadow-[0_8px_28px_-12px_rgba(19,41,75,0.38),inset_0_1px_0_var(--white)] backdrop-blur-md md:grid md:grid-cols-[1fr_auto_1fr] md:gap-4 md:pr-2.5 md:pl-6">
-        <a href="#main" onClick={open ? onMenuClick : undefined} className="flex h-11 w-fit shrink-0 items-center gap-3 rounded-full whitespace-nowrap" aria-label="Fashion Tours — в начало">
-          <span className="display text-[23px] [--wght:600] md:text-[26px]">Fashion Tours</span>
-          <span className="hidden border-l border-[var(--ink)]/18 pl-3 text-[10px] font-semibold tracking-[0.14em] text-[var(--ink-soft)] uppercase lg:inline">Турция</span>
+      <div className="pointer-events-auto relative mx-auto flex h-[calc(var(--header-h)-var(--header-inset))] max-w-[1180px] items-stretch justify-between gap-2 rounded-[17px] border border-[var(--ink)]/18 bg-[var(--paper)] pr-1.5 shadow-[0_12px_32px_-14px_rgba(19,41,75,0.55),inset_0_1px_0_white] md:grid md:grid-cols-[1fr_auto_1fr] md:gap-2 md:pr-2">
+        <a href="#main" onClick={open ? onMenuClick : undefined} className="relative -my-px -ml-px flex w-fit shrink-0 flex-col justify-center gap-0.5 rounded-l-[17px] border-r border-dashed border-[var(--sky)]/55 bg-[var(--ink)] px-3.5 whitespace-nowrap text-[var(--paper)] focus-visible:outline-offset-[-4px] sm:px-5 lg:min-w-[215px]" aria-label="Fashion Tours — в начало">
+          <span className="display text-[20px] [--wght:600] md:text-[24px] lg:text-[27px]">Fashion Tours</span>
+          <span className="text-[9px] font-semibold tracking-[0.2em] text-[var(--sky)] uppercase">Турция</span>
         </a>
 
-        <nav aria-label="Основное меню" className="hidden items-center gap-1 md:flex lg:gap-2">
+        <nav aria-label="Основное меню" className="hidden items-center gap-0.5 self-center rounded-xl border border-[var(--ink)]/10 bg-[var(--ink)]/[0.035] p-0.5 md:flex lg:gap-1">
           {NAV.map((n) => (
             <a
               key={n.id}
               href={`#${n.id}`}
               aria-current={active === n.id ? "location" : undefined}
-              className={`relative flex h-11 items-center rounded-full px-3.5 text-[14px] font-medium whitespace-nowrap transition-colors lg:px-5 ${active === n.id ? "bg-[var(--ink)]/6 text-[var(--ink)]" : "text-[var(--ink-soft)] hover:bg-[var(--ink)]/5 hover:text-[var(--ink)]"}`}
+              className={`relative flex h-11 items-center rounded-[9px] px-2.5 text-[13px] font-medium whitespace-nowrap transition-colors lg:px-4 ${active === n.id ? "bg-[var(--white)] text-[var(--ink)] shadow-sm" : "text-[var(--ink-soft)] hover:bg-[var(--ink)]/5 hover:text-[var(--ink)]"}`}
             >
               <span
                 aria-hidden
@@ -100,14 +100,14 @@ export function Header() {
           ))}
         </nav>
 
-        <div className="hidden justify-self-end md:block">
+        <div className="relative hidden self-stretch items-center justify-self-end border-l border-dashed border-[var(--ink)]/25 pl-2.5 md:flex lg:pl-4">
           <CtaButton size="sm" magnetic={false} onOpenDialog={() => openLeadDialog()} />
         </div>
 
         <button
           ref={btn}
           type="button"
-          className="flex h-11 min-w-11 items-center gap-2.5 rounded-full bg-[var(--ink)] px-3.5 text-[14px] font-medium text-[var(--paper)] md:hidden"
+          className="flex h-11 min-w-11 self-center items-center gap-2.5 rounded-[11px] border border-[var(--ink)]/15 bg-[var(--white)] px-3 text-[13px] font-medium text-[var(--ink)] md:hidden"
           aria-expanded={open}
           aria-controls="mobile-menu"
           onClick={() => setOpen((v) => !v)}
@@ -126,7 +126,7 @@ export function Header() {
         hidden={!open}
         data-lenis-prevent
         onClick={onMenuClick}
-        className="pointer-events-auto fixed inset-x-3 top-[calc(var(--header-h)+8px)] max-h-[calc(100dvh-var(--header-h)-20px-env(safe-area-inset-bottom))] overflow-y-auto overscroll-contain rounded-[28px] border border-[var(--ink)]/12 bg-[var(--paper)] px-5 pt-4 pb-5 shadow-[0_16px_48px_-16px_rgba(19,41,75,0.34)] md:hidden"
+        className="pointer-events-auto fixed inset-x-3 top-[calc(var(--header-h)+8px)] max-h-[calc(100dvh-var(--header-h)-20px-env(safe-area-inset-bottom))] overflow-y-auto overscroll-contain rounded-[17px] border border-[var(--ink)]/18 bg-[var(--paper)] px-5 pt-4 pb-5 shadow-[0_16px_48px_-16px_rgba(19,41,75,0.34)] md:hidden"
       >
         <ul>
           {[...NAV, { id: "pisma", label: "Письма читателей" }].map((n) => (

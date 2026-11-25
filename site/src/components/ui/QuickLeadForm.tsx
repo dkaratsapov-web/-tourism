@@ -5,7 +5,7 @@ import { LEAD_ENDPOINT } from "@/lib/site";
 import { CONTACT_ERRORS, readContact } from "@/lib/contact";
 import { ContactFields } from "@/components/ui/ContactFields";
 
-export function QuickLeadForm({ source }: { source: "hero" | "process" | "terrace" }) {
+export function QuickLeadForm({ source, destination }: { source: "hero" | "process" | "terrace" | "board"; destination?: string }) {
   const compact = source !== "process";
   const titleId = useId();
   const sending = useRef(false);
@@ -46,7 +46,7 @@ export function QuickLeadForm({ source }: { source: "hero" | "process" | "terrac
       const response = await fetch(LEAD_ENDPOINT, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, contact, contactMethod, consent: true, source }),
+        body: JSON.stringify({ name, contact, contactMethod, consent: true, source, destination }),
         signal: AbortSignal.timeout(15000),
       });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);

@@ -8,7 +8,8 @@ import { Photo, Texture } from "@/components/ui/Media";
 import { SplitFlap } from "@/components/ui/SplitFlap";
 import { Stamp } from "@/components/ui/Stamp";
 import { Lines } from "@/components/ui/Type";
-import { DESTINATIONS, LEAD_DIALOG_ID, openLeadDialog } from "@/lib/site";
+import { DESTINATIONS } from "@/lib/site";
+import { QuickLeadForm } from "@/components/ui/QuickLeadForm";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -16,7 +17,16 @@ gsap.registerPlugin(ScrollTrigger);
  * Табло вылетов: направления Турции. Названия перещёлкиваются split-flap один раз при входе.
  * Каждая строка открывает форму с выбранным направлением.
  */
+const DESTINATION_NOTES = {
+  AYT: "Подберём отель в Анталии или на побережье. Сравним пляжи, питание и время дороги из аэропорта.",
+  BJV: "Бухты Эгейского моря, прогулки по Бодруму и отели у воды. Сравним тихие места и районы, где вечером есть куда выйти.",
+  NAV: "Пещерные отели, долины и рассветы в Каппадокии. Соберём маршрут с удобными переездами и временем на прогулки.",
+  IST: "Босфор, старый город и прогулки по разным берегам. Подберём район для проживания и при желании добавим несколько дней у моря.",
+};
+
 export function DepartureBoard() {
+  const [active, setActive] = useState<string | null>(null);
+
   return (
     <section id="formaty" aria-labelledby="board-title" className="relative isolate overflow-hidden bg-[var(--ink)] px-[var(--gutter)] py-20 text-[var(--paper)] md:py-28">
       {/* Фон табло — вода сверху, приглушённая до тона чернил и уходящая вниз, чтобы не спорить со строками. */}
@@ -49,14 +59,21 @@ export function DepartureBoard() {
             <span className="text-right">Заявка</span>
           </div>
           <ul aria-label="Направления">
-          {DESTINATIONS.map((d) => (
-            <li key={d.code}>
+          {DESTINATIONS.map((d) => {
+            const expanded = active === d.code;
+            const panelId = `destination-${d.code.toLowerCase()}`;
+            return (
+            <li key={d.code} onPointerEnter={(event) => {
+              if (event.pointerType === "mouse" && !event.currentTarget.parentElement?.querySelector("form:focus-within")) {
+                setActive(d.code);
+              }
+            }}>
             <button
               type="button"
-              aria-haspopup="dialog"
-              aria-controls={LEAD_DIALOG_ID}
+              aria-expanded={expanded}
+              aria-controls={panelId}
               aria-label={`Обсудить поездку: ${d.city}`}
-              onClick={() => openLeadDialog(d)}
+              onClick={(event) => setActive(expanded && (event.detail === 0 || !matchMedia("(hover: hover)").matches) ? null : d.code)}
               className="group grid w-full cursor-pointer grid-cols-[64px_1fr] items-center gap-x-4 gap-y-2 border-b border-[var(--paper)]/20 py-5 text-left transition-colors duration-200 hover:bg-[var(--paper)]/[0.04] md:grid-cols-[110px_1fr_1fr_170px] md:gap-6 md:py-6"
             >
               <span className="label text-[18px] tracking-[0.18em] text-[var(--sky)] md:text-[22px]">
@@ -70,13 +87,27 @@ export function DepartureBoard() {
               </span>
               <span className="label col-start-2 flex items-center gap-2 text-[var(--paper)] md:col-start-auto md:justify-end">
                 <span className="link-draw">Обсудить</span>
-                <svg aria-hidden viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.6" className="transition-transform duration-300 group-hover:translate-x-1">
+                <svg aria-hidden viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.6" className={`transition-transform duration-300 motion-reduce:transition-none ${expanded ? "rotate-90" : ""}`}>
                   <path d="M2 8h11M9 4l4 4-4 4" />
                 </svg>
               </span>
             </button>
+            <div id={panelId} inert={!expanded} className={`grid transition-[grid-template-rows] duration-300 motion-reduce:transition-none ${expanded ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}>
+              <div className="min-h-0 overflow-hidden">
+                <div className="grid items-center gap-5 border-b border-[var(--paper)]/20 bg-[var(--paper)]/[0.06] px-4 py-6 md:grid-cols-[1fr_1.2fr] md:px-8">
+                  <div>
+                    <h3 className="display text-[clamp(1.8rem,3vw,3rem)]">{d.chip}</h3>
+                    <p className="mt-3 max-w-[40ch] text-[16px] leading-relaxed text-[var(--paper)]/85">{DESTINATION_NOTES[d.code]}</p>
+                  </div>
+                  <div className="text-[var(--ink)]">
+                    <QuickLeadForm source="board" destination={d.chip} />
+                  </div>
+                </div>
+              </div>
+            </div>
             </li>
-          ))}
+            );
+          })}
           </ul>
         </div>
         <p className="label mt-6 text-[var(--paper)]/55">Яхты — после подтверждения продукта · состав направлений уточнить</p>
