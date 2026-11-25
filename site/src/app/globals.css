@@ -320,8 +320,8 @@ select {
   position: relative;
 }
 
-/* Разворот работает только с JavaScript и без «уменьшить движение»; иначе страница идёт обычным блоком. */
-@media (prefers-reduced-motion: no-preference) {
+/* На невысоких и узких экранах обложка прокручивается вместе с открытой формой. */
+@media (prefers-reduced-motion: no-preference) and (min-width: 900px) and (min-height: 840px) {
   .js .hero {
     height: 200svh;
   }
@@ -339,15 +339,6 @@ select {
     inset: 0 0 0 auto;
     width: 58%;
     transform: translateX(101%);
-  }
-}
-@media (prefers-reduced-motion: no-preference) and (max-width: 899px) {
-  .js .hero {
-    height: 175svh;
-  }
-  .js .spread-page {
-    width: 100%;
-    transform: translateY(101%);
   }
 }
 

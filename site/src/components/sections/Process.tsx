@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useReducedMotion } from "@/lib/useReducedMotion";
 import { Lines } from "@/components/ui/Type";
 import { Photo, Texture } from "@/components/ui/Media";
-import { LEAD_ENDPOINT, isContact } from "@/lib/site";
+import { QuickLeadForm } from "@/components/ui/QuickLeadForm";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -17,82 +17,6 @@ const STEPS = [
   { n: "03", title: "Бронирование и документы", text: "Согласовываем выбранный вариант и оформляем поездку.", img: "step-documents", alt: "Атмосферный кадр: папка для документов в поездку" },
   { n: "04", title: "Связь во время поездки", text: "Остаёмся на связи до возвращения домой. Формат связи — уточнить.", img: "step-onway", alt: "Атмосферный кадр: телефон и стакан чая на террасе" },
 ];
-
-function ProcessForm() {
-  const sending = useRef(false);
-  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
-  const [message, setMessage] = useState("");
-
-  const submit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (sending.current) return;
-    const form = event.currentTarget;
-    const data = new FormData(form);
-    const name = String(data.get("name") ?? "").trim();
-    const contact = String(data.get("contact") ?? "").trim();
-    if (!name || !isContact(contact)) {
-      setStatus("error");
-      setMessage(!name ? "Укажите ваше имя." : "Укажите телефон, Telegram или электронную почту.");
-      (form.elements.namedItem(name ? "contact" : "name") as HTMLInputElement)?.focus({ preventScroll: true });
-      return;
-    }
-    if (!data.has("consent")) {
-      setStatus("error");
-      setMessage("Подтвердите согласие на обработку данных.");
-      return;
-    }
-    if (!LEAD_ENDPOINT) {
-      setStatus("error");
-      setMessage("Отправка заявок пока недоступна.");
-      return;
-    }
-
-    sending.current = true;
-    setStatus("sending");
-    setMessage("");
-    try {
-      const response = await fetch(LEAD_ENDPOINT, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, contact, consent: true, source: "process" }),
-        signal: AbortSignal.timeout(15000),
-      });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      form.reset();
-      setStatus("sent");
-      setMessage("Заявка отправлена.");
-    } catch {
-      setStatus("error");
-      setMessage("Не удалось отправить заявку. Попробуйте ещё раз.");
-    } finally {
-      sending.current = false;
-    }
-  };
-
-  const input = "mt-1 w-full rounded-lg border border-[var(--ink)]/20 bg-[var(--white)] px-3 py-2.5 text-[16px] text-[var(--ink)] placeholder:text-[var(--ink-soft)]";
-
-  return (
-    <form method="dialog" aria-labelledby="process-form-title" onSubmit={submit} className="mt-6 max-w-[24rem] rounded-[18px] bg-[var(--paper)] p-5 shadow-[0_22px_44px_-30px_rgb(19_41_75/0.6)] md:p-6">
-      <h3 id="process-form-title" className="display text-[29px]">Расскажите о поездке</h3>
-      <label className="mt-4 block text-[14px] font-medium">
-        Имя
-        <input className={input} name="name" autoComplete="given-name" required />
-      </label>
-      <label className="mt-3 block text-[14px] font-medium">
-        Телефон или Telegram
-        <input className={input} name="contact" placeholder="+7 … или @ник" required />
-      </label>
-      <label className="mt-3 flex items-start gap-2 text-[13px] leading-snug text-[var(--ink-soft)]">
-        <input type="checkbox" name="consent" required className="mt-0.5 size-4 shrink-0 accent-[var(--ink)]" />
-        Согласие на обработку персональных данных
-      </label>
-      <button type="submit" disabled={status === "sending"} className="mt-4 flex min-h-11 w-full cursor-pointer items-center justify-between gap-3 rounded-full bg-[var(--ink)] px-4 py-2 text-[14px] font-medium text-[var(--paper)] transition-colors hover:bg-[var(--aegean)] disabled:cursor-wait disabled:opacity-70">
-        {status === "sending" ? "Отправляем…" : "Отправить заявку"} <span aria-hidden>→</span>
-      </button>
-      <p role="status" className={message ? `mt-3 text-[14px] ${status === "error" ? "text-[var(--brick)]" : "text-[var(--ink)]"}` : "sr-only"}>{message}</p>
-    </form>
-  );
-}
 
 /**
  * «Как мы работаем» — стопка посадочных талонов. Карточки закреплены CSS sticky и ложатся друг на друга;
@@ -138,7 +62,7 @@ export function Process() {
               ]}
             />
             <p className="mt-4 max-w-[22rem] text-[16px] leading-[1.55] text-[var(--ink)]">Четыре шага от первого разговора до возвращения домой.</p>
-            <ProcessForm />
+            <QuickLeadForm source="process" />
           </div>
         </div>
 

@@ -85,7 +85,7 @@ function BoardingPass({ withStamp = true }: { withStamp?: boolean }) {
       <dl className="grid grid-cols-3 gap-3 px-5 py-4 md:px-7">
         {[
           ["Пассажиры", "2 взрослых, 1 ребёнок"],
-          ["Класс", "Эконом"],
+          ["Класс", "Бизнес"],
           ["Место", "У окна"],
         ].map(([k, v]) => (
           <div key={k}>

@@ -6,6 +6,7 @@ import { FlightStory } from "@/components/story/FlightStory";
 import { Marquee } from "@/components/ui/Marquee";
 import { DepartureBoard, Formats } from "@/components/sections/Formats";
 import { Natalia } from "@/components/sections/Natalia";
+import { TurkishTiles } from "@/components/sections/TurkishTiles";
 import { HotelReviews, Letters } from "@/components/sections/Reviews";
 import { Process } from "@/components/sections/Process";
 import { Lead, LeadDialog } from "@/components/sections/Lead";
@@ -26,6 +27,7 @@ export default function Home() {
         <Marquee items={PLACES} className="display border-y border-[var(--ink)]/12 bg-[var(--paper)] py-5 text-[clamp(3.6rem,10vw,10rem)] leading-[1.05] md:py-8" />
         <DepartureBoard />
         <Formats />
+        <TurkishTiles />
         <Natalia />
         <HotelReviews />
         <Process />

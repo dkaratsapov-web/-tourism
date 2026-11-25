@@ -19,11 +19,11 @@ const text = Onest({
 });
 
 export const metadata: Metadata = {
-  title: "Fashion Tours — отдых и маршруты по Турции под вашу семью",
+  title: "Fashion Tours — отдых и маршруты по Турции",
   description:
     "Онлайн-турагентство Натальи: отели на побережье и индивидуальные маршруты по Турции — Анталия, Эгейское побережье, Бодрум, Каппадокия, Стамбул.",
   openGraph: {
-    title: "Fashion Tours — Турция, собранная под вашу семью",
+    title: "Fashion Tours — ваш отдых в Турции",
     description: "Отели на побережье и маршруты по стране: Каппадокия, Эгейское побережье, Бодрум, Стамбул.",
     locale: "ru_RU",
     type: "website",
