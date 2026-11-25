@@ -167,9 +167,9 @@ export function Hero() {
             </div>
             <Stamp kind="turkiye" tone="ink" rotate={12} className="w-24 shrink-0 md:w-32" id="st-contents" />
           </div>
-          <ol className="mt-6 border-t border-[var(--ink)]/15 md:mt-10">
+          <ol className="mt-6 grid auto-rows-fr border-t border-[var(--ink)]/15 md:mt-10 [@media(min-width:900px)_and_(min-height:840px)]:mb-8 [@media(min-width:900px)_and_(min-height:840px)]:max-h-[26rem] [@media(min-width:900px)_and_(min-height:840px)]:flex-1">
             {CONTENTS.map((c) => (
-              <li key={c.n} className="grid grid-cols-[1.5rem_1fr] items-baseline gap-x-3 gap-y-1 border-b border-[var(--ink)]/15 py-2.5 min-[1100px]:grid-cols-[1.5rem_auto_1fr] md:gap-x-5 md:py-3">
+              <li key={c.n} className="grid grid-cols-[1.5rem_1fr] content-center items-baseline gap-x-3 gap-y-1 border-b border-[var(--ink)]/15 py-3 min-[1100px]:grid-cols-[1.5rem_auto_1fr] md:gap-x-5 md:py-3.5">
                 <span className="label w-6 text-[var(--brick)]">{c.n}</span>
                 <span className="display text-[clamp(1.65rem,2.8vw,3rem)]">{c.t}</span>
                 <span className="col-start-2 text-[14px] text-[var(--ink-soft)] min-[1100px]:col-start-auto min-[1100px]:text-right md:text-[15px]">{c.s}</span>
