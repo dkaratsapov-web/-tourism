@@ -12,6 +12,7 @@ import { Process } from "@/components/sections/Process";
 import { Lead, LeadDialog } from "@/components/sections/Lead";
 import { Footer } from "@/components/sections/Footer";
 import { SectionIndex } from "@/components/ui/SectionIndex";
+import { ScrollHint } from "@/components/ui/ScrollHint";
 import { StickyCta } from "@/components/ui/StickyCta";
 
 const PLACES = ["Анталия", "Каппадокия", "Бодрум", "Стамбул", "Эгейское побережье"];
@@ -44,6 +45,7 @@ export default function Home() {
       </main>
       <Footer />
       <StickyCta />
+      <ScrollHint />
       <LeadDialog />
     </>
   );
