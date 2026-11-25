@@ -67,17 +67,19 @@ export function QuickLeadForm({ source }: { source: "hero" | "process" | "terrac
   return (
     <form method="dialog" aria-labelledby={titleId} onSubmit={submit} className={compact ? "max-w-[35rem] rounded-[18px] border border-[var(--ink)]/10 bg-[var(--paper)]/95 p-4 shadow-[0_18px_42px_-30px_rgb(19_41_75/0.65)] md:px-5" : "mt-6 max-w-[24rem] rounded-[18px] bg-[var(--paper)] p-5 shadow-[0_22px_44px_-30px_rgb(19_41_75/0.6)] md:p-6"}>
       <h3 id={titleId} className={compact ? "display text-[25px]" : "display text-[29px]"}>Расскажите о поездке</h3>
-      <div className={compact ? "mt-3 grid gap-3 sm:grid-cols-2" : "mt-4 grid gap-3"}>
-        <label className="block min-w-0 text-[14px] font-medium">
-          Имя
-          <input className={input} name="name" autoComplete="given-name" required />
-        </label>
+      <div className="mt-3">
         <ContactFields
           key={contactVersion}
           inputClass={input}
-          labelClass="text-[14px] font-medium"
+          labelClass="block text-[14px] font-medium"
           error={contactError}
           onEdit={() => setContactError("")}
+          leadingField={
+            <label className="block min-w-0 text-[14px] font-medium">
+              Имя
+              <input className={input} name="name" autoComplete="given-name" required />
+            </label>
+          }
         />
       </div>
       <div className={compact ? "mt-3 grid gap-3 sm:flex sm:items-center sm:justify-between" : ""}>

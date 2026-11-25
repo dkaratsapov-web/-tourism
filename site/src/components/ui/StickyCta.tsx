@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { LEAD_ID } from "@/lib/site";
+import { LEAD_ID, openLeadDialog } from "@/lib/site";
 import { CtaButton } from "./CtaButton";
 
 /**
@@ -12,22 +12,26 @@ import { CtaButton } from "./CtaButton";
 export function StickyCta() {
   const [pastHero, setPastHero] = useState(false);
   const [atLead, setAtLead] = useState(false);
+  const [inStory, setInStory] = useState(false);
 
   useEffect(() => {
     const heroCta = document.getElementById("hero-cta");
     const lead = document.getElementById(LEAD_ID);
+    const story = document.getElementById("istoriya");
     const io = new IntersectionObserver((entries) => {
       for (const e of entries) {
         if (e.target === heroCta) setPastHero(!e.isIntersecting && e.boundingClientRect.top < 0);
         if (e.target === lead) setAtLead(e.isIntersecting);
+        if (e.target === story) setInStory(e.isIntersecting);
       }
     });
     if (heroCta) io.observe(heroCta);
     if (lead) io.observe(lead);
+    if (story) io.observe(story);
     return () => io.disconnect();
   }, []);
 
-  const show = pastHero && !atLead;
+  const show = pastHero && !atLead && !inStory;
   return (
     <div
       className={`fixed inset-x-0 bottom-0 z-40 border-t border-[var(--ink)]/10 bg-[var(--paper)] px-4 pb-[calc(8px+env(safe-area-inset-bottom))] pt-2 transition-[transform,opacity] duration-300 ease-[var(--ease-expo)] md:hidden ${
@@ -36,7 +40,7 @@ export function StickyCta() {
       aria-hidden={!show}
       inert={!show}
     >
-      <CtaButton className="w-full" magnetic={false} />
+      <CtaButton className="w-full" magnetic={false} onOpenDialog={() => openLeadDialog()} />
     </div>
   );
 }

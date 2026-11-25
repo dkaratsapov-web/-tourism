@@ -82,6 +82,21 @@ export function Hero() {
         .to({}, { duration: 0.2 });
     });
 
+    mm.add("(max-width: 899px), (max-height: 839px)", () => {
+      const page = hero.querySelector<HTMLElement>("[data-spread]")!;
+      gsap.from(page, {
+        y: 38,
+        opacity: 0.5,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: page.previousElementSibling,
+          start: "bottom 90%",
+          end: "bottom 35%",
+          scrub: 0.35,
+        },
+      });
+    });
+
     return () => mm.revert();
   }, [reduced]);
 
@@ -165,7 +180,7 @@ export function Hero() {
               <li key={c.n} className="flex items-baseline gap-4 border-b border-[var(--ink)]/15 py-3 md:gap-6 md:py-4">
                 <span className="label w-6 text-[var(--brick)]">{c.n}</span>
                 <span className="display text-[clamp(2rem,3vw,3rem)]">{c.t}</span>
-                <span className="ml-auto text-right text-[14px] text-[var(--ink-soft)] md:text-[15px]">{c.s}</span>
+                <span className="ml-auto hidden text-right text-[14px] text-[var(--ink-soft)] min-[420px]:block md:text-[15px]">{c.s}</span>
               </li>
             ))}
           </ol>
