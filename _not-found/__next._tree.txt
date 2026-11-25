@@ -1,4 +1,4 @@
-:HL["/-tourism/_next/static/chunks/17yprbek19tow.css","style"]
+:HL["/-tourism/_next/static/chunks/1g9hia-flyiot.css","style"]
 2:[["children",{"s":"__PAGE__","h":160}]]
 1:[["children",{"s":"/_not-found","h":96,"c":"$Q2"}]]
-0:{"b":"xSawjy-GlgGIhcHqGodHq","t":{"t":{"s":"","h":80,"c":"$Q1"}}}
+0:{"b":"YVsUsaabrVMXfME2CsIVY","t":{"t":{"s":"","h":80,"c":"$Q1"}}}
